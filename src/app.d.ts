@@ -1,11 +1,9 @@
+import type { User } from '$lib/types/user';
+
 declare global {
 	namespace App {
 		interface Locals {
-			user?: {
-				user_id: number;
-				email: string;
-				username: string;
-			};
+			user?: User;
 		}
 	}
 }

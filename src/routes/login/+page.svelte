@@ -1,67 +1,80 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import type { PageProps } from './$types';
 
-	let { form } = $props();
+	let { form }: PageProps = $props();
 	let loading = $state(false);
 </script>
 
-<div class="flex min-h-screen items-center justify-center bg-gray-100">
-	<div class="w-full max-w-md rounded-lg bg-white p-8 shadow-md">
-		<h1 class="mb-6 text-2xl font-bold">Login</h1>
+<div class="hero min-h-screen bg-base-200">
+	<div class="card w-full max-w-md bg-base-100 shadow-xl">
+		<div class="card-body">
+			<h1 class="card-title text-2xl">Login</h1>
 
-		<form
-			method="POST"
-			use:enhance={() => {
-				loading = true;
-				return async ({ update }) => {
-					loading = false;
-					await update();
-				};
-			}}
-		>
-			<div class="mb-4">
-				<label for="email" class="mb-2 block text-sm font-medium">Email</label>
-				<input
-					id="email"
-					name="email"
-					type="email"
-					required
-					value={form?.email ?? ''}
-					class="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-					placeholder="you@example.com"
-				/>
-			</div>
-
-			<div class="mb-6">
-				<label for="password" class="mb-2 block text-sm font-medium">Password</label>
-				<input
-					id="password"
-					name="password"
-					type="password"
-					required
-					class="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-					placeholder="••••••••"
-				/>
-			</div>
-
-			{#if form?.error}
-				<div class="mb-4 rounded-md bg-red-100 p-3 text-red-700">
-					{form.error}
-				</div>
-			{/if}
-
-			<button
-				type="submit"
-				disabled={loading}
-				class="w-full rounded-md bg-blue-600 py-2 text-white hover:bg-blue-700 disabled:opacity-50"
+			<form
+				method="POST"
+				use:enhance={() => {
+					loading = true;
+					return async ({ update }) => {
+						try {
+							await update();
+						} finally {
+							loading = false;
+						}
+					};
+				}}
 			>
-				{loading ? 'Logging in...' : 'Login'}
-			</button>
-		</form>
+				<div class="form-control w-full">
+					<label for="email" class="label">
+						<span class="label-text">Email</span>
+					</label>
+					<input
+						id="email"
+						name="email"
+						type="email"
+						required
+						value={form?.email ?? ''}
+						class="input input-bordered w-full"
+						placeholder="you@example.com"
+					/>
+				</div>
 
-		<p class="mt-4 text-center text-sm text-gray-600">
-			Don't have an account?
-			<a href="/register" class="text-blue-600 hover:underline">Register</a>
-		</p>
+				<div class="form-control w-full">
+					<label for="password" class="label">
+						<span class="label-text">Password</span>
+					</label>
+					<input
+						id="password"
+						name="password"
+						type="password"
+						required
+						class="input input-bordered w-full"
+						placeholder="••••••••"
+					/>
+				</div>
+
+				{#if form?.error}
+					<div class="alert alert-error mt-4">
+						<span>{form.error}</span>
+					</div>
+				{/if}
+
+				<div class="form-control mt-6">
+					<button type="submit" disabled={loading} class="btn btn-primary">
+						{#if loading}
+							<span class="loading loading-spinner"></span>
+							Logging in...
+						{:else}
+							Login
+						{/if}
+					</button>
+				</div>
+			</form>
+
+			<p class="mt-4 text-center text-sm">
+				Don't have an account?
+				<a href="/register" class="link link-primary">Register</a>
+			</p>
+		</div>
 	</div>
 </div>
