@@ -1,0 +1,25 @@
+.git
+.gitignore
+.dockerignore
+Dockerfile
+README.md
+
+# Dependencies (will be installed fresh)
+node_modules
+
+# Build output (will be built fresh)
+build
+.svelte-kit
+
+# Dev/test files
+.env
+.env.*
+*.log
+coverage
+playwright-report
+test-results
+
+# IDE
+.idea
+.vscode
+*.swp
