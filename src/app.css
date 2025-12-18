@@ -1,0 +1,15 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/forms';
+@plugin "daisyui";
+
+@font-face {
+	font-family: 'Comic Code';
+	src: url('/ComicCodeLigaturesNerdFont.otf') format('opentype');
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+
+body {
+	font-family: 'Comic Code', monospace;
+}
