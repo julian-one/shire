@@ -1,7 +1,7 @@
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
-
-const API_BASE = 'http://localhost:8080';
+import { login, AuthError } from '$lib/server/api';
+import { setAuthCookies } from '$lib/server/auth';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	if (locals.user) {
@@ -20,35 +20,15 @@ export const actions: Actions = {
 			return fail(400, { error: 'Email and password are required', email });
 		}
 
-		const response = await fetch(`${API_BASE}/login`, {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ email, password })
-		});
-
-		if (!response.ok) {
-			const data = await response.json().catch(() => ({}));
-			return fail(401, { error: data.error || 'Invalid credentials', email });
+		try {
+			const data = await login(email, password);
+			setAuthCookies(cookies, data.access_token, data.refresh_token);
+		} catch (e) {
+			if (e instanceof AuthError) {
+				return fail(e.status, { error: e.message, email });
+			}
+			return fail(500, { error: 'An unexpected error occurred', email });
 		}
-
-		const data = await response.json();
-
-		// Store tokens in httpOnly cookies (secure, not accessible to JS)
-		cookies.set('access_token', data.access_token, {
-			path: '/',
-			httpOnly: true,
-			sameSite: 'lax',
-			secure: false, // Set to true in production with HTTPS
-			maxAge: 60 * 5 // 5 minutes
-		});
-
-		cookies.set('refresh_token', data.refresh_token, {
-			path: '/',
-			httpOnly: true,
-			sameSite: 'lax',
-			secure: false,
-			maxAge: 60 * 60 * 24 // 24 hours
-		});
 
 		throw redirect(302, '/profile');
 	}

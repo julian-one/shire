@@ -81,7 +81,6 @@
 		</div>
 		{#if user}
 			<span class="text-sm">{user.username}</span>
-			<a href="/logs" class="btn btn-ghost btn-sm">Logs</a>
 			<a href="/profile" class="btn btn-ghost btn-sm">Profile</a>
 			<form
 				method="POST"
