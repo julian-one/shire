@@ -4,6 +4,7 @@
 	import { onMount } from 'svelte';
 	import moment from 'moment';
 	import { ClearAuthData, SessionStore, SetSession } from '$lib/stores/session';
+	import { AlertStore } from '$lib/stores/alert.svelte';
 	import { AuthController } from '$lib/controllers/auth';
 
 	let auth_controller = new AuthController();
@@ -31,6 +32,7 @@
 			redirect_to();
 		} catch (error) {
 			console.error('Login failed:', error);
+			AlertStore.add('Login failed. Please check your credentials and try again.', 'error');
 		} finally {
 			loading = false;
 		}
