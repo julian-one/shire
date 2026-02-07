@@ -1,15 +1,64 @@
 @import 'tailwindcss';
-@plugin '@tailwindcss/forms';
-@plugin "daisyui";
+
+@plugin "daisyui" {
+	themes: false;
+}
+
+@plugin "daisyui/theme" {
+	name: 'julian-one';
+	default: true;
+	color-scheme: dark;
+	--color-base-100: #2c2c2a;
+	--color-base-200: #262624;
+	--color-base-300: #201f1e;
+	--color-base-content: #f1efe8;
+	--color-primary: #97c459;
+	--color-primary-content: #2c2c2a;
+	--color-secondary: #b8b4a6;
+	--color-secondary-content: #2c2c2a;
+	--color-accent: #b5ce8b;
+	--color-accent-content: #2c2c2a;
+	--color-neutral: #3a3936;
+	--color-neutral-content: #f1efe8;
+	--color-info: #86b1ce;
+	--color-info-content: #1e2b33;
+	--color-success: #97c459;
+	--color-success-content: #223011;
+	--color-warning: #d9b45b;
+	--color-warning-content: #332a12;
+	--color-error: #d97e6a;
+	--color-error-content: #38160f;
+	--radius-selector: 0.5rem;
+	--radius-field: 0.25rem;
+	--radius-box: 0.5rem;
+	--size-selector: 0.25rem;
+	--size-field: 0.25rem;
+	--border: 1px;
+	--depth: 1;
+	--noise: 0;
+}
 
 @font-face {
-	font-family: 'Comic Code';
-	src: url('/ComicCodeLigaturesNerdFont.otf') format('opentype');
-	font-weight: normal;
+	font-family: 'Atkinson Hyperlegible Mono';
+	src: url('/fonts/AtkinsonHyperlegibleMono-latin.woff2') format('woff2');
+	font-weight: 200 800;
 	font-style: normal;
-	font-display: swap;
+	font-display: block;
+}
+
+@font-face {
+	font-family: 'Atkinson Hyperlegible Mono';
+	src: url('/fonts/AtkinsonHyperlegibleMono-Italic-latin.woff2') format('woff2');
+	font-weight: 200 800;
+	font-style: italic;
+	font-display: block;
+}
+
+@theme {
+	--font-sans: 'Atkinson Hyperlegible Mono', monospace;
+	--font-mono: 'Atkinson Hyperlegible Mono', monospace;
 }
 
 body {
-	font-family: 'Comic Code', monospace;
+	font-family: 'Atkinson Hyperlegible Mono', monospace;
 }

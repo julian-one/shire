@@ -1,36 +1,20 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import moment from 'moment';
-	import type { Session } from '$lib/types/session';
-	import { SessionStore, ClearAuthData } from '$lib/stores/session';
-
-	let session = $derived($SessionStore);
-
-	onMount(() => {
-		if (!session) {
-			window.location.href = `/login`;
-			return;
-		}
-
-		const expiration = moment((session as Session).expires_at);
-		const now = moment();
-
-		if (!expiration.isValid()) {
-			ClearAuthData();
-			window.location.href = `/login`;
-			return;
-		}
-
-		if (now.isAfter(expiration)) {
-			ClearAuthData();
-			window.location.href = `/login`;
-			return;
-		}
-
-		window.location.href = '/profile';
-	});
+	import { routes } from '$lib/paths';
 </script>
 
-<div class="flex min-h-screen items-center justify-center">
-	<span class="loading loading-spinner loading-xl"></span>
-</div>
+<main class="hero flex-1">
+	<div class="hero-content flex-col gap-10 text-center">
+		<p class="text-base md:text-lg">greetings from the shire</p>
+
+		<nav class="flex gap-6 text-sm md:text-base">
+			<a
+				href={routes.aboutSite}
+				class="link link-hover">about this site</a
+			>
+			<a
+				href={routes.aboutMe}
+				class="link link-hover">about me</a
+			>
+		</nav>
+	</div>
+</main>
