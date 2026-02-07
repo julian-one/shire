@@ -1,18 +1,12 @@
-export interface User {
+export const ROLES = ['admin', 'user'] as const;
+
+export type Role = (typeof ROLES)[number];
+
+export type User = {
 	user_id: string;
 	username: string;
 	email: string;
 	role: Role;
-	created_at: Date;
-	updated_at: Date;
-}
-
-enum Role {
-	Admin = 'admin',
-	User = 'user'
-}
-
-export const RoleDisplay = new Map<Role, string>([
-	[Role.Admin, 'Admin'],
-	[Role.User, 'User']
-]);
+	created_at: string;
+	updated_at: string;
+};

@@ -1,29 +1,51 @@
 <!doctype html>
 <html
 	lang="en"
-	data-theme="light"
+	data-theme="julian-one"
 >
 	<head>
 		<meta charset="utf-8" />
 		<link
 			rel="icon"
-			href="%sveltekit.assets%/favicon.png"
+			href="%sveltekit.assets%/favicon.svg"
+			type="image/svg+xml"
+		/>
+		<link
+			rel="icon"
+			href="%sveltekit.assets%/favicon.ico"
+			sizes="16x16 32x32 48x48"
+		/>
+		<link
+			rel="apple-touch-icon"
+			href="%sveltekit.assets%/apple-touch-icon.png"
+		/>
+		<link
+			rel="manifest"
+			href="%sveltekit.assets%/site.webmanifest"
+		/>
+		<meta
+			name="theme-color"
+			content="#2C2C2A"
 		/>
 		<meta
 			name="viewport"
 			content="width=device-width, initial-scale=1"
 		/>
-		<title>jroberts.info</title>
+		<title>julian-one.com</title>
 		<meta
 			name="description"
-			content="jroberts.info"
+			content="julian-one.com"
+		/>
+		<link
+			rel="preload"
+			href="%sveltekit.assets%/fonts/AtkinsonHyperlegibleMono-latin.woff2"
+			as="font"
+			type="font/woff2"
+			crossorigin
 		/>
 		%sveltekit.head%
 	</head>
-	<body
-		data-sveltekit-preload-data="hover"
-		class="bg-base-100 text-base-content min-h-screen"
-	>
+	<body data-sveltekit-preload-data="hover">
 		<div style="display: contents">%sveltekit.body%</div>
 	</body>
 </html>

@@ -1,15 +1,22 @@
-FROM node:20-alpine AS builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
-COPY . .
-RUN npm run build
+FROM node:26-alpine AS build
 
-FROM node:20-alpine
 WORKDIR /app
-COPY --from=builder /app/build build/
-COPY --from=builder /app/node_modules node_modules/
-COPY package.json .
+
+COPY . .
+
+RUN npm ci --ignore-scripts && npm run build
+
+FROM node:26-alpine
+
+WORKDIR /app
+
+COPY package.json ./
+COPY --from=build /app/build build/
+
 EXPOSE 3000
-ENV NODE_ENV=production
+
+ENV NODE_ENV=production ADDRESS_HEADER=X-Forwarded-For XFF_DEPTH=1
+
+USER node
+
 CMD ["node", "build"]
