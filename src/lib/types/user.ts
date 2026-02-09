@@ -7,7 +7,7 @@ export interface User {
 	updated_at: Date;
 }
 
-enum Role {
+export enum Role {
 	Admin = 'admin',
 	User = 'user'
 }

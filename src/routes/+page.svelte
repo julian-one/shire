@@ -32,5 +32,5 @@
 </script>
 
 <div class="flex min-h-screen items-center justify-center">
-	<span class="loading loading-spinner loading-xl"></span>
+	<div class="loading loading-ring loading-xl h-24 w-24"></div>
 </div>
