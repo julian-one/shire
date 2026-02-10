@@ -11,8 +11,7 @@
 	async function load_users() {
 		try {
 			UserListStore.users = await user_controller.List();
-		} catch (error) {
-			console.error('Failed to load user list:', error);
+		} catch {
 			AlertStore.add('Failed to load user list', 'error');
 		}
 	}

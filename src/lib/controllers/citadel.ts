@@ -1,3 +1,4 @@
+import { browser } from '$app/environment';
 import { env } from '$env/dynamic/public';
 import axios from 'axios';
 
@@ -12,4 +13,16 @@ export const Citadel = axios.create({
 	paramsSerializer: {
 		indexes: null
 	}
+});
+
+// Add a request interceptor to include the TOKEN cookie for server-side requests
+Citadel.interceptors.request.use(async (config) => {
+	if (!browser) {
+		const { CitadelContext } = await import('$lib/controllers/citadel.server');
+		const token = CitadelContext.getStore();
+		if (token) {
+			config.headers['Cookie'] = `TOKEN=${token}`;
+		}
+	}
+	return config;
 });
