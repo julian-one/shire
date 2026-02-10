@@ -1,33 +1,34 @@
 import { type Handle, redirect } from '@sveltejs/kit';
+import { CitadelContext } from '$lib/controllers/citadel.server';
 import { AuthController } from '$lib/controllers/auth';
+import { UserController } from '$lib/controllers/user';
 
 export const handle: Handle = async ({ event, resolve }) => {
-	if (event.route.id?.includes('(authenticated)')) {
-		console.log('Route requires authentication');
-		const token = event.cookies.get('TOKEN');
-		console.log(`Token from cookies: ${token}`);
-		if (!token) {
-			console.log('No token found, redirecting to logout');
+	const token = event.cookies.get('TOKEN');
+
+	return CitadelContext.run(token, async () => {
+		if (token) {
+			const auth = new AuthController();
+			const user_controller = new UserController();
+			try {
+				const session = await auth.GetSession(token);
+				if (session) {
+					event.locals.session = session;
+					const user = await user_controller.ById(session.user_id);
+					event.locals.user = user;
+				}
+			} catch {
+				event.cookies.delete('TOKEN', { path: '/' });
+				event.locals.session = null;
+				event.locals.user = null;
+			}
+		}
+
+		// authentication check for routes that require authentication
+		if (event.route.id?.includes('(authenticated)') && !event.locals.session) {
 			redirect(307, `/logout?redirect=${event.url.pathname}`);
 		}
 
-		const auth = new AuthController();
-		try {
-			console.log('Validating token and fetching session');
-			event.locals.session = await auth.GetSession(token);
-		} catch {
-			console.log('Invalid token, deleting cookie and redirecting to logout');
-			event.cookies.delete('TOKEN', { path: '/' });
-			redirect(307, `/logout?redirect=${event.url.pathname}`);
-		}
-
-		console.log(`Session obtained: ${JSON.stringify(event.locals.session)}`);
-		if (!event.locals.session) {
-			console.log('No session found, deleting token and redirecting to logout');
-			event.cookies.delete('TOKEN', { path: '/' });
-			redirect(307, `/logout?redirect=${event.url.pathname}`);
-		}
-	}
-	console.log('No authentication required, proceeding with request');
-	return resolve(event);
+		return resolve(event);
+	});
 };

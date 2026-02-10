@@ -22,6 +22,7 @@ export default ts.config(
 		},
 		rules: {
 			'no-undef': 'off',
+			'no-console': 'error',
 			'svelte/no-navigation-without-resolve': 'off'
 		}
 	},

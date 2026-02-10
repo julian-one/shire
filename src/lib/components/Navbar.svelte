@@ -1,7 +1,11 @@
 <script lang="ts">
-	import { SessionStore } from '$lib/stores/session';
+	import type { Session } from '$lib/types/session';
+	import type { User } from '$lib/types/user';
 
-	let session = $derived($SessionStore);
+	let { session, user } = $props<{
+		session: Session | null;
+		user: User | null;
+	}>();
 </script>
 
 <div class="navbar bg-base-100 shadow-sm">
@@ -14,6 +18,9 @@
 	<div class="flex-none">
 		<ul class="menu menu-horizontal px-1">
 			{#if session}
+				{#if user.Role == 'admin'}
+					<li><a href="/admin">Users</a></li>
+				{/if}
 				<li><a href="/profile">Profile</a></li>
 				<li><a href="/logout">Logout</a></li>
 			{:else}
