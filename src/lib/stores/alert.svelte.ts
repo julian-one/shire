@@ -1,14 +1,5 @@
 import { v4 as uuid } from 'uuid';
-
-type AlertType = 'success' | 'warning' | 'error' | 'info';
-
-type Alert = {
-	id: string;
-	type: AlertType;
-	message: string;
-	timeout: number;
-	removing: boolean;
-};
+import type { Alert, AlertType } from '../types/alert';
 
 class Alerts {
 	public alerts: Alert[] = $state([]);

@@ -8,23 +8,12 @@
 
 	// Sync server data to client store
 	$effect(() => {
-		if (data) {
-			AuthStore.init(data.session, data.user);
-		}
+		AuthStore.init(data.session, data.user);
 	});
 
-	let session = $derived(AuthStore.session);
-	let user = $derived(AuthStore.user);
-
-	// We use $state and sync it with data.theme via $effect.
-	// This is the most reliable way to have a mutable theme state that
-	// also reacts to server-side changes (like navigation).
-	// eslint-disable-next-line svelte/prefer-writable-derived
-	let theme = $state(data.theme);
-
-	$effect(() => {
-		theme = data.theme;
-	});
+	let session = $derived(data.session);
+	let user = $derived(data.user);
+	let theme = $derived(data.theme);
 </script>
 
 <Navbar
