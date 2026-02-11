@@ -7,6 +7,11 @@ export interface User {
 	updated_at: Date;
 }
 
+export interface EditableFields {
+	username?: string;
+	role?: Role;
+}
+
 export enum Role {
 	Admin = 'admin',
 	User = 'user'

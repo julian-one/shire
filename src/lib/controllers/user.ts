@@ -1,5 +1,5 @@
 import { Citadel } from '$lib/controllers/citadel';
-import type { User } from '$lib/types/user';
+import type { EditableFields, User } from '$lib/types/user';
 
 export class UserController {
 	public async List(): Promise<User[]> {
@@ -9,6 +9,11 @@ export class UserController {
 
 	public async ById(user_id: string): Promise<User> {
 		const response = await Citadel.get(`/user/${user_id}`);
+		return response.data as User;
+	}
+
+	public async Update(user_id: string, edits: EditableFields): Promise<User> {
+		const response = await Citadel.patch(`/user/${user_id}`, { ...edits });
 		return response.data as User;
 	}
 }
