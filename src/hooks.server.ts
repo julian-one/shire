@@ -5,6 +5,9 @@ import { UserController } from '$lib/controllers/user';
 
 export const handle: Handle = async ({ event, resolve }) => {
 	const token = event.cookies.get('TOKEN');
+	const theme = event.cookies.get('theme') || 'dark';
+
+	event.locals.theme = theme;
 
 	return CitadelContext.run(token, async () => {
 		if (token) {
@@ -29,6 +32,8 @@ export const handle: Handle = async ({ event, resolve }) => {
 			redirect(307, `/logout?redirect=${event.url.pathname}`);
 		}
 
-		return resolve(event);
+		return resolve(event, {
+			transformPageChunk: ({ html }) => html.replace('%theme%', theme)
+		});
 	});
 };
