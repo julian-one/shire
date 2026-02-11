@@ -15,11 +15,22 @@
 
 	let session = $derived(AuthStore.session);
 	let user = $derived(AuthStore.user);
+
+	// We use $state and sync it with data.theme via $effect.
+	// This is the most reliable way to have a mutable theme state that
+	// also reacts to server-side changes (like navigation).
+	// eslint-disable-next-line svelte/prefer-writable-derived
+	let theme = $state(data.theme);
+
+	$effect(() => {
+		theme = data.theme;
+	});
 </script>
 
 <Navbar
 	{session}
 	{user}
+	bind:theme
 />
 <div class="fixed inset-x-0 top-20 z-50 flex flex-col items-center space-y-4 p-4">
 	<Alert />

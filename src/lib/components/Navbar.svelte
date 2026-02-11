@@ -1,10 +1,16 @@
 <script lang="ts">
 	import type { Session } from '$lib/types/session';
 	import type { User } from '$lib/types/user';
+	import Switcher from '$lib/themes/switcher.svelte';
 
-	let { session, user } = $props<{
+	let {
+		session,
+		user,
+		theme = $bindable()
+	} = $props<{
 		session: Session | null;
 		user: User | null;
+		theme: string;
 	}>();
 </script>
 
@@ -15,10 +21,11 @@
 			href={session ? '/home' : '/'}>jroberts</a
 		>
 	</div>
-	<div class="flex-none">
+	<div class="flex-none gap-4">
+		<Switcher bind:theme />
 		<ul class="menu menu-horizontal px-1">
 			{#if session}
-				{#if user.Role == 'admin'}
+				{#if user?.role == 'admin'}
 					<li><a href="/admin">Users</a></li>
 				{/if}
 				<li><a href="/profile">Profile</a></li>
