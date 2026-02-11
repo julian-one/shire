@@ -9,11 +9,6 @@ class Auth {
 		this.session = session;
 		this.user = user;
 	}
-
-	clear() {
-		this.session = null;
-		this.user = null;
-	}
 }
 
 export const AuthStore = new Auth();

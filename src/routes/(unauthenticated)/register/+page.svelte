@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { applyAction, enhance } from '$app/forms';
-	import { AlertStore } from '$lib/stores/alert.svelte';
 	import type { ActionResult } from '@sveltejs/kit';
+	import { AlertStore } from '$lib/stores/alert.svelte';
 
 	let username = $state('');
 	let email = $state('');
