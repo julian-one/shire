@@ -21,9 +21,7 @@
 	{user}
 	bind:theme
 />
-<div class="fixed inset-x-0 top-20 z-50 flex flex-col items-center space-y-4 p-4">
-	<Alert />
-</div>
+<Alert />
 
 <div class="container mx-auto p-4">
 	{@render children()}
