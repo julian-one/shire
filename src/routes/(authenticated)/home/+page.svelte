@@ -29,7 +29,7 @@
 		<div class="flex items-baseline gap-3">
 			<div class="tooltip">
 				<div class="tooltip-content">
-					<div class="-rotate-3 text-2xl">Welcome {user?.username}!</div>
+					<div class="text-2xl">Welcome {user?.username}!</div>
 				</div>
 				<h1 class="text-2xl font-black tracking-tight md:text-3xl lg:text-4xl">¡Bienvenido {user?.username}!</h1>
 			</div>

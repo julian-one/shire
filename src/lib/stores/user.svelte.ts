@@ -28,6 +28,7 @@ class SingleUser {
 		try {
 			const updated = await this.user_controller.Update(user_id, changes);
 			this.user = updated;
+			AlertStore.add('User data updated successfully', 'success');
 			return updated;
 		} catch {
 			AlertStore.add('Failed to update user data', 'error');
