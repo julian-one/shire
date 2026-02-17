@@ -1,5 +1,5 @@
 import { UserController } from '$lib/controllers/user';
-import type { EditableFields, User } from '$lib/types/user';
+import type { User } from '$lib/types/user';
 import { AlertStore } from '$lib/stores/alert.svelte';
 
 class SingleUser {
@@ -21,12 +21,12 @@ class SingleUser {
 		}
 	}
 
-	async update_user(user_id: string, changes: EditableFields): Promise<User | null> {
+	async update_user(user_id: string, username: string): Promise<User | null> {
 		if (!user_id) return null;
 
 		this.loading = true;
 		try {
-			const updated = await this.user_controller.Update(user_id, changes);
+			const updated = await this.user_controller.Update(user_id, username);
 			this.user = updated;
 			AlertStore.add('User data updated successfully', 'success');
 			return updated;

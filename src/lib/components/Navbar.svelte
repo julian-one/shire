@@ -26,10 +26,9 @@
 		<ul class="menu menu-horizontal px-1">
 			{#if session}
 				{#if user?.role == 'admin'}
-					<li><a href="/admin">Users</a></li>
+					<li><a href="/admin/users">Users</a></li>
 				{/if}
 				<li><a href="/profile">Profile</a></li>
-				<!-- <li><a href="/logout">Logout</a></li> -->
 				<li>
 					<form
 						action="/logout"

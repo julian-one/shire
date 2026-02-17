@@ -10,7 +10,6 @@
 
 	let currentTime = $state(moment().format('h:mm A'));
 	let currentDate = $state(moment().format('MMM D, YYYY'));
-	let timezoneAbbr = $derived(data.location?.timezone ? toShortTimezone(data.location.timezone) : '--');
 
 	// Update time every minute
 	$effect(() => {
@@ -80,18 +79,30 @@
 							<div class="badge badge-secondary badge-sm"></div>
 							<span class="text-xs font-bold tracking-wide uppercase opacity-60">Weather</span>
 						</div>
-						{#if data.weather}
+						{#await data.weather}
 							<div class="flex items-center gap-3">
-								<span class="text-5xl">{data.weather.icon}</span>
+								<div class="skeleton h-12 w-12 rounded-full"></div>
 								<div>
-									<div class="text-4xl font-black tabular-nums">{data.weather.temperature}°F</div>
-									<div class="text-sm font-medium opacity-70">{data.weather.condition}</div>
+									<div class="skeleton mb-1 h-10 w-24"></div>
+									<div class="skeleton h-4 w-20"></div>
 								</div>
 							</div>
-						{:else}
-							<div class="text-4xl font-black opacity-30">--</div>
-							<div class="text-sm opacity-60">Unable to load</div>
-						{/if}
+						{:then weather}
+							{#if weather}
+								<div class="flex items-center gap-3">
+									<span class="text-5xl">{weather.icon}</span>
+									<div>
+										<div class="text-4xl font-black tabular-nums">{weather.temperature}°F</div>
+										<div class="text-sm font-medium opacity-70">{weather.condition}</div>
+									</div>
+								</div>
+							{:else}
+								<div class="flex items-center gap-3">
+									<div class="text-4xl font-black opacity-30">--</div>
+									<div class="text-sm opacity-60">Unable to load</div>
+								</div>
+							{/if}
+						{/await}
 					</div>
 				</div>
 
@@ -99,35 +110,59 @@
 
 				<!-- Location Details -->
 				<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-					<!-- Timezone -->
-					<div class="space-y-1">
-						<div class="text-xs font-bold tracking-wide uppercase opacity-50">Timezone</div>
-						<div class="font-semibold">{timezoneAbbr}</div>
-						<div class="text-sm opacity-70">{data.location?.timezone || 'Unknown'}</div>
-					</div>
+					{#await data.location}
+						<!-- Timezone Skeleton -->
+						<div class="space-y-2">
+							<div class="text-xs font-bold tracking-wide uppercase opacity-50">Timezone</div>
+							<div class="skeleton h-6 w-16"></div>
+							<div class="skeleton h-4 w-32"></div>
+						</div>
 
-					<!-- Location -->
-					<div class="space-y-1">
-						<div class="text-xs font-bold tracking-wide uppercase opacity-50">Location</div>
-						{#if data.location}
-							<div class="font-semibold">
-								{data.location.city}, {data.location.region}
-							</div>
-							<div class="text-sm opacity-70">{data.location.country}</div>
-						{:else}
-							<div class="opacity-30">--</div>
-						{/if}
-					</div>
+						<!-- Location Skeleton -->
+						<div class="space-y-2">
+							<div class="text-xs font-bold tracking-wide uppercase opacity-50">Location</div>
+							<div class="skeleton h-6 w-32"></div>
+							<div class="skeleton h-4 w-24"></div>
+						</div>
 
-					<!-- Coordinates -->
-					{#if data.location}
+						<!-- Coordinates Skeleton -->
+						<div class="space-y-2">
+							<div class="text-xs font-bold tracking-wide uppercase opacity-50">Coordinates</div>
+							<div class="skeleton h-4 w-28"></div>
+						</div>
+					{:then location}
+						<!-- Timezone -->
+						<div class="space-y-1">
+							<div class="text-xs font-bold tracking-wide uppercase opacity-50">Timezone</div>
+							<div class="font-semibold">{location?.timezone ? toShortTimezone(location.timezone) : '--'}</div>
+							<div class="text-sm opacity-70">{location?.timezone || 'Unknown'}</div>
+						</div>
+
+						<!-- Location -->
+						<div class="space-y-1">
+							<div class="text-xs font-bold tracking-wide uppercase opacity-50">Location</div>
+							{#if location}
+								<div class="font-semibold">
+									{location.city}, {location.region}
+								</div>
+								<div class="text-sm opacity-70">{location.country}</div>
+							{:else}
+								<div class="opacity-30">--</div>
+							{/if}
+						</div>
+
+						<!-- Coordinates -->
 						<div class="space-y-1">
 							<div class="text-xs font-bold tracking-wide uppercase opacity-50">Coordinates</div>
-							<div class="text-sm font-semibold">
-								{data.location.latitude.toFixed(4)}°, {data.location.longitude.toFixed(4)}°
-							</div>
+							{#if location}
+								<div class="text-sm font-semibold">
+									{location.latitude.toFixed(4)}°, {location.longitude.toFixed(4)}°
+								</div>
+							{:else}
+								<div class="opacity-30">--</div>
+							{/if}
 						</div>
-					{/if}
+					{/await}
 				</div>
 			</div>
 		</div>

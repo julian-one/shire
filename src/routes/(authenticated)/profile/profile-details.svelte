@@ -16,7 +16,7 @@
 			return;
 		}
 
-		const updated = await UserStore.update_user(current.user_id, { username: user.username });
+		const updated = await UserStore.update_user(current.user_id, user.username);
 		if (updated) {
 			AuthStore.user = updated;
 			editing = false;
@@ -134,7 +134,6 @@
 									<div class="text-base-content/40 text-xs font-bold uppercase">Email Address</div>
 									<div class="text-lg font-semibold">{current.email}</div>
 								</div>
-								<div class="badge badge-success badge-outline badge-sm font-bold">VERIFIED</div>
 							</div>
 						</div>
 					</div>

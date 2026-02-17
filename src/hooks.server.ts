@@ -29,7 +29,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 		// authentication check for routes that require authentication
 		if (event.route.id?.includes('(authenticated)') && !event.locals.session) {
-			redirect(307, `/logout?redirect=${event.url.pathname}`);
+			redirect(302, '/login');
 		}
 
 		return resolve(event, {

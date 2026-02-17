@@ -7,11 +7,6 @@ export type User = {
 	updated_at: Date;
 };
 
-export type EditableFields = {
-	username?: string;
-	role?: Role;
-};
-
 export enum Role {
 	Admin = 'admin',
 	User = 'user'
@@ -21,3 +16,9 @@ export const RoleDisplay = new Map<Role, string>([
 	[Role.Admin, 'Admin'],
 	[Role.User, 'User']
 ]);
+
+export type ListOptions = {
+	search?: string;
+	role?: string;
+	order_by?: string;
+};

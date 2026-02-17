@@ -35,7 +35,20 @@ export class AuthController {
 	}
 
 	async GetSession(id: string): Promise<Session> {
-		const response = await Citadel.get(`/session/${id}`);
+		const response = await Citadel.get(`/sessions/${id}`);
 		return response.data as Session;
+	}
+
+	async ListSessions(user_id: string): Promise<Session[]> {
+		const response = await Citadel.get(`/users/${user_id}/sessions`);
+		return response.data ?? [];
+	}
+
+	async DeleteSession(id: string): Promise<void> {
+		return await Citadel.delete(`/sessions/${id}`);
+	}
+
+	async DeleteAllSessions(user_id: string): Promise<void> {
+		return await Citadel.delete(`/users/${user_id}/sessions`);
 	}
 }

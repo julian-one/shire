@@ -1,5 +1,5 @@
-import { browser } from '$app/environment';
 import { env } from '$env/dynamic/public';
+import { browser } from '$app/environment';
 import axios from 'axios';
 
 export const Citadel = axios.create({
@@ -15,14 +15,16 @@ export const Citadel = axios.create({
 	}
 });
 
-// Add a request interceptor to include the TOKEN cookie for server-side requests
-Citadel.interceptors.request.use(async (config) => {
-	if (!browser) {
-		const { CitadelContext } = await import('$lib/controllers/citadel.server');
-		const token = CitadelContext.getStore();
+// Client-side: attach the session token as a Bearer header since the TOKEN cookie
+// belongs to the frontend's domain and won't be sent cross-origin to the backend.
+// Server-side auth is handled separately in citadel.server.ts via AsyncLocalStorage.
+if (browser) {
+	Citadel.interceptors.request.use(async (config) => {
+		const { AuthStore } = await import('$lib/stores/auth.svelte');
+		const token = AuthStore.session?.session_id;
 		if (token) {
-			config.headers['Cookie'] = `TOKEN=${token}`;
+			config.headers['Authorization'] = `Bearer ${token}`;
 		}
-	}
-	return config;
-});
+		return config;
+	});
+}
