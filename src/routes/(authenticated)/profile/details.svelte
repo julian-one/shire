@@ -1,7 +1,7 @@
 <script lang="ts">
 	import moment from 'moment';
+	import { invalidateAll } from '$app/navigation';
 	import { UserStore } from '$lib/stores/user.svelte';
-	import { AuthStore } from '$lib/stores/auth.svelte';
 	import type { User } from '$lib/types/user';
 	import { RoleDisplay } from '$lib/types/user';
 
@@ -18,7 +18,7 @@
 
 		const updated = await UserStore.update_user(current.user_id, user.username);
 		if (updated) {
-			AuthStore.user = updated;
+			await invalidateAll();
 			editing = false;
 		}
 	}
@@ -30,7 +30,7 @@
 </script>
 
 <div class="w-full max-w-2xl px-4">
-	<div class="card bg-base-100 shadow-2xl">
+	<div class="card bg-base-100 border-base-content/10 border">
 		<div class="card-body p-0">
 			<!-- Profile Header -->
 			<div class="bg-primary/5 flex flex-col items-center gap-4 rounded-t-2xl p-8 sm:flex-row sm:gap-8">

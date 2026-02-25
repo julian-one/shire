@@ -30,12 +30,12 @@
 {#if user.user_id}
 	{@const user_id = user.user_id}
 	<tr
-		class="hover transition-colors {is_expanded ? 'bg-base-200/50' : ''}"
+		class={is_expanded ? 'bg-base-200/50' : ''}
 		onclick={() => on_toggle_expansion(user_id)}
 	>
 		<td>
 			<button
-				class="btn btn-ghost btn-xs btn-square transition-transform {is_expanded ? 'rotate-90' : ''}"
+				class="btn btn-ghost btn-xs btn-square {is_expanded ? 'rotate-90' : ''}"
 				aria-label={is_expanded ? 'Collapse user details' : 'Expand user details'}
 			>
 				<svg

@@ -9,7 +9,7 @@
 </script>
 
 <div class="flex min-h-[80vh] items-center justify-center p-4">
-	<div class="card bg-base-200 w-full max-w-md shadow-xl">
+	<div class="card bg-base-200 border-base-content/10 w-full max-w-md border">
 		<div class="card-body">
 			<h2 class="card-title mb-6 justify-center text-3xl font-bold">Welcome Back</h2>
 

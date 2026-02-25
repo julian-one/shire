@@ -20,8 +20,8 @@ export const Citadel = axios.create({
 // Server-side auth is handled separately in citadel.server.ts via AsyncLocalStorage.
 if (browser) {
 	Citadel.interceptors.request.use(async (config) => {
-		const { AuthStore } = await import('$lib/stores/auth.svelte');
-		const token = AuthStore.session?.session_id;
+		const { page } = await import('$app/state');
+		const token = page.data.session?.session_id;
 		if (token) {
 			config.headers['Authorization'] = `Bearer ${token}`;
 		}

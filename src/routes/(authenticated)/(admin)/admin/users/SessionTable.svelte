@@ -55,7 +55,7 @@
 			<p class="text-sm opacity-50">No active sessions found for this user.</p>
 		</div>
 	{:else}
-		<div class="border-base-content/10 bg-base-100 overflow-hidden rounded-lg border shadow-sm">
+		<div class="border-base-content/10 bg-base-100 overflow-hidden rounded-lg border">
 			<table class="table-xs table-zebra table w-full">
 				<thead class="bg-base-200/30">
 					<tr>
@@ -73,7 +73,7 @@
 								<div class="font-medium">
 									{moment(session.created_at).format('MMM D, YYYY')}
 								</div>
-								<div class="text-[10px] opacity-40">
+								<div class="text-xs opacity-40">
 									{moment(session.created_at).format('HH:mm:ss')}
 								</div>
 							</td>
@@ -81,15 +81,15 @@
 								<div class="font-medium">
 									{moment(session.expires_at).format('MMM D, YYYY')}
 								</div>
-								<div class="text-[10px] opacity-40">
+								<div class="text-xs opacity-40">
 									{moment(session.expires_at).fromNow()}
 								</div>
 							</td>
 							<td>
 								{#if is_expired}
-									<div class="badge badge-error badge-outline h-4 text-[10px]">Expired</div>
+									<div class="badge badge-error badge-outline h-4 text-xs">Expired</div>
 								{:else}
-									<div class="badge badge-success text-success-content h-4 text-[10px]">Active</div>
+									<div class="badge badge-success text-success-content h-4 text-xs">Active</div>
 								{/if}
 							</td>
 							<td class="text-right">

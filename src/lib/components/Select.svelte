@@ -10,6 +10,7 @@
 		placeholder?: string;
 		disabled?: boolean;
 		class?: string;
+		onchange?: () => void;
 	};
 
 	let {
@@ -17,7 +18,8 @@
 		value = $bindable(),
 		placeholder = 'Select...',
 		disabled = false,
-		class: className = ''
+		class: className = '',
+		onchange
 	}: Props = $props();
 
 	let open = $state(false);
@@ -28,6 +30,7 @@
 	function select(option: Option) {
 		value = option.value;
 		open = false;
+		onchange?.();
 	}
 
 	function handle_keydown(event: KeyboardEvent, option: Option) {
@@ -60,7 +63,7 @@
 	>
 		<span class="flex-1 truncate text-left {!value ? 'opacity-50' : ''}">{selected_label}</span>
 		<svg
-			class="h-4 w-4 shrink-0 transition-transform"
+			class="h-4 w-4 shrink-0"
 			class:rotate-180={open}
 			xmlns="http://www.w3.org/2000/svg"
 			viewBox="0 0 20 20"
@@ -75,7 +78,7 @@
 	</button>
 	<ul
 		tabindex="-1"
-		class="dropdown-content menu bg-base-100 rounded-box z-1 max-h-60 w-full flex-col flex-nowrap overflow-y-auto p-2 shadow-sm"
+		class="dropdown-content menu bg-base-100 rounded-box border-base-content/10 z-1 max-h-60 w-full flex-col flex-nowrap overflow-y-auto border p-2"
 	>
 		{#each options as option (option.value)}
 			<li class="w-full">

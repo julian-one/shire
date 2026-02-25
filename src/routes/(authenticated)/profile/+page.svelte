@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { AuthStore } from '$lib/stores/auth.svelte';
-	import Profile from './profile-details.svelte';
+	import Profile from './details.svelte';
 
-	let user = $derived(AuthStore.user);
+	let { data } = $props();
+
+	let user = $derived(data.user);
 </script>
 
 {#if user}

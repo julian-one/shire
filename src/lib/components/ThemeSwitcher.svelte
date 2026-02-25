@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { themes } from './options';
+	import { themes } from '$lib/helpers/theme';
 
 	let { theme = $bindable() } = $props();
 
@@ -18,12 +18,10 @@
 	<div
 		tabindex="0"
 		role="button"
-		class="btn group btn-ghost btn-sm gap-1.5 px-1.5"
+		class="btn btn-ghost btn-sm gap-1.5 px-1.5"
 		aria-label="Change Theme"
 	>
-		<div
-			class="border-base-content/10 group-hover:border-base-content/20 bg-base-100 grid shrink-0 grid-cols-2 gap-0.5 rounded-md border p-1 transition-colors"
-		>
+		<div class="border-base-content/10 bg-base-100 grid shrink-0 grid-cols-2 gap-0.5 rounded-md border p-1">
 			<div class="bg-base-content size-1 rounded-full"></div>
 			<div class="bg-primary size-1 rounded-full"></div>
 			<div class="bg-secondary size-1 rounded-full"></div>
@@ -40,7 +38,7 @@
 		</svg>
 	</div>
 	<div
-		class="dropdown-content bg-base-200 text-base-content rounded-box top-px mt-16 h-122 max-h-[calc(100vh-8.6rem)] overflow-y-auto border border-white/5 shadow-2xl outline outline-black/5"
+		class="dropdown-content bg-base-200 text-base-content rounded-box border-base-content/10 top-px mt-16 h-122 max-h-[calc(100vh-8.6rem)] overflow-y-auto border"
 	>
 		<ul class="menu w-56 p-2">
 			<li class="menu-title text-xs">Theme</li>
@@ -54,7 +52,7 @@
 					>
 						<div
 							data-theme={t}
-							class="bg-base-100 grid shrink-0 grid-cols-2 gap-0.5 rounded-md p-1 shadow-sm"
+							class="bg-base-100 grid shrink-0 grid-cols-2 gap-0.5 rounded-md p-1"
 						>
 							<div class="bg-base-content size-1 rounded-full"></div>
 							<div class="bg-primary size-1 rounded-full"></div>

@@ -7,3 +7,10 @@ export type Alert = {
 };
 
 export type AlertType = 'success' | 'warning' | 'error' | 'info';
+
+export const AlertClassMap = new Map<AlertType, string>([
+	['info', 'alert-info'],
+	['success', 'alert-success'],
+	['warning', 'alert-warning'],
+	['error', 'alert-error']
+]);

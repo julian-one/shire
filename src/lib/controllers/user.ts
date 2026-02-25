@@ -4,7 +4,7 @@ import type { User, ListOptions, Role } from '$lib/types/user';
 export class UserController {
 	async List(options?: ListOptions): Promise<User[]> {
 		const response = await Citadel.get('/users', { params: options });
-		return response.data as User[];
+		return (response.data as User[]) ?? [];
 	}
 
 	async ById(user_id: string): Promise<User> {

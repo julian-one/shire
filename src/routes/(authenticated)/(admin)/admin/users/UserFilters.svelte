@@ -7,24 +7,21 @@
 		selected_role: string;
 		on_search: (event: Event) => void;
 		on_clear: () => void;
+		on_role_change?: () => void;
 	};
 
-	let { search = $bindable(), selected_role = $bindable(), on_search, on_clear }: Props = $props();
+	let { search = $bindable(), selected_role = $bindable(), on_search, on_clear, on_role_change }: Props = $props();
 
-	/*
-    export const RoleDisplay = new Map<Role, string>([
-      [Role.Admin, 'Admin'],
-      [Role.User, 'User']
-    ]);
-  */
 	const role_options = [
 		{ value: '', label: 'All Roles' },
-		{ value: Role.Admin, label: RoleDisplay.get(Role.Admin) || 'Admin' },
-		{ value: Role.User, label: RoleDisplay.get(Role.User) || 'User' }
+		...Object.values(Role).map((value) => ({
+			value,
+			label: RoleDisplay.get(value) || value
+		}))
 	];
 </script>
 
-<section class="card bg-base-100 border-base-content/5 border shadow-sm">
+<section class="card bg-base-100 border-base-content/10 border">
 	<div class="card-body p-4">
 		<div class="flex flex-col gap-4 sm:flex-row sm:items-center">
 			<div class="relative flex-1">
@@ -61,6 +58,7 @@
 					options={role_options}
 					bind:value={selected_role}
 					placeholder="Filter by Role"
+					onchange={on_role_change}
 				/>
 			</div>
 

@@ -3,7 +3,6 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import { AlertStore } from '$lib/stores/alert.svelte';
-	import { UserListStore } from '$lib/stores/users.svelte';
 	import { AuthController } from '$lib/controllers/auth';
 	import { UserController } from '$lib/controllers/user';
 	import { type Role } from '$lib/types/user';
@@ -19,10 +18,7 @@
 	const auth_controller = new AuthController();
 	const user_controller = new UserController();
 
-	// Synchronize store with server data
-	$effect(() => {
-		UserListStore.users = data.users;
-	});
+	let users = $derived(data.users);
 
 	let user_sessions = $state<Record<string, Session[] | null>>({});
 	let expanded_user_ids = $state<string[]>([]);
@@ -36,16 +32,8 @@
 		});
 	});
 
-	// Initialize state. We use an effect to keep it in sync with data,
-	// which is the idiomatic way to handle "initial value from prop" without warnings.
-	let search = $state('');
-	let selected_role = $state('');
-
-	// Sync local state when data changes (e.g. back button or direct URL change)
-	$effect(() => {
-		search = data.search;
-		selected_role = data.role;
-	});
+	let search = $derived(data.search);
+	let selected_role = $derived(data.role);
 
 	// Update URL when filters change
 	let debounce_timer: NodeJS.Timeout;
@@ -131,7 +119,7 @@
 	async function handle_update_role(user_id: string, role: Role) {
 		try {
 			await user_controller.UpdateRole(user_id, role);
-			UserListStore.update({ user_id, role });
+			users = users.map((u) => (u.user_id === user_id ? { ...u, role } : u));
 			AlertStore.add('Role updated successfully', 'success');
 		} catch {
 			AlertStore.add('Failed to update role', 'error');
@@ -147,16 +135,12 @@
 	function handle_clear_filters() {
 		search = '';
 		selected_role = '';
-		update_url();
+		const params = new SvelteURLSearchParams(page.url.searchParams);
+		params.delete('search');
+		params.delete('role');
+		params.delete('order_by');
+		goto(`?${params.toString()}`, { replaceState: true, keepFocus: true, noScroll: true });
 	}
-
-	// Reactive loading when role changes via Select component
-	$effect(() => {
-		// Only update URL if the change came from the UI (different from current data)
-		if (selected_role !== data.role && selected_role !== '') {
-			update_url();
-		}
-	});
 
 	function toggle_sort(column: string, event: MouseEvent) {
 		const isShift = event.shiftKey;
@@ -189,17 +173,18 @@
 </script>
 
 <div class="space-y-6">
-	<UserHeader total_users={UserListStore.users.length} />
+	<UserHeader total_users={users.length} />
 
 	<UserFilters
 		bind:search
 		bind:selected_role
 		on_search={handle_search}
 		on_clear={handle_clear_filters}
+		on_role_change={() => update_url()}
 	/>
 
 	{#if data.error}
-		<div class="alert alert-error shadow-sm">
+		<div class="alert alert-error">
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				class="h-6 w-6 shrink-0 stroke-current"
@@ -218,7 +203,7 @@
 	{/if}
 
 	<UserTable
-		users={UserListStore.users}
+		{users}
 		{expanded_user_ids}
 		{sort_criteria}
 		{user_sessions}

@@ -27,8 +27,14 @@ export const handle: Handle = async ({ event, resolve }) => {
 			}
 		}
 
-		// authentication check for routes that require authentication
-		if (event.route.id?.includes('(authenticated)') && !event.locals.session) {
+		// authentication check: redirect unauthenticated users unless the route is public.
+		// this prevents route enumeration by returning the same redirect for both
+		// non-existent routes and authenticated routes when not logged in.
+		const isPublicRoute =
+			event.route.id?.includes('(unauthenticated)') ||
+			event.route.id?.includes('(public)') ||
+			event.url.pathname === '/';
+		if (!event.locals.session && !isPublicRoute) {
 			redirect(302, '/login');
 		}
 
