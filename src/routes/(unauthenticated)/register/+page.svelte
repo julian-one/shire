@@ -22,6 +22,8 @@
 					return async ({ result }: { result: ActionResult }) => {
 						if (result.type === 'failure') {
 							AlertStore.add(result.data?.message, 'error');
+						} else if (result.type === 'redirect') {
+							AlertStore.add('Account created successfully', 'success');
 						}
 						await applyAction(result);
 						loading = false;

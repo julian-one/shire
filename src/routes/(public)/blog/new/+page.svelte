@@ -112,6 +112,9 @@
 						class="toggle toggle-primary"
 						id="visibility"
 						bind:checked={is_public}
+						onchange={() => {
+							if (is_public) AlertStore.add('Public posts are visible to everyone', 'warning');
+						}}
 						disabled={PostStore.loading}
 					/>
 				</label>

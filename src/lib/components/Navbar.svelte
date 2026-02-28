@@ -1,6 +1,9 @@
 <script lang="ts">
+	import { applyAction, enhance } from '$app/forms';
+	import { AlertStore } from '$lib/stores/alert.svelte';
 	import type { Session } from '$lib/types/session';
 	import type { User } from '$lib/types/user';
+	import type { ActionResult } from '@sveltejs/kit';
 	import ThemeSwitcher from '$lib/components/ThemeSwitcher.svelte';
 
 	let {
@@ -25,6 +28,14 @@
 			<form
 				action="/logout"
 				method="POST"
+				use:enhance={() => {
+					return async ({ result }: { result: ActionResult }) => {
+						if (result.type === 'redirect') {
+							AlertStore.add('Logged out successfully', 'success');
+						}
+						await applyAction(result);
+					};
+				}}
 			>
 				<button type="submit">Logout</button>
 			</form>

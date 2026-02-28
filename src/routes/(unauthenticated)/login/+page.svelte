@@ -20,6 +20,8 @@
 					return async ({ result }: { result: ActionResult }) => {
 						if (result.type === 'failure') {
 							AlertStore.add(result.data?.message, 'error');
+						} else if (result.type === 'redirect') {
+							AlertStore.add('Logged in successfully', 'success');
 						}
 						await applyAction(result);
 						loading = false;

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto, invalidateAll } from '$app/navigation';
+	import { AlertStore } from '$lib/stores/alert.svelte';
 	import { PostStore } from '$lib/stores/post.svelte';
 	import Editor from '$lib/components/Editor.svelte';
 
@@ -144,6 +145,9 @@
 							class="toggle toggle-primary"
 							id="visibility"
 							bind:checked={is_public}
+							onchange={() => {
+								if (is_public) AlertStore.add('Public posts are visible to everyone', 'warning');
+							}}
 							disabled={PostStore.loading}
 						/>
 					</label>

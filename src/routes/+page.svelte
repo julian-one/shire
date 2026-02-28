@@ -39,7 +39,7 @@
 	<div class="mb-8">
 		<div
 			class="hero rounded-box h-80 md:h-96 lg:h-128"
-			style="background-image: url(/images/shire.png);"
+			style="background-image: url(/images/shire.webp);"
 		>
 			<div class="hero-overlay rounded-box bg-opacity-60"></div>
 			<div class="hero-content text-neutral-content h-full w-full items-end justify-start p-8 text-left md:p-12">
