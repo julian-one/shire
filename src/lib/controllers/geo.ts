@@ -1,10 +1,11 @@
 import type { Location } from '$lib/types/geo';
 
 export class GeoController {
-	async Fetch(): Promise<Location> {
+	async Fetch(ip?: string): Promise<Location> {
 		let location = {} as Location;
 
-		const response = await fetch('https://get.geojs.io/v1/ip/geo.json');
+		const url = ip ? `https://get.geojs.io/v1/ip/geo/${ip}.json` : 'https://get.geojs.io/v1/ip/geo.json';
+		const response = await fetch(url);
 		const data = await response.json();
 
 		if (data && data.latitude && data.longitude) {

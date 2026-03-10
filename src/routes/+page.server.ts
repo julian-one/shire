@@ -2,11 +2,12 @@ import type { PageServerLoad } from './$types';
 import { GeoController } from '$lib/controllers/geo';
 import { MeteoController } from '$lib/controllers/meteo';
 
-export const load: PageServerLoad = async () => {
+export const load: PageServerLoad = async (event) => {
 	const geo_controller = new GeoController();
 	const meteo_controller = new MeteoController();
 
-	const locationPromise = geo_controller.Fetch().catch(() => null);
+	const clientIp = event.getClientAddress();
+	const locationPromise = geo_controller.Fetch(clientIp).catch(() => null);
 
 	const weatherPromise = locationPromise.then(async (location) => {
 		if (location && location.latitude !== undefined) {
