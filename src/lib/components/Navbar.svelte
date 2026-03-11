@@ -53,7 +53,7 @@
 	<div class="flex flex-1 items-center gap-2">
 		<a
 			class="btn btn-ghost text-xl"
-			href="/">jroberts</a
+			href="/">julian-one</a
 		>
 		<ThemeSwitcher bind:theme />
 	</div>
