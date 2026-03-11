@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { untrack } from 'svelte';
 	import { RecipeStore } from '$lib/stores/recipe.svelte';
 	import { Cuisine, Category, Unit, type Ingredient, type Recipe } from '$lib/types/recipe';
 	import Select from '$lib/components/Select.svelte';
 
 	let { data } = $props();
-	let original_recipe = $derived(data.recipe as Recipe);
+	const original_recipe = untrack(() => data.recipe as Recipe);
 
 	let title = $state(original_recipe.title);
 	let description = $state(original_recipe.description ?? '');
@@ -14,9 +15,7 @@
 	let ingredients = $state<Ingredient[]>(JSON.parse(JSON.stringify(original_recipe.ingredients)));
 	let instructions = $state<string[]>([...original_recipe.instructions]);
 	let cook_time = $state(
-		original_recipe.cook_time
-			? Math.round(original_recipe.cook_time / (60 * 1000 * 1000 * 1000)).toString()
-			: ''
+		original_recipe.cook_time ? Math.round(original_recipe.cook_time / (60 * 1000 * 1000 * 1000)).toString() : ''
 	);
 	let serves = $state(original_recipe.serves ? original_recipe.serves.toString() : '');
 	let cuisine = $state<Cuisine | ''>(original_recipe.cuisine ?? '');
@@ -93,13 +92,19 @@
 
 	<h1 class="mt-2 text-3xl font-black tracking-tight md:text-4xl">Edit Recipe</h1>
 
-	<form onsubmit={handle_submit} class="mt-8 space-y-10">
+	<form
+		onsubmit={handle_submit}
+		class="mt-8 space-y-10"
+	>
 		<!-- Basics -->
 		<section class="space-y-6">
 			<h2 class="text-lg font-bold tracking-tight">Basics</h2>
 
 			<div>
-				<label for="title" class="text-sm font-bold tracking-wide uppercase opacity-60">
+				<label
+					for="title"
+					class="text-sm font-bold tracking-wide uppercase opacity-60"
+				>
 					Title
 				</label>
 				<input
@@ -113,7 +118,10 @@
 			</div>
 
 			<div>
-				<label for="description" class="text-sm font-bold tracking-wide uppercase opacity-60">
+				<label
+					for="description"
+					class="text-sm font-bold tracking-wide uppercase opacity-60"
+				>
 					Description
 				</label>
 				<textarea
@@ -127,7 +135,10 @@
 
 			<div class="grid grid-cols-1 gap-6 md:grid-cols-2">
 				<div>
-					<label for="photo_url" class="text-sm font-bold tracking-wide uppercase opacity-60">
+					<label
+						for="photo_url"
+						class="text-sm font-bold tracking-wide uppercase opacity-60"
+					>
 						Photo URL
 					</label>
 					<input
@@ -139,7 +150,10 @@
 					/>
 				</div>
 				<div>
-					<label for="source_url" class="text-sm font-bold tracking-wide uppercase opacity-60">
+					<label
+						for="source_url"
+						class="text-sm font-bold tracking-wide uppercase opacity-60"
+					>
 						Source URL
 					</label>
 					<input
@@ -170,7 +184,10 @@
 					/>
 				</div>
 				<div>
-					<label for="serves" class="text-sm font-bold tracking-wide uppercase opacity-60">
+					<label
+						for="serves"
+						class="text-sm font-bold tracking-wide uppercase opacity-60"
+					>
 						Serves (people)
 					</label>
 					<input
@@ -189,7 +206,10 @@
 						Cuisine
 					</label>
 					<div class="mt-2">
-						<Select options={cuisine_options} bind:value={cuisine} />
+						<Select
+							options={cuisine_options}
+							bind:value={cuisine}
+						/>
 					</div>
 				</div>
 				<div>
@@ -200,7 +220,10 @@
 						Category
 					</label>
 					<div class="mt-2">
-						<Select options={category_options} bind:value={category} />
+						<Select
+							options={category_options}
+							bind:value={category}
+						/>
 					</div>
 				</div>
 			</div>
@@ -212,14 +235,16 @@
 		<section class="space-y-4">
 			<div class="flex items-center justify-between">
 				<h2 class="text-lg font-bold tracking-tight">Ingredients</h2>
-				<button type="button" class="btn btn-soft btn-sm" onclick={add_ingredient}>
+				<button
+					type="button"
+					class="btn btn-soft btn-sm"
+					onclick={add_ingredient}
+				>
 					+ Add
 				</button>
 			</div>
 
-			<div
-				class="hidden grid-cols-12 gap-2 text-xs font-bold uppercase opacity-40 md:grid"
-			>
+			<div class="hidden grid-cols-12 gap-2 text-xs font-bold uppercase opacity-40 md:grid">
 				<div class="col-span-2">Amount</div>
 				<div class="col-span-3">Unit</div>
 				<div class="col-span-6">Item</div>
@@ -227,7 +252,7 @@
 			</div>
 
 			<div class="space-y-3">
-				{#each ingredients as _, index}
+				{#each ingredients as ingredient, index (index)}
 					<div class="grid grid-cols-1 gap-2 md:grid-cols-12">
 						<div class="col-span-2">
 							<input
@@ -235,18 +260,21 @@
 								step="any"
 								class="input w-full"
 								placeholder="Amount"
-								bind:value={ingredients[index].amount}
+								bind:value={ingredient.amount}
 							/>
 						</div>
 						<div class="col-span-3">
-							<Select options={unit_options} bind:value={ingredients[index].unit} />
+							<Select
+								options={unit_options}
+								bind:value={ingredient.unit}
+							/>
 						</div>
 						<div class="col-span-6">
 							<input
 								type="text"
 								class="input w-full"
 								placeholder="Item (e.g. Flour)"
-								bind:value={ingredients[index].item}
+								bind:value={ingredient.item}
 							/>
 						</div>
 						<div class="col-span-1 flex justify-end">
@@ -285,16 +313,20 @@
 		<section class="space-y-4">
 			<div class="flex items-center justify-between">
 				<h2 class="text-lg font-bold tracking-tight">Instructions</h2>
-				<button type="button" class="btn btn-soft btn-sm" onclick={add_instruction}>
+				<button
+					type="button"
+					class="btn btn-soft btn-sm"
+					onclick={add_instruction}
+				>
 					+ Add
 				</button>
 			</div>
 
 			<div class="space-y-3">
-				{#each instructions as _, index}
+				{#each instructions.map((_, i) => i) as index (index)}
 					<div class="flex gap-2">
 						<span
-							class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-base-200 text-sm font-bold"
+							class="bg-base-200 flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-sm font-bold"
 						>
 							{index + 1}
 						</span>
@@ -336,7 +368,10 @@
 
 		<!-- Actions -->
 		<div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-			<a href="/recipes/{original_recipe.recipe_id}" class="btn btn-ghost">Cancel</a>
+			<a
+				href="/recipes/{original_recipe.recipe_id}"
+				class="btn btn-ghost">Cancel</a
+			>
 			<button
 				type="submit"
 				class="btn btn-primary"

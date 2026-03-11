@@ -1,5 +1,5 @@
 import { Citadel } from '$lib/controllers/citadel';
-import type { ListOptions, CreateRequest, UpdateRequest, Recipe, Ingredient } from '$lib/types/recipe';
+import type { ListOptions, CreateRequest, UpdateRequest, Recipe } from '$lib/types/recipe';
 
 export class RecipeController {
 	async Create(request: CreateRequest): Promise<string> {

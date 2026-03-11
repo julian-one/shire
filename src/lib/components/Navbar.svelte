@@ -58,7 +58,6 @@
 		<ThemeSwitcher bind:theme />
 	</div>
 	<div class="flex flex-none items-center gap-2">
-
 		<!-- Desktop menu -->
 		<ul class="menu menu-horizontal hidden px-1 md:flex">
 			{@render navLinks()}

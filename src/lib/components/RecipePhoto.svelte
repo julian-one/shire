@@ -16,14 +16,11 @@
 
 {#if src && !has_error}
 	<div
-		class="overflow-hidden bg-base-200/50 border-base-content/10"
+		class="bg-base-200/50 border-base-content/10 overflow-hidden"
 		class:rounded-xl={is_detail}
 		class:sm:rounded-2xl={is_detail}
 		class:border={is_detail}
 		class:border-b={!is_detail}
-		class:mt-6={is_detail}
-		class:-mx-4={is_detail}
-		class:sm:mx-0={is_detail}
 	>
 		<a
 			href={is_detail ? src : `/recipes/${recipe_id}`}
@@ -36,13 +33,11 @@
 				{alt}
 				loading="lazy"
 				onerror={() => (has_error = true)}
-				class="w-full mx-auto"
+				class="mx-auto w-full object-cover object-center"
 				class:h-64={!is_detail}
 				class:md:h-80={!is_detail}
-				class:object-cover={!is_detail}
-				class:object-center={!is_detail}
-				class:max-h-[75vh]={is_detail}
-				class:object-contain={is_detail}
+				class:h-48={is_detail}
+				class:md:h-64={is_detail}
 			/>
 		</a>
 	</div>

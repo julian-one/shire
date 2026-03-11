@@ -90,4 +90,6 @@ export type UpdateRequest = {
 export type ListOptions = {
 	search?: string;
 	order_by?: string;
+	cuisine?: string;
+	category?: string;
 };
