@@ -12,7 +12,7 @@
 </script>
 
 <div
-	class="dropdown dropdown-end tooltip tooltip-bottom"
+	class="dropdown tooltip tooltip-bottom"
 	data-tip="Change Theme"
 >
 	<div

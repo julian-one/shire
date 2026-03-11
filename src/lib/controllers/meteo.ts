@@ -59,17 +59,25 @@ export class MeteoController {
 		};
 		return descMap[code] || 'Unknown';
 	}
-	async Fetch(latitude: number, longitude: number): Promise<Weather> {
+	async Fetch(latitude: number, longitude: number): Promise<Weather | null> {
 		const response = await fetch(
 			`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code&temperature_unit=fahrenheit&timezone=auto`
 		);
+
+		if (!response.ok) {
+			return null;
+		}
+
 		const data = await response.json();
 
-		const weather: Weather = {
+		if (!data.current) {
+			return null;
+		}
+
+		return {
 			temperature: Math.round(data.current.temperature_2m),
 			condition: this.getCondition(data.current.weather_code),
 			icon: this.getIcon(data.current.weather_code)
 		};
-		return weather;
 	}
 }

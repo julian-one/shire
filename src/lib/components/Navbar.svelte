@@ -22,6 +22,7 @@
 		{#if user?.role == 'admin'}
 			<li><a href="/admin">Admin</a></li>
 		{/if}
+		<li><a href="/recipes">Recipes</a></li>
 		<li><a href="/blog">Blog</a></li>
 		<li><a href="/profile">Profile</a></li>
 		<li>
@@ -41,6 +42,7 @@
 			</form>
 		</li>
 	{:else}
+		<li><a href="/recipes">Recipes</a></li>
 		<li><a href="/blog">Blog</a></li>
 		<li><a href="/login">Login</a></li>
 		<li><a href="/register">Register</a></li>
@@ -48,15 +50,14 @@
 {/snippet}
 
 <div class="navbar bg-base-100 border-base-content/10 border-b">
-	<div class="flex-1">
+	<div class="flex flex-1 items-center gap-2">
 		<a
 			class="btn btn-ghost text-xl"
 			href="/">jroberts</a
 		>
+		<ThemeSwitcher bind:theme />
 	</div>
 	<div class="flex flex-none items-center gap-2">
-		<ThemeSwitcher bind:theme />
-
 		<!-- Desktop menu -->
 		<ul class="menu menu-horizontal hidden px-1 md:flex">
 			{@render navLinks()}
