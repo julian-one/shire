@@ -2,8 +2,8 @@ import { Citadel } from '$lib/controllers/citadel';
 import type { Session } from '$lib/types/session';
 
 export class AuthController {
-	async Login(email: string, password: string): Promise<Session> {
-		const credentials = `${email}:${password}`;
+	async Login(identifier: string, password: string): Promise<Session> {
+		const credentials = `${identifier}:${password}`;
 		const base64Credentials = btoa(credentials);
 
 		const response = await Citadel.post('/login', null, {

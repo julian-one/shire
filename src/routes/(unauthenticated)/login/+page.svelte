@@ -3,7 +3,7 @@
 	import { AlertStore } from '$lib/stores/alert.svelte';
 	import type { ActionResult } from '@sveltejs/kit';
 
-	let email = $state('');
+	let identifier = $state('');
 	let password = $state('');
 	let loading = $state(false);
 </script>
@@ -32,20 +32,18 @@
 					<legend class="sr-only">Login Details</legend>
 
 					<label
-						for="email"
-						class="fieldset-label text-base">Email</label
+						for="identifier"
+						class="fieldset-label text-base">Email or Username</label
 					>
 					<input
-						type="email"
-						class="input validator w-full"
-						placeholder="name@example.com"
-						id="email"
-						name="email"
-						bind:value={email}
+						type="text"
+						class="input w-full"
+						id="identifier"
+						name="identifier"
+						bind:value={identifier}
 						required
 						disabled={loading}
 					/>
-					<div class="validator-hint hidden">Please enter a valid email address</div>
 
 					<label
 						for="password"
@@ -54,7 +52,6 @@
 					<input
 						type="password"
 						class="input w-full"
-						placeholder="••••••••"
 						id="password"
 						name="password"
 						bind:value={password}

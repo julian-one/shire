@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
 	import { page } from '$app/state';
 	import { AlertStore } from '$lib/stores/alert.svelte';
 	import { PostStore } from '$lib/stores/post.svelte';
@@ -20,6 +20,7 @@
 
 		const post_id = await PostStore.create(user_id, title, content, is_public);
 		if (post_id) {
+			await invalidateAll();
 			goto('/blog');
 		}
 	}
