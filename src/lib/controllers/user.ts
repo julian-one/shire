@@ -21,4 +21,8 @@ export class UserController {
 		const response = await Citadel.patch(`/users/${user_id}/role`, { role });
 		return response.data as User;
 	}
+
+	async UpdatePassword(user_id: string, new_password: string): Promise<void> {
+		await Citadel.patch(`/users/${user_id}/password`, { new_password });
+	}
 }

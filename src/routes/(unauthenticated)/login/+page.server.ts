@@ -11,19 +11,19 @@ export const load: PageServerLoad = async ({ locals }) => {
 export const actions: Actions = {
 	default: async ({ request, cookies }) => {
 		const data = await request.formData();
-		const email = data.get('email') as string;
+		const identifier = data.get('identifier') as string;
 		const password = data.get('password') as string;
 
-		if (!email || !password) {
+		if (!identifier || !password) {
 			return fail(400, {
-				email,
-				message: 'Missing email or password'
+				identifier,
+				message: 'Missing email/username or password'
 			});
 		}
 
 		const auth = new AuthController();
 		try {
-			const session = await auth.Login(email, password);
+			const session = await auth.Login(identifier, password);
 			cookies.set('TOKEN', session.session_id, {
 				path: '/',
 				httpOnly: true,
@@ -33,7 +33,7 @@ export const actions: Actions = {
 			});
 		} catch {
 			return fail(400, {
-				email,
+				identifier,
 				message: 'Invalid credentials'
 			});
 		}

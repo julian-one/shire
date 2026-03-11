@@ -37,6 +37,22 @@ class SingleUser {
 			this.loading = false;
 		}
 	}
+
+	async update_password(user_id: string, new_password: string): Promise<boolean> {
+		if (!user_id) return false;
+
+		this.loading = true;
+		try {
+			await this.user_controller.UpdatePassword(user_id, new_password);
+			AlertStore.add('Password updated successfully', 'success');
+			return true;
+		} catch {
+			AlertStore.add('Failed to update password', 'error');
+			return false;
+		} finally {
+			this.loading = false;
+		}
+	}
 }
 
 export const UserStore = new SingleUser();

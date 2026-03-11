@@ -10,6 +10,10 @@
 	let user = $state<User>({} as User);
 	let editing = $state(false);
 
+	let changing_password = $state(false);
+	let new_password = $state('');
+	let confirm_password = $state('');
+
 	async function handle_update() {
 		if (!user.username || user.username === current.username) {
 			editing = false;
@@ -26,6 +30,17 @@
 	function handle_edit() {
 		user = { ...current };
 		editing = true;
+	}
+
+	async function handle_password_update() {
+		if (!new_password || new_password !== confirm_password) return;
+
+		const success = await UserStore.update_password(current.user_id, new_password);
+		if (success) {
+			changing_password = false;
+			new_password = '';
+			confirm_password = '';
+		}
 	}
 </script>
 
@@ -126,14 +141,104 @@
 									</button>
 								{/if}
 							</div>
+						</div>
+					</div>
 
-							<div class="divider my-0 opacity-50"></div>
+					<!-- Security Section -->
+					<div class="space-y-6">
+						<div class="flex items-center gap-2">
+							<span class="bg-warning h-1.5 w-1.5 rounded-full"></span>
+							<h3 class="text-base-content/40 text-xs font-bold tracking-widest uppercase"> Security </h3>
+						</div>
 
-							<div class="flex items-center justify-between gap-4">
-								<div class="space-y-1">
-									<div class="text-base-content/40 text-xs font-bold uppercase">Email Address</div>
-									<div class="text-lg font-semibold">{current.email}</div>
-								</div>
+						<div class="grid gap-6">
+							<div class="flex items-start justify-between gap-4">
+								{#if changing_password}
+									<div class="w-full space-y-4">
+										<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+											<div class="form-control">
+												<label
+													class="label pt-0"
+													for="new-password-input"
+												>
+													<span class="label-text text-base-content/40 text-xs font-bold uppercase">New Password</span>
+												</label>
+												<input
+													id="new-password-input"
+													type="password"
+													class="input input-bordered validator w-full"
+													required
+													placeholder="New password"
+													minlength="8"
+													bind:value={new_password}
+												/>
+												<p class="validator-hint">Must be at least 8 characters</p>
+											</div>
+											<div class="form-control">
+												<label
+													class="label pt-0"
+													for="confirm-password-input"
+												>
+													<span class="label-text text-base-content/40 text-xs font-bold uppercase"
+														>Confirm Password</span
+													>
+												</label>
+												<input
+													id="confirm-password-input"
+													type="password"
+													class="input input-bordered w-full"
+													required
+													placeholder="Confirm password"
+													minlength="8"
+													bind:value={confirm_password}
+												/>
+												{#if confirm_password && new_password !== confirm_password}
+													<p class="text-error mt-1 text-xs">Passwords do not match</p>
+												{/if}
+											</div>
+										</div>
+										<div class="flex items-center justify-end gap-2">
+											<button
+												type="button"
+												class="btn btn-ghost btn-sm"
+												onclick={() => {
+													changing_password = false;
+													new_password = '';
+													confirm_password = '';
+												}}
+												disabled={UserStore.loading}
+											>
+												Cancel
+											</button>
+											<button
+												type="button"
+												class="btn btn-primary btn-sm px-6"
+												disabled={UserStore.loading ||
+													!new_password ||
+													new_password.length < 8 ||
+													new_password !== confirm_password}
+												onclick={handle_password_update}
+											>
+												{#if UserStore.loading}
+													<span class="loading loading-spinner loading-xs"></span>
+												{/if}
+												Save
+											</button>
+										</div>
+									</div>
+								{:else}
+									<div class="space-y-1">
+										<div class="text-base-content/40 text-xs font-bold uppercase">Password</div>
+										<div class="text-lg font-semibold">••••••••</div>
+									</div>
+									<button
+										type="button"
+										class="btn btn-ghost btn-outline btn-sm"
+										onclick={() => (changing_password = true)}
+									>
+										Change
+									</button>
+								{/if}
 							</div>
 						</div>
 					</div>

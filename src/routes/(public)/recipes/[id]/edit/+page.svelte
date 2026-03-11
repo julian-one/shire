@@ -176,7 +176,6 @@
 					</label>
 					<input
 						type="number"
-						step="15"
 						class="input mt-2 w-full"
 						placeholder="e.g. 45"
 						id="cook_time"
@@ -257,7 +256,6 @@
 						<div class="col-span-2">
 							<input
 								type="number"
-								step="any"
 								class="input w-full"
 								placeholder="Amount"
 								bind:value={ingredient.amount}

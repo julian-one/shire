@@ -449,11 +449,15 @@
 			</button>
 		</div>
 	{/if}
-	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div
 		bind:this={element}
 		class="prose prose-sm min-h-48 max-w-none cursor-text px-2 [&>.ProseMirror]:min-h-48 [&>.ProseMirror]:py-2 [&>.ProseMirror]:outline-none"
 		onclick={() => editor?.commands.focus()}
+		onkeydown={(e) => {
+			if (e.key === 'Tab' && !disabled && editor) {
+				e.preventDefault();
+			}
+		}}
 	></div>
 </div>
