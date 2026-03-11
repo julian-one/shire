@@ -10,7 +10,7 @@ export const load: PageServerLoad = async (event) => {
 	const locationPromise = geo_controller.Fetch(clientIp).catch(() => null);
 
 	const weatherPromise = locationPromise.then(async (location) => {
-		if (location && location.latitude !== undefined) {
+		if (location) {
 			return await meteo_controller.Fetch(location.latitude, location.longitude).catch(() => null);
 		}
 		return null;
