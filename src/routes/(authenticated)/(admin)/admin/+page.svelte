@@ -9,6 +9,7 @@
 	<nav>
 		<ul class="menu bg-base-100 rounded-box border-base-content/10 w-full border p-2">
 			<li><a href="/admin/users">Users</a></li>
+			<li><a href="/admin/logs">Logs</a></li>
 		</ul>
 	</nav>
 </div>
