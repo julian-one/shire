@@ -3,7 +3,7 @@ import { error, redirect } from '@sveltejs/kit';
 import { RecipeController } from '$lib/controllers/recipe';
 
 export const load: PageServerLoad = async ({ params, locals }) => {
-	if (!locals.session) {
+	if (!(await locals.getSession())) {
 		redirect(302, '/login');
 	}
 
@@ -11,7 +11,8 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 
 	try {
 		const recipe = await controller.ById(params.id);
-		if (locals.user?.user_id !== recipe.user_id) {
+		const user = await locals.getUser();
+		if (user?.user_id !== recipe.user_id) {
 			error(403, 'Forbidden');
 		}
 		return { recipe };

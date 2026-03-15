@@ -11,8 +11,8 @@
 		user,
 		theme = $bindable()
 	} = $props<{
-		session: Session | null;
-		user: User | null;
+		session?: Session;
+		user?: User;
 		theme: string;
 	}>();
 </script>

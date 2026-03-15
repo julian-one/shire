@@ -11,7 +11,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 	const options: ListOptions = {
 		search,
 		order_by,
-		...(locals.session ? {} : { public: true })
+		...((await locals.getSession()) ? {} : { public: true })
 	};
 
 	try {

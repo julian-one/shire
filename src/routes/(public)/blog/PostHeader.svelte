@@ -3,7 +3,7 @@
 
 	type Props = {
 		total_posts: number;
-		session: Session | null;
+		session?: Session;
 		search: string;
 		order_by: string;
 		on_search: (event: Event) => void;

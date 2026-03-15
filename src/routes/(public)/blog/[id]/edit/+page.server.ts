@@ -3,7 +3,7 @@ import { error, redirect } from '@sveltejs/kit';
 import { PostController } from '$lib/controllers/post';
 
 export const load: PageServerLoad = async ({ params, locals }) => {
-	if (!locals.session) {
+	if (!(await locals.getSession())) {
 		redirect(302, '/login');
 	}
 
@@ -11,7 +11,8 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 
 	try {
 		const post = await post_controller.ById(params.id);
-		if (locals.user?.user_id !== post.user_id) {
+		const user = await locals.getUser();
+		if (user?.user_id !== post.user_id) {
 			error(403, 'Forbidden');
 		}
 		return { post };

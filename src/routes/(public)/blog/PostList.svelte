@@ -6,8 +6,8 @@
 
 	type Props = {
 		posts: ListablePost[];
-		session: Session | null;
-		user: User | null;
+		session?: Session;
+		user?: User;
 	};
 
 	let { posts, session, user }: Props = $props();

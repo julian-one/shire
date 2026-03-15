@@ -7,7 +7,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 
 	try {
 		const post = await post_controller.ById(params.id);
-		if (!locals.session && !post.public) {
+		if (!(await locals.getSession()) && !post.public) {
 			error(404, 'Not found');
 		}
 		return { post };

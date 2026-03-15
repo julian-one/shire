@@ -3,7 +3,7 @@ import type { Actions, PageServerLoad } from './$types';
 import { AuthController } from '$lib/controllers/auth';
 
 export const load: PageServerLoad = async ({ locals }) => {
-	if (locals.session) {
+	if (await locals.getSession()) {
 		redirect(303, '/profile');
 	}
 };

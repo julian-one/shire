@@ -1,10 +1,9 @@
 <script lang="ts">
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
 	import { goto } from '$app/navigation';
+	import { deserialize } from '$app/forms';
 	import { page } from '$app/state';
 	import { AlertStore } from '$lib/stores/alert.svelte';
-	import { AuthController } from '$lib/controllers/auth';
-	import { UserController } from '$lib/controllers/user';
 	import { type Role } from '$lib/types/user';
 	import type { Session } from '$lib/types/session';
 	import type { OrderBy } from '$lib/types/database';
@@ -14,9 +13,6 @@
 	import UserTable from './UserTable.svelte';
 
 	let { data } = $props();
-
-	const auth_controller = new AuthController();
-	const user_controller = new UserController();
 
 	let users = $derived(data.users);
 
@@ -53,10 +49,19 @@
 	}
 
 	async function load_user_session(user_id: string) {
+		const form = new FormData();
+		form.set('user_id', user_id);
+
 		try {
-			const sessions = await auth_controller.ListSessions(user_id);
-			// If sessions is empty, we store null to indicate "no sessions" (vs undefined for "loading")
-			user_sessions[user_id] = sessions && sessions.length > 0 ? sessions : null;
+			const response = await fetch('?/list_sessions', { method: 'POST', body: form });
+			const result = deserialize(await response.text());
+			if (result.type === 'success' && result.data) {
+				const sessions = result.data.sessions as Session[];
+				user_sessions[user_id] = sessions && sessions.length > 0 ? sessions : null;
+			} else {
+				AlertStore.add('Failed to load user sessions', 'error');
+				user_sessions[user_id] = null;
+			}
 		} catch {
 			AlertStore.add('Failed to load user sessions', 'error');
 			user_sessions[user_id] = null;
@@ -78,18 +83,25 @@
 		if (!confirm('Are you sure you want to revoke this session?')) return;
 		if (!session_id) return;
 
+		const form = new FormData();
+		form.set('session_id', session_id);
+
 		try {
-			await auth_controller.DeleteSession(session_id);
+			const response = await fetch('?/revoke_session', { method: 'POST', body: form });
+			const result = deserialize(await response.text());
 
-			// If we revoked our own session, redirect to login
-			if (session_id === data.session?.session_id) {
-				goto('/login');
-				return;
+			if (result.type === 'success') {
+				// If we revoked our own session, redirect to login
+				if (session_id === data.session?.session_id) {
+					goto('/login');
+					return;
+				}
+
+				AlertStore.add('Session revoked successfully', 'success');
+				expanded_user_ids.forEach((user_id) => load_user_session(user_id));
+			} else {
+				AlertStore.add('Failed to revoke session', 'error');
 			}
-
-			AlertStore.add('Session revoked successfully', 'success');
-			// Refresh sessions for all expanded users
-			expanded_user_ids.forEach((user_id) => load_user_session(user_id));
 		} catch {
 			AlertStore.add('Failed to revoke session', 'error');
 		}
@@ -99,28 +111,45 @@
 		if (!confirm('Are you sure you want to revoke all sessions for this user?')) return;
 		if (!user_id) return;
 
+		const form = new FormData();
+		form.set('user_id', user_id);
+
 		try {
-			await auth_controller.DeleteAllSessions(user_id);
+			const response = await fetch('?/revoke_all_sessions', { method: 'POST', body: form });
+			const result = deserialize(await response.text());
 
-			// If we revoked our own sessions, redirect to login
-			if (user_id === data.user?.user_id) {
-				goto('/login');
-				return;
+			if (result.type === 'success') {
+				// If we revoked our own sessions, redirect to login
+				if (user_id === data.user?.user_id) {
+					goto('/login');
+					return;
+				}
+
+				AlertStore.add('All sessions revoked successfully', 'success');
+				load_user_session(user_id);
+			} else {
+				AlertStore.add('Failed to revoke all sessions', 'error');
 			}
-
-			AlertStore.add('All sessions revoked successfully', 'success');
-			// Refresh sessions for the user
-			load_user_session(user_id);
 		} catch {
 			AlertStore.add('Failed to revoke all sessions', 'error');
 		}
 	}
 
 	async function handle_update_role(user_id: string, role: Role) {
+		const form = new FormData();
+		form.set('user_id', user_id);
+		form.set('role', role);
+
 		try {
-			await user_controller.UpdateRole(user_id, role);
-			users = users.map((u) => (u.user_id === user_id ? { ...u, role } : u));
-			AlertStore.add('Role updated successfully', 'success');
+			const response = await fetch('?/update_role', { method: 'POST', body: form });
+			const result = deserialize(await response.text());
+
+			if (result.type === 'success') {
+				users = users.map((u) => (u.user_id === user_id ? { ...u, role } : u));
+				AlertStore.add('Role updated successfully', 'success');
+			} else {
+				AlertStore.add('Failed to update role', 'error');
+			}
 		} catch {
 			AlertStore.add('Failed to update role', 'error');
 		}
