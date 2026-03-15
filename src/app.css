@@ -7,10 +7,10 @@
 
 @font-face {
 	font-family: 'Comic Code';
-	src: url('/ComicCodeLigaturesNerdFont.otf') format('opentype');
+	src: url('/ComicCodeLigaturesNerdFont.woff2') format('woff2');
 	font-weight: normal;
 	font-style: normal;
-	font-display: swap;
+	font-display: block;
 }
 
 body {
