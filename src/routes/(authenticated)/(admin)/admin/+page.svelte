@@ -1,7 +1,7 @@
-<div class="space-y-8">
+<div class="space-y-6 pb-8 md:pb-12">
 	<header>
 		<h1 class="text-2xl font-black tracking-tight md:text-3xl lg:text-4xl">Dashboard</h1>
-		<p class="text-base-content/60 mt-2">More coming soon!</p>
+		<p class="text-base-content/60 mt-2 text-sm md:text-base">More coming soon!</p>
 	</header>
 
 	<div class="divider"></div>

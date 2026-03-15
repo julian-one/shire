@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
-	import { goto, invalidateAll } from '$app/navigation';
+	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
-	import { RecipeStore } from '$lib/stores/recipe.svelte';
 	import Select from '$lib/components/Select.svelte';
 	import type { Recipe } from '$lib/types/recipe';
 	import { Cuisine, Category } from '$lib/types/recipe';
@@ -10,7 +9,6 @@
 	let { data } = $props();
 	let recipes = $derived(data.recipes as Recipe[]);
 	let session = $derived(page.data.session);
-	let user = $derived(page.data.user);
 
 	let search = $derived(data.search);
 	let order_by = $derived(data.order_by);
@@ -73,15 +71,6 @@
 		cuisine = '';
 		category = '';
 		update_url();
-	}
-
-	async function delete_recipe(id: string) {
-		if (confirm('Are you sure you want to delete this recipe?')) {
-			const success = await RecipeStore.delete(id);
-			if (success) {
-				invalidateAll();
-			}
-		}
 	}
 </script>
 
@@ -202,10 +191,12 @@
 								<div class="flex items-center gap-3">
 									{#if recipe.photo_url}
 										<div class="avatar shrink-0">
-											<div class="mask mask-squircle h-12 w-12">
+											<div class="skeleton mask mask-squircle h-12 w-12">
 												<img
 													src={recipe.photo_url}
 													alt={recipe.title}
+													class="h-full w-full object-cover"
+													onload={(e) => e.currentTarget.parentElement?.classList.remove('skeleton')}
 												/>
 											</div>
 										</div>
@@ -231,50 +222,6 @@
 									{/if}
 									<div class="font-bold">{recipe.title}</div>
 								</div>
-							</td>
-							<td class="w-12 text-right">
-								{#if user?.user_id === recipe.user_id}
-									<!-- svelte-ignore a11y_click_events_have_key_events -->
-									<div
-										class="dropdown dropdown-end"
-										onclick={(e) => e.stopPropagation()}
-										role="menu"
-										tabindex="-1"
-									>
-										<button
-											class="btn btn-ghost btn-xs btn-square"
-											aria-label="Recipe options"
-										>
-											<svg
-												xmlns="http://www.w3.org/2000/svg"
-												fill="none"
-												viewBox="0 0 24 24"
-												stroke-width="2"
-												stroke="currentColor"
-												class="h-4 w-4"
-											>
-												<path
-													stroke-linecap="round"
-													stroke-linejoin="round"
-													d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z"
-												/>
-											</svg>
-										</button>
-										<ul
-											class="dropdown-content menu bg-base-100 rounded-box border-base-content/10 z-1 w-40 border p-2"
-										>
-											<li><a href="/recipes/{recipe.recipe_id}/edit">Edit</a></li>
-											<li>
-												<button
-													class="text-error"
-													onclick={() => delete_recipe(recipe.recipe_id)}
-												>
-													Delete
-												</button>
-											</li>
-										</ul>
-									</div>
-								{/if}
 							</td>
 						</tr>
 					{/each}

@@ -42,7 +42,7 @@
 	}
 </script>
 
-<div class="space-y-4">
+<div class="space-y-4 pb-8 md:pb-12">
 	<PostHeader
 		total_posts={data.posts.length}
 		session={data.session}

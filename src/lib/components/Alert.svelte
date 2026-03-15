@@ -3,15 +3,15 @@
 	import { AlertClassMap } from '$lib/types/alert';
 </script>
 
-<div class="toast toast-top toast-center top-20 z-50">
+<div class="toast toast-top toast-end top-20 z-50">
 	{#each AlertStore.alerts as alert (alert.id)}
 		<div
 			role="alert"
 			class="alert {AlertClassMap.get(
 				alert.type
-			)} alert-outline animate-in slide-in-from-bottom-5 fade-in transition-all duration-300 ease-out"
+			)} alert-outline animate-in slide-in-from-right-5 fade-in transition-all duration-300 ease-out"
 			class:opacity-0={alert.removing}
-			class:-translate-y-full={alert.removing}
+			class:translate-x-full={alert.removing}
 		>
 			{#if alert.type === 'success'}
 				<svg
@@ -56,16 +56,7 @@
 					/>
 				</svg>
 			{/if}
-			<!-- Progress bar -->
-			<div>
-				<h3 class="font-bold">{alert.message}</h3>
-				<progress
-					class="progress progress-neutral mt-2"
-					value={100 - alert.timeout}
-					max="100"
-				></progress>
-			</div>
-			<!-- Dismiss button -->
+			<span>{alert.message}</span>
 			<button
 				type="button"
 				class="btn btn-sm btn-circle btn-ghost"

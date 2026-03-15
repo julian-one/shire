@@ -57,7 +57,7 @@
 					</div>
 				</div>
 				<div class="flex flex-col items-center text-center sm:items-start sm:text-left">
-					<h2 class="text-3xl font-black tracking-tight">{current.username}</h2>
+					<h2 class="text-3xl font-black tracking-tight md:text-4xl">{current.username}</h2>
 					<p class="text-base-content/60 font-medium">{current.email}</p>
 					<div class="badge badge-secondary badge-sm mt-3 font-bold tracking-wider uppercase">
 						{RoleDisplay.get(current.role)}
@@ -250,14 +250,14 @@
 							<h3 class="text-base-content/40 text-xs font-bold tracking-widest uppercase"> System Information </h3>
 						</div>
 
-						<div class="stats stats-vertical sm:stats-horizontal bg-base-200 w-full overflow-hidden">
+						<div class="stats stats-vertical sm:stats-horizontal border-base-content/10 w-full overflow-hidden border">
 							<div class="stat px-6 py-4">
 								<div class="stat-title text-xs font-bold uppercase opacity-60">Member Since</div>
 								<div class="stat-value text-xl">{moment(current.created_at).format('MMM D, YYYY')}</div>
 								<div class="stat-desc font-medium">{moment(current.created_at).fromNow()}</div>
 							</div>
 
-							<div class="stat border-base-300 border-t px-6 py-4 sm:border-t-0 sm:border-l">
+							<div class="stat border-base-content/10 border-t px-6 py-4 sm:border-t-0 sm:border-l">
 								<div class="stat-title text-xs font-bold uppercase opacity-60">Last Updated</div>
 								<div class="stat-value text-xl">{moment(current.updated_at).format('MMM D, YYYY')}</div>
 								<div class="stat-desc font-medium">{moment(current.updated_at).fromNow()}</div>

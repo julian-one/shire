@@ -26,7 +26,7 @@
 <header class="space-y-4">
 	<div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
 		<div>
-			<h1 class="text-xl font-black tracking-tight md:text-2xl">Blog</h1>
+			<h1 class="text-2xl font-black tracking-tight md:text-3xl lg:text-4xl">Blog</h1>
 			<p class="text-base-content/60 text-sm md:text-base">
 				{total_posts}
 				{total_posts === 1 ? 'post' : 'posts'}
@@ -35,8 +35,24 @@
 		{#if session}
 			<a
 				href="/blog/new"
-				class="btn btn-primary btn-sm">Write</a
+				class="btn btn-primary"
 			>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke-width="2"
+					stroke="currentColor"
+					class="h-5 w-5"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						d="M12 4.5v15m7.5-7.5h-15"
+					/>
+				</svg>
+				New Post
+			</a>
 		{/if}
 	</div>
 
@@ -44,7 +60,7 @@
 		<input
 			type="text"
 			placeholder="Search posts..."
-			class="input input-bordered input-sm w-full sm:max-w-xs"
+			class="input input-bordered w-full sm:w-48"
 			value={search}
 			oninput={on_search}
 		/>

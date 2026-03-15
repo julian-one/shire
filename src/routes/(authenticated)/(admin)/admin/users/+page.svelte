@@ -201,7 +201,7 @@
 	}
 </script>
 
-<div class="space-y-6">
+<div class="space-y-6 pb-8 md:pb-12">
 	<UserHeader total_users={users.length} />
 
 	<UserFilters

@@ -20,7 +20,7 @@
 	});
 </script>
 
-<div class="container mx-auto max-w-7xl px-4 py-8 md:py-12">
+<div class="pb-8 md:pb-12">
 	<!-- Header -->
 	<div class="mb-8">
 		<div class="flex items-baseline gap-3">

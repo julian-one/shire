@@ -7,9 +7,7 @@
 </script>
 
 {#if user}
-	<div class="container mx-auto px-4 py-8">
-		<div class="flex flex-col items-center gap-6">
-			<Profile {user} />
-		</div>
+	<div class="flex flex-col items-center gap-6 pb-8 md:pb-12">
+		<Profile {user} />
 	</div>
 {/if}

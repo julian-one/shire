@@ -52,35 +52,41 @@
 {/snippet}
 
 {#if posts.length === 0}
-	<div class="flex flex-col items-center py-20 text-center">
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			class="h-16 w-16 opacity-20"
-			fill="none"
-			viewBox="0 0 24 24"
-			stroke="currentColor"
-		>
-			<path
-				stroke-linecap="round"
-				stroke-linejoin="round"
+	<div
+		class="border-base-content/20 mt-12 flex flex-col items-center justify-center rounded-xl border border-dashed py-20 text-center"
+	>
+		<div class="bg-base-200 rounded-full p-4">
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				fill="none"
+				viewBox="0 0 24 24"
 				stroke-width="1.5"
-				d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
-			/>
-		</svg>
-		<p class="mt-4 text-lg opacity-60">No posts found</p>
-		{#if session}
-			<p class="mt-1 text-sm opacity-40">Start sharing your thoughts with the community.</p>
-			<a
-				href="/blog/new"
-				class="btn btn-primary mt-6">Write your first post</a
+				stroke="currentColor"
+				class="h-8 w-8 opacity-40"
 			>
-		{:else}
-			<p class="mt-1 text-sm opacity-40">
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
+				/>
+			</svg>
+		</div>
+		<h3 class="mt-4 text-lg font-bold">No posts found</h3>
+		<p class="mt-1 text-sm opacity-60">
+			{#if session}
+				Start sharing your thoughts with the community.
+			{:else}
 				Want to share your thoughts? <a
 					href="/login"
 					class="link">Log in</a
 				> to create your first post.
-			</p>
+			{/if}
+		</p>
+		{#if session}
+			<a
+				href="/blog/new"
+				class="btn btn-primary mt-6">Write your first post</a
+			>
 		{/if}
 	</div>
 {:else if user}
