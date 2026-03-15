@@ -1,6 +1,6 @@
 <script lang="ts">
 	import moment from 'moment';
-	import { goto, invalidateAll } from '$app/navigation';
+	import { goto } from '$app/navigation';
 	import { PostStore } from '$lib/stores/post.svelte';
 	import ReadOnlyEditor from '$lib/components/ReadOnlyEditor.svelte';
 
@@ -10,7 +10,6 @@
 		if (!data.post) return;
 		const success = await PostStore.delete(data.post.post_id);
 		if (success) {
-			await invalidateAll();
 			goto('/blog');
 		}
 	}
