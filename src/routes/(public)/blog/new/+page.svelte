@@ -3,7 +3,7 @@
 	import { page } from '$app/state';
 	import { AlertStore } from '$lib/stores/alert.svelte';
 	import { PostStore } from '$lib/stores/post.svelte';
-	import Editor from '$lib/components/Editor.svelte';
+	import MarkdownEditor from '$lib/components/MarkdownEditor.svelte';
 
 	let title = $state('');
 	let content = $state('');
@@ -62,9 +62,9 @@
 			<div>
 				<span class="text-sm font-bold tracking-wide uppercase opacity-60">Content</span>
 				<div class="mt-2">
-					<Editor
+					<MarkdownEditor
 						disabled={PostStore.loading}
-						onchange={(json) => (content = json)}
+						onchange={(md) => (content = md)}
 					/>
 				</div>
 			</div>

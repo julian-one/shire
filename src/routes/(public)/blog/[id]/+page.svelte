@@ -2,7 +2,7 @@
 	import moment from 'moment';
 	import { goto } from '$app/navigation';
 	import { PostStore } from '$lib/stores/post.svelte';
-	import ReadOnlyEditor from '$lib/components/ReadOnlyEditor.svelte';
+	import MarkdownPreview from '$lib/components/MarkdownPreview.svelte';
 
 	let { data } = $props();
 
@@ -80,7 +80,7 @@
 		</div>
 
 		<div class="mt-10">
-			<ReadOnlyEditor content={data.post.content} />
+			<MarkdownPreview content={data.post.content} />
 		</div>
 	</div>
 {/if}
