@@ -57,6 +57,7 @@
 					required
 					disabled={PostStore.loading}
 				/>
+				<div class="validator-hint hidden">Required</div>
 			</div>
 
 			<div>

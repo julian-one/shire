@@ -157,6 +157,7 @@
 				<button
 					type="button"
 					class="btn btn-ghost btn-xs"
+					aria-label="Bold"
 					onclick={() => insert_wrap('**', '**', 'bold text')}
 					{disabled}
 				>
@@ -179,6 +180,7 @@
 				<button
 					type="button"
 					class="btn btn-ghost btn-xs"
+					aria-label="Italic"
 					onclick={() => insert_wrap('_', '_', 'italic text')}
 					{disabled}
 				>
@@ -216,6 +218,7 @@
 				<button
 					type="button"
 					class="btn btn-ghost btn-xs"
+					aria-label="Inline Code"
 					onclick={() => insert_wrap('`', '`', 'code')}
 					{disabled}
 				>
@@ -241,6 +244,7 @@
 				<button
 					type="button"
 					class="btn btn-ghost btn-xs"
+					aria-label="Link"
 					onclick={() => insert_wrap('[', '](url)', 'link text')}
 					{disabled}
 				>
@@ -264,6 +268,7 @@
 				<button
 					type="button"
 					class="btn btn-ghost btn-xs"
+					aria-label="Blockquote"
 					onclick={() => insert_line_prefix('> ')}
 					{disabled}
 				>
@@ -291,6 +296,7 @@
 				<button
 					type="button"
 					class="btn btn-ghost btn-xs"
+					aria-label="Code Block"
 					onclick={() => insert_wrap('\n```\n', '\n```\n', 'code block')}
 					{disabled}
 				>
@@ -323,6 +329,7 @@
 				<button
 					type="button"
 					class="btn btn-ghost btn-xs"
+					aria-label="Unordered List"
 					onclick={() => insert_line_prefix('- ')}
 					{disabled}
 				>
@@ -434,6 +441,7 @@
 				<button
 					type="button"
 					class="btn btn-ghost btn-xs"
+					aria-label="Task List"
 					onclick={() => insert_line_prefix('- [ ] ')}
 					{disabled}
 				>

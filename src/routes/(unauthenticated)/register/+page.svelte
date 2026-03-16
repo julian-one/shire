@@ -49,7 +49,6 @@
 						pattern="[A-Za-z][A-Za-z0-9\-]*"
 						minlength="3"
 						maxlength="30"
-						title="Only letters, numbers or dash"
 					/>
 					<p class="validator-hint hidden"> 3-30 characters. Only letters, numbers or dash. </p>
 
@@ -84,7 +83,6 @@
 						disabled={loading}
 						minlength="8"
 						pattern={password_regex}
-						title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
 					/>
 					<div class="validator-hint hidden"> 8+ chars with a number, lowercase & uppercase letter </div>
 

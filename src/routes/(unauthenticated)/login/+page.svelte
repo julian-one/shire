@@ -37,13 +37,14 @@
 					>
 					<input
 						type="text"
-						class="input w-full"
+						class="input validator w-full"
 						id="identifier"
 						name="identifier"
 						bind:value={identifier}
 						required
 						disabled={loading}
 					/>
+					<div class="validator-hint hidden">Required</div>
 
 					<label
 						for="password"
@@ -51,13 +52,14 @@
 					>
 					<input
 						type="password"
-						class="input w-full"
+						class="input validator w-full"
 						id="password"
 						name="password"
 						bind:value={password}
 						required
 						disabled={loading}
 					/>
+					<div class="validator-hint hidden">Required</div>
 
 					<div class="mt-6 flex flex-col gap-4">
 						<button

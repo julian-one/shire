@@ -99,7 +99,6 @@
 											pattern="[A-Za-z][A-Za-z0-9\-]*"
 											minlength="3"
 											maxlength="30"
-											title="Only letters, numbers or dash"
 											bind:value={user.username}
 										/>
 										<p class="validator-hint">
@@ -186,12 +185,13 @@
 												<input
 													id="confirm-password-input"
 													type="password"
-													class="input input-bordered w-full"
+													class="input input-bordered validator w-full"
 													required
 													placeholder="Confirm password"
 													minlength="8"
 													bind:value={confirm_password}
 												/>
+												<p class="validator-hint">Must be at least 8 characters</p>
 												{#if confirm_password && new_password !== confirm_password}
 													<p class="text-error mt-1 text-xs">Passwords do not match</p>
 												{/if}

@@ -109,12 +109,13 @@
 				</label>
 				<input
 					type="text"
-					class="input mt-2 w-full"
+					class="input validator mt-2 w-full"
 					placeholder="Recipe title"
 					id="title"
 					bind:value={title}
 					required
 				/>
+				<div class="validator-hint hidden">Required</div>
 			</div>
 
 			<div>
