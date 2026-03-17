@@ -3,7 +3,9 @@
 	import { RecipeStore } from '$lib/stores/recipe.svelte';
 	import { goto } from '$app/navigation';
 	import type { Recipe } from '$lib/types/recipe';
-	import RecipePhoto from '$lib/components/RecipePhoto.svelte';
+	import RecipePhoto from '$lib/components/recipe/RecipePhoto.svelte';
+	import { float_to_fraction } from '$lib/helpers/fraction';
+	import { nanoseconds_to_minutes } from '$lib/helpers/recipe-form';
 
 	let { data } = $props();
 	let recipe = $derived(data.recipe as Recipe);
@@ -71,9 +73,7 @@
 		<div class="text-base-content/60 mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm">
 			{#if recipe.cook_time}
 				<span
-					><span class="text-base-content font-semibold"
-						>{Math.round(recipe.cook_time / (60 * 1000 * 1000 * 1000))} mins</span
-					> cook time</span
+					><span class="text-base-content font-semibold">{nanoseconds_to_minutes(recipe.cook_time)} mins</span> cook time</span
 				>
 			{/if}
 			{#if recipe.serves}
@@ -108,7 +108,7 @@
 				{#each recipe.ingredients as ingredient, i (i)}
 					<li class="border-base-content/5 flex items-baseline gap-2 border-b pb-3 text-sm last:border-0 md:text-base">
 						<span class="font-semibold tabular-nums">
-							{ingredient.amount}
+							{float_to_fraction(ingredient.amount)}
 							{ingredient.unit}
 						</span>
 						<span class="text-base-content/70">{ingredient.item}</span>

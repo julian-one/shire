@@ -31,7 +31,8 @@ export enum Unit {
 	Oz = 'oz',
 	Lb = 'lb',
 	G = 'g',
-	Kg = 'kg'
+	Kg = 'kg',
+	Whole = 'whole'
 }
 
 export type Ingredient = {
@@ -41,6 +42,8 @@ export type Ingredient = {
 	unit: Unit;
 	item: string;
 };
+
+export type FormIngredient = { amount: string; unit: Unit; item: string };
 
 export type Recipe = {
 	recipe_id: string;

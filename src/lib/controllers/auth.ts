@@ -14,19 +14,8 @@ export class AuthController {
 		return response.data;
 	}
 
-	async Register(username: string, email: string, password: string): Promise<Session> {
-		const credentials = `${email}:${password}`;
-		const base64Credentials = btoa(credentials);
-
-		const response = await Citadel.post(
-			'/register',
-			{ username },
-			{
-				headers: {
-					Authorization: `Basic ${base64Credentials}`
-				}
-			}
-		);
+	async Register(username: string, email: string): Promise<{ email: string; message: string }> {
+		const response = await Citadel.post('/register', { username, email });
 		return response.data;
 	}
 
@@ -50,5 +39,15 @@ export class AuthController {
 
 	async DeleteAllSessions(user_id: string): Promise<void> {
 		return await Citadel.delete(`/users/${user_id}/sessions`);
+	}
+
+	async VerifyRegistration(token: string): Promise<{ valid: boolean; token: string; username: string }> {
+		const response = await Citadel.post('/register/verify', { token });
+		return response.data;
+	}
+
+	async CompleteRegistration(token: string, password: string): Promise<Session> {
+		const response = await Citadel.post('/register/complete', { token, password });
+		return response.data;
 	}
 }

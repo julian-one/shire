@@ -43,7 +43,6 @@
 						).format('MMM D, YYYY')}{#if post.updated_at && post.updated_at !== post.created_at}
 							{' · '}Last updated {moment(post.updated_at).format('MMM D, YYYY')}
 						{/if}
-						<!-- eslint-enable svelte/no-useless-mustaches -->
 					</p>
 				</div>
 			</a>
@@ -82,12 +81,6 @@
 				> to create your first post.
 			{/if}
 		</p>
-		{#if session}
-			<a
-				href="/blog/new"
-				class="btn btn-primary mt-6">Write your first post</a
-			>
-		{/if}
 	</div>
 {:else if user}
 	<div class="space-y-8">

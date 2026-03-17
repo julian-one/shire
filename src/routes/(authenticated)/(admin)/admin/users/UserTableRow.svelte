@@ -62,7 +62,9 @@
 				</div>
 				<div class="min-w-0">
 					<div class="truncate text-sm font-bold">{user.username}</div>
-					<div class="truncate text-xs opacity-50">{user.email}</div>
+					<div class="truncate text-xs opacity-50">
+						{user.email}
+					</div>
 				</div>
 			</div>
 		</td>

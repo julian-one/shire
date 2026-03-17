@@ -2,12 +2,16 @@
 	import { applyAction, enhance } from '$app/forms';
 	import type { ActionResult } from '@sveltejs/kit';
 	import { AlertStore } from '$lib/stores/alert.svelte';
-	import { password_regex } from '$lib/helpers/password';
+	import type { ActionData } from './$types';
+
+	let { form }: { form: ActionData } = $props();
 
 	let username = $state('');
 	let email = $state('');
-	let password = $state('');
 	let loading = $state(false);
+
+	let usernameError = $derived(form?.field === 'username' ? form.message : '');
+	let emailError = $derived(form?.field === 'email' ? form.message : '');
 </script>
 
 <div class="flex min-h-[80vh] items-center justify-center p-4">
@@ -21,9 +25,11 @@
 					loading = true;
 					return async ({ result }: { result: ActionResult }) => {
 						if (result.type === 'failure') {
-							AlertStore.add(result.data?.message, 'error');
+							if (!result.data?.field) {
+								AlertStore.add(result.data?.message, 'error');
+							}
 						} else if (result.type === 'redirect') {
-							AlertStore.add('Account created successfully', 'success');
+							AlertStore.add('Verification email sent. Please check your inbox.', 'info');
 						}
 						await applyAction(result);
 						loading = false;
@@ -40,6 +46,7 @@
 					<input
 						type="text"
 						class="input validator w-full"
+						class:input-error={usernameError}
 						placeholder="johndoe"
 						id="username"
 						name="username"
@@ -50,7 +57,11 @@
 						minlength="3"
 						maxlength="30"
 					/>
-					<p class="validator-hint hidden"> 3-30 characters. Only letters, numbers or dash. </p>
+					{#if usernameError}
+						<p class="text-error mt-1 text-sm">{usernameError}</p>
+					{:else}
+						<p class="validator-hint hidden"> 3-30 characters. Only letters, numbers or dash. </p>
+					{/if}
 
 					<label
 						for="email"
@@ -59,6 +70,7 @@
 					<input
 						type="email"
 						class="input validator w-full"
+						class:input-error={emailError}
 						placeholder="name@example.com"
 						id="email"
 						name="email"
@@ -66,25 +78,11 @@
 						required
 						disabled={loading}
 					/>
-					<div class="validator-hint hidden">Please enter a valid email address</div>
-
-					<label
-						for="password"
-						class="fieldset-label mt-4 text-base">Password</label
-					>
-					<input
-						type="password"
-						class="input validator w-full"
-						placeholder="••••••••"
-						id="password"
-						name="password"
-						bind:value={password}
-						required
-						disabled={loading}
-						minlength="8"
-						pattern={password_regex}
-					/>
-					<div class="validator-hint hidden"> 8+ chars with a number, lowercase & uppercase letter </div>
+					{#if emailError}
+						<p class="text-error mt-1 text-sm">{emailError}</p>
+					{:else}
+						<div class="validator-hint hidden">Please enter a valid email address</div>
+					{/if}
 
 					<div class="mt-8 flex flex-col gap-4">
 						<button
@@ -94,7 +92,7 @@
 						>
 							{#if loading}
 								<span class="loading loading-spinner"></span>
-								Creating Account...
+								Sending Verification...
 							{:else}
 								Register
 							{/if}

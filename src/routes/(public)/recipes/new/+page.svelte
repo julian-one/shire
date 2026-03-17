@@ -1,66 +1,55 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { tick } from 'svelte';
 	import { page } from '$app/state';
 	import { AlertStore } from '$lib/stores/alert.svelte';
 	import { RecipeStore } from '$lib/stores/recipe.svelte';
-	import { Cuisine, Category, Unit, type Ingredient } from '$lib/types/recipe';
-	import Select from '$lib/components/Select.svelte';
+	import { Unit, type FormIngredient, type Cuisine, type Category } from '$lib/types/recipe';
+	import { float_to_fraction, fraction_to_float } from '$lib/helpers/fraction';
+	import { minutes_to_nanoseconds, nanoseconds_to_minutes } from '$lib/helpers/recipe-form';
+	import RecipeBasicsFields from '$lib/components/recipe/RecipeBasicsFields.svelte';
+	import RecipeIngredientRows from '$lib/components/recipe/RecipeIngredientRows.svelte';
+	import RecipeInstructionRows from '$lib/components/recipe/RecipeInstructionRows.svelte';
 
 	let step = $state(1);
 	let scanning = $state(false);
+	let form_el: HTMLFormElement;
 
 	let title = $state('');
 	let description = $state('');
 	let photo_url = $state('');
 	let source_url = $state('');
-	let ingredients = $state<Ingredient[]>([{ amount: 0, unit: Unit.G, item: '' }]);
+	let ingredients = $state<FormIngredient[]>([{ amount: '', unit: Unit.G, item: '' }]);
 	let instructions = $state<string[]>(['']);
 	let cook_time = $state('45');
 	let serves = $state('4');
 	let cuisine = $state<Cuisine | ''>('');
 	let category = $state<Category | ''>('');
 
-	const cuisine_options = [
-		{ value: '', label: 'None' },
-		...Object.values(Cuisine).map((c) => ({ value: c, label: c }))
-	];
-	const category_options = [
-		{ value: '', label: 'None' },
-		...Object.values(Category).map((c) => ({ value: c, label: c }))
-	];
-	const unit_options = Object.values(Unit).map((u) => ({ value: u, label: u }));
-
-	let can_advance_step_1 = $derived(title.trim().length > 0);
-	let can_advance_step_2 = $derived(ingredients.length > 0 && ingredients.every((i) => i.item.trim().length > 0));
-	let can_submit = $derived(instructions.length > 0 && instructions.every((i) => i.trim().length > 0));
-
-	function next() {
-		if (step === 1 && can_advance_step_1) step = 2;
-		else if (step === 2 && can_advance_step_2) step = 3;
-	}
-
 	function back() {
 		if (step > 1) step--;
 	}
 
-	function add_ingredient() {
-		ingredients = [...ingredients, { amount: 0, unit: Unit.G, item: '' }];
-	}
-
-	function remove_ingredient(index: number) {
-		ingredients = ingredients.filter((_, i) => i !== index);
-	}
-
-	function add_instruction() {
-		instructions = [...instructions, ''];
-	}
-
-	function remove_instruction(index: number) {
-		instructions = instructions.filter((_, i) => i !== index);
+	async function strip_and_submit() {
+		if (step === 2) {
+			ingredients = ingredients.filter((i) => i.amount.trim() || i.item.trim());
+			if (ingredients.length === 0) ingredients = [{ amount: '', unit: Unit.G, item: '' }];
+		}
+		if (step === 3) {
+			instructions = instructions.filter((i) => i.trim());
+			if (instructions.length === 0) instructions = [''];
+		}
+		await tick();
+		form_el.requestSubmit();
 	}
 
 	async function handle_submit(event: SubmitEvent) {
 		event.preventDefault();
+
+		if (step < 3) {
+			step++;
+			return;
+		}
 
 		const user_id = page.data.user?.user_id;
 		if (!user_id) {
@@ -75,12 +64,12 @@
 			photo_url: photo_url.trim() || undefined,
 			source_url: source_url.trim() || undefined,
 			ingredients: ingredients.map((i) => ({
-				amount: parseFloat(i.amount.toString()) || 0,
+				amount: fraction_to_float(i.amount),
 				unit: i.unit,
 				item: i.item.trim()
 			})),
 			instructions: instructions.map((i) => i.trim()),
-			cook_time: cook_time ? parseInt(cook_time) * 60 * 1000 * 1000 * 1000 : undefined,
+			cook_time: minutes_to_nanoseconds(cook_time),
 			serves: serves ? parseInt(serves) : undefined,
 			cuisine: cuisine || undefined,
 			category: category || undefined
@@ -103,13 +92,17 @@
 				if (result.title) title = result.title;
 				if (result.description) description = result.description;
 				if (result.ingredients && result.ingredients.length > 0) {
-					ingredients = result.ingredients;
+					ingredients = result.ingredients.map((i) => ({
+						amount: float_to_fraction(i.amount),
+						unit: i.unit,
+						item: i.item
+					}));
 				}
 				if (result.instructions && result.instructions.length > 0) {
 					instructions = result.instructions;
 				}
 				if (result.cook_time) {
-					cook_time = Math.round(result.cook_time / (60 * 1000 * 1000 * 1000)).toString();
+					cook_time = nanoseconds_to_minutes(result.cook_time);
 				}
 				if (result.serves) {
 					serves = result.serves.toString();
@@ -198,6 +191,7 @@
 	</ul>
 
 	<form
+		bind:this={form_el}
 		onsubmit={handle_submit}
 		class="mt-8"
 	>
@@ -205,133 +199,16 @@
 			<fieldset class="space-y-6">
 				<legend class="sr-only">Basics</legend>
 
-				<div>
-					<label
-						for="title"
-						class="text-sm font-bold tracking-wide uppercase opacity-60"
-					>
-						Title
-					</label>
-					<input
-						type="text"
-						class="input validator mt-2 w-full"
-						placeholder="Recipe title"
-						id="title"
-						bind:value={title}
-						required
-					/>
-					<div class="validator-hint hidden">Required</div>
-				</div>
-
-				<div>
-					<label
-						for="description"
-						class="text-sm font-bold tracking-wide uppercase opacity-60"
-					>
-						Description
-					</label>
-					<textarea
-						class="textarea mt-2 w-full"
-						placeholder="A short description (optional)"
-						id="description"
-						bind:value={description}
-						rows="3"
-					></textarea>
-				</div>
-
-				<div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-					<div>
-						<label
-							for="photo_url"
-							class="text-sm font-bold tracking-wide uppercase opacity-60"
-						>
-							Photo URL
-						</label>
-						<input
-							type="url"
-							class="input mt-2 w-full"
-							placeholder="https://example.com/photo.jpg"
-							id="photo_url"
-							bind:value={photo_url}
-						/>
-					</div>
-					<div>
-						<label
-							for="source_url"
-							class="text-sm font-bold tracking-wide uppercase opacity-60"
-						>
-							Source URL
-						</label>
-						<input
-							type="url"
-							class="input mt-2 w-full"
-							placeholder="https://example.com/recipe"
-							id="source_url"
-							bind:value={source_url}
-						/>
-					</div>
-				</div>
-
-				<div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-					<div>
-						<label
-							for="cook_time"
-							class="text-sm font-bold tracking-wide uppercase opacity-60"
-						>
-							Cook Time (mins)
-						</label>
-						<input
-							type="number"
-							class="input mt-2 w-full"
-							placeholder="e.g. 45"
-							id="cook_time"
-							bind:value={cook_time}
-						/>
-					</div>
-					<div>
-						<label
-							for="serves"
-							class="text-sm font-bold tracking-wide uppercase opacity-60"
-						>
-							Serves (people)
-						</label>
-						<input
-							type="number"
-							class="input mt-2 w-full"
-							placeholder="e.g. 4"
-							id="serves"
-							bind:value={serves}
-						/>
-					</div>
-					<div>
-						<label
-							for="cuisine"
-							class="text-sm font-bold tracking-wide uppercase opacity-60"
-						>
-							Cuisine
-						</label>
-						<div class="mt-2">
-							<Select
-								options={cuisine_options}
-								bind:value={cuisine}
-							/>
-						</div>
-					</div>
-					<div>
-						<label
-							for="category"
-							class="text-sm font-bold tracking-wide uppercase opacity-60"
-						>
-							Category
-						</label>
-						<div class="mt-2">
-							<Select
-								options={category_options}
-								bind:value={category}
-							/>
-						</div>
-					</div>
-				</div>
+				<RecipeBasicsFields
+					bind:title
+					bind:description
+					bind:photo_url
+					bind:source_url
+					bind:cook_time
+					bind:serves
+					bind:cuisine
+					bind:category
+				/>
 
 				<div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
 					<a
@@ -339,10 +216,8 @@
 						class="btn btn-ghost">Cancel</a
 					>
 					<button
-						type="button"
+						type="submit"
 						class="btn btn-primary"
-						disabled={!can_advance_step_1}
-						onclick={next}
 					>
 						Next
 					</button>
@@ -352,76 +227,8 @@
 			<fieldset class="space-y-6">
 				<legend class="sr-only">Ingredients</legend>
 
-				<div class="space-y-3">
-					<div class="flex items-center justify-between">
-						<span class="text-sm font-bold tracking-wide uppercase opacity-60">Ingredients</span>
-						<div class="hidden grid-cols-12 gap-2 text-xs font-bold uppercase opacity-40 md:ml-4 md:grid md:flex-1">
-							<div class="col-span-2">Amount</div>
-							<div class="col-span-3">Unit</div>
-							<div class="col-span-6">Item</div>
-							<div class="col-span-1"></div>
-						</div>
-					</div>
-					{#each ingredients as ingredient, index (index)}
-						<div class="grid grid-cols-1 gap-2 md:grid-cols-12">
-							<div class="col-span-2">
-								<input
-									type="number"
-									class="input w-full"
-									placeholder="Amount"
-									bind:value={ingredient.amount}
-								/>
-							</div>
-							<div class="col-span-3">
-								<Select
-									options={unit_options}
-									bind:value={ingredient.unit}
-								/>
-							</div>
-							<div class="col-span-6">
-								<input
-									type="text"
-									class="input w-full"
-									placeholder="Item (e.g. Flour)"
-									bind:value={ingredient.item}
-								/>
-							</div>
-							<div class="col-span-1 flex justify-end">
-								{#if ingredients.length > 1}
-									<button
-										type="button"
-										class="btn btn-ghost btn-square"
-										onclick={() => remove_ingredient(index)}
-										aria-label="Remove ingredient"
-									>
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											fill="none"
-											viewBox="0 0 24 24"
-											stroke-width="2"
-											stroke="currentColor"
-											class="h-5 w-5"
-										>
-											<path
-												stroke-linecap="round"
-												stroke-linejoin="round"
-												d="M6 18L18 6M6 6l12 12"
-											/>
-										</svg>
-									</button>
-								{/if}
-							</div>
-						</div>
-					{/each}
-				</div>
-
-				<button
-					type="button"
-					class="btn btn-soft btn-sm"
-					onclick={add_ingredient}
-				>
-					+ Add ingredient
-				</button>
+				<span class="text-sm font-bold tracking-wide uppercase opacity-60">Ingredients</span>
+				<RecipeIngredientRows bind:ingredients />
 
 				<div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
 					<button
@@ -432,8 +239,7 @@
 					<button
 						type="button"
 						class="btn btn-primary"
-						disabled={!can_advance_step_2}
-						onclick={next}
+						onclick={strip_and_submit}
 					>
 						Next
 					</button>
@@ -443,55 +249,8 @@
 			<fieldset class="space-y-6">
 				<legend class="sr-only">Instructions</legend>
 
-				<div class="space-y-3">
-					<span class="text-sm font-bold tracking-wide uppercase opacity-60">Instructions</span>
-					{#each instructions.map((_, i) => i) as index (index)}
-						<div class="flex gap-2">
-							<span
-								class="bg-base-200 flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-sm font-bold"
-							>
-								{index + 1}
-							</span>
-							<textarea
-								class="textarea w-full"
-								placeholder="Describe this step"
-								bind:value={instructions[index]}
-								rows="2"
-							></textarea>
-							{#if instructions.length > 1}
-								<button
-									type="button"
-									class="btn btn-ghost btn-square"
-									onclick={() => remove_instruction(index)}
-									aria-label="Remove instruction"
-								>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke-width="2"
-										stroke="currentColor"
-										class="h-5 w-5"
-									>
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											d="M6 18L18 6M6 6l12 12"
-										/>
-									</svg>
-								</button>
-							{/if}
-						</div>
-					{/each}
-				</div>
-
-				<button
-					type="button"
-					class="btn btn-soft btn-sm"
-					onclick={add_instruction}
-				>
-					+ Add step
-				</button>
+				<span class="text-sm font-bold tracking-wide uppercase opacity-60">Instructions</span>
+				<RecipeInstructionRows bind:instructions />
 
 				<div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
 					<button
@@ -500,9 +259,10 @@
 						onclick={back}>Back</button
 					>
 					<button
-						type="submit"
+						type="button"
 						class="btn btn-primary"
-						disabled={!can_submit || RecipeStore.loading}
+						disabled={RecipeStore.loading}
+						onclick={strip_and_submit}
 					>
 						{#if RecipeStore.loading}
 							<span class="loading loading-spinner"></span>

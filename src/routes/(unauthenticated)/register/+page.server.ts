@@ -1,6 +1,9 @@
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import { AuthController } from '$lib/controllers/auth';
+import { AxiosError } from 'axios';
+
+type ActionFailureData = { email: string; field: string; message: string };
 
 export const load: PageServerLoad = async ({ locals }) => {
 	if (await locals.getSession()) {
@@ -9,36 +12,39 @@ export const load: PageServerLoad = async ({ locals }) => {
 };
 
 export const actions: Actions = {
-	default: async ({ request, cookies }) => {
+	default: async ({ request }) => {
 		const data = await request.formData();
 		const username = data.get('username') as string;
 		const email = data.get('email') as string;
-		const password = data.get('password') as string;
 
-		if (!username || !email || !password) {
-			return fail(400, {
+		if (!username || !email) {
+			return fail<ActionFailureData>(400, {
 				email,
-				message: 'Missing username, email or password'
+				field: '',
+				message: 'Missing username or email'
 			});
 		}
 
 		const auth = new AuthController();
 		try {
-			const session = await auth.Register(username, email, password);
-			cookies.set('TOKEN', session.session_id, {
-				path: '/',
-				httpOnly: true,
-				sameSite: 'strict',
-				secure: process.env.NODE_ENV === 'production',
-				expires: new Date(session.expires_at)
-			});
-		} catch {
-			return fail(400, {
+			await auth.Register(username, email);
+		} catch (err) {
+			if (err instanceof AxiosError && err.response?.data?.error) {
+				const backendError: string = err.response.data.error;
+				const field = backendError.toLowerCase().includes('username') ? 'username' : 'email';
+				return fail<ActionFailureData>(err.response.status, {
+					email,
+					field,
+					message: backendError
+				});
+			}
+			return fail<ActionFailureData>(400, {
 				email,
+				field: '',
 				message: 'Registration failed. Please try again.'
 			});
 		}
 
-		redirect(303, '/');
+		redirect(303, `/verify?email=${encodeURIComponent(email)}`);
 	}
 };
