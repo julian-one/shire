@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Cuisine, Category } from '$lib/types/recipe';
 	import Select from '$lib/components/Select.svelte';
-	import { cuisine_options, category_options } from '$lib/helpers/recipe-form';
+	import { cuisine_options, category_options } from './recipe-form';
 
 	let {
 		title = $bindable(),

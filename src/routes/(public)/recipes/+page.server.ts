@@ -18,7 +18,7 @@ export const load: PageServerLoad = async ({ url }) => {
 	};
 
 	try {
-		const recipes = await controller.List(options);
+		const recipes = await controller.list(options);
 		return {
 			recipes,
 			search,

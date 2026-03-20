@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Profile from './details.svelte';
+	import Profile from './Profile.svelte';
 
 	let { data } = $props();
 

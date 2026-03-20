@@ -13,7 +13,7 @@ class SingleUser {
 
 		this.loading = true;
 		try {
-			this.user = await this.user_controller.ById(user_id);
+			this.user = await this.user_controller.by_id(user_id);
 		} catch {
 			AlertStore.add('Failed to load user data', 'error');
 		} finally {
@@ -26,7 +26,7 @@ class SingleUser {
 
 		this.loading = true;
 		try {
-			const updated = await this.user_controller.Update(user_id, username);
+			const updated = await this.user_controller.update(user_id, username);
 			this.user = updated;
 			AlertStore.add('User data updated successfully', 'success');
 			return updated;
@@ -43,7 +43,7 @@ class SingleUser {
 
 		this.loading = true;
 		try {
-			await this.user_controller.UpdatePassword(user_id, new_password);
+			await this.user_controller.update_password(user_id, new_password);
 			AlertStore.add('Password updated successfully', 'success');
 			return true;
 		} catch {

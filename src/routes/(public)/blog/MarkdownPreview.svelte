@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { render_markdown } from '$lib/helpers/markdown';
+	import { render_markdown } from './markdown';
 
 	type Props = {
 		content: string;

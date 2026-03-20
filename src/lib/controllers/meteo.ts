@@ -1,8 +1,8 @@
 import type { Weather } from '$lib/types/meteo';
 
 export class MeteoController {
-	private getIcon(code: number): string {
-		const iconMap: Record<number, string> = {
+	private get_icon(code: number): string {
+		const icon_map: Record<number, string> = {
 			0: '☀️', // Clear sky
 			1: '🌤️', // Mainly clear
 			2: '⛅', // Partly cloudy
@@ -28,10 +28,10 @@ export class MeteoController {
 			96: '⛈️', // Thunderstorm with slight hail
 			99: '⛈️' // Thunderstorm with heavy hail
 		};
-		return iconMap[code] || '🌡️';
+		return icon_map[code] || '🌡️';
 	}
-	private getCondition(code: number): string {
-		const descMap: Record<number, string> = {
+	private get_condition(code: number): string {
+		const desc_map: Record<number, string> = {
 			0: 'Clear',
 			1: 'Mostly Clear',
 			2: 'Partly Cloudy',
@@ -57,9 +57,9 @@ export class MeteoController {
 			96: 'Thunderstorm',
 			99: 'Severe Storm'
 		};
-		return descMap[code] || 'Unknown';
+		return desc_map[code] || 'Unknown';
 	}
-	async Fetch(latitude: number, longitude: number): Promise<Weather | null> {
+	async fetch_weather(latitude: number, longitude: number): Promise<Weather | null> {
 		const response = await fetch(
 			`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code&temperature_unit=fahrenheit&timezone=auto`
 		);
@@ -76,8 +76,8 @@ export class MeteoController {
 
 		return {
 			temperature: Math.round(data.current.temperature_2m),
-			condition: this.getCondition(data.current.weather_code),
-			icon: this.getIcon(data.current.weather_code)
+			condition: this.get_condition(data.current.weather_code),
+			icon: this.get_icon(data.current.weather_code)
 		};
 	}
 }

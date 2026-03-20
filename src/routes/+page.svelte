@@ -1,6 +1,16 @@
 <script lang="ts">
 	import moment from 'moment';
-	import { toShortTimezone } from '$lib/helpers/timezone';
+
+	function toShortTimezone(timezone: string): string {
+		return (
+			new Intl.DateTimeFormat('en-US', {
+				timeZone: timezone,
+				timeZoneName: 'short'
+			})
+				.formatToParts(new Date())
+				.find((part) => part.type === 'timeZoneName')?.value || ''
+		);
+	}
 
 	let { data } = $props();
 
@@ -23,16 +33,15 @@
 <div class="pb-8 md:pb-12">
 	<!-- Header -->
 	<div class="mb-8">
-		<div class="flex items-baseline gap-3">
-			<div class="tooltip">
-				<div class="tooltip-content">
-					<div class="text-2xl">Welcome{user ? ` ${user.username}` : ''}!</div>
-				</div>
-				<h1 class="text-2xl font-black tracking-tight md:text-3xl lg:text-4xl"
-					>¡Bienvenido{user ? ` ${user.username}` : ''}!</h1
-				>
-			</div>
-		</div>
+		<h1 class="text-2xl duration-3000 md:text-3xl lg:text-4xl">
+			<span class="text-rotate leading-relaxed">
+				<span>
+					<span>Welcome{user ? ` ${user.username}` : ''}!</span>
+					<span>¡Bienvenido{user ? ` ${user.username}` : ''}!</span>
+					<span>Bienvenue{user ? ` ${user.username}` : ''}!</span>
+				</span>
+			</span>
+		</h1>
 	</div>
 
 	<!-- Hero -->

@@ -2,7 +2,7 @@
 	import { goto, invalidateAll } from '$app/navigation';
 	import { AlertStore } from '$lib/stores/alert.svelte';
 	import { PostStore } from '$lib/stores/post.svelte';
-	import MarkdownEditor from '$lib/components/MarkdownEditor.svelte';
+	import MarkdownEditor from '../../MarkdownEditor.svelte';
 
 	let { data } = $props();
 

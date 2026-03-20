@@ -3,7 +3,7 @@ import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {
 	const controller = new RecipeController();
-	const recipe = await controller.ById(params.id);
+	const recipe = await controller.by_id(params.id);
 	return {
 		recipe
 	};

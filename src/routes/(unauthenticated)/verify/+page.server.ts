@@ -1,13 +1,13 @@
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import { AuthController } from '$lib/controllers/auth';
-import sessionCache from '$lib/server/session-cache';
+import { SessionStore } from '$lib/server/session';
 
 export const load: PageServerLoad = async ({ url, locals }) => {
 	const code = url.searchParams.get('code') ?? '';
 	const email = url.searchParams.get('email') ?? '';
 
-	if (await locals.getSession()) {
+	if (await locals.get_session()) {
 		redirect(303, '/');
 	}
 
@@ -29,14 +29,14 @@ export const actions: Actions = {
 
 		const auth = new AuthController();
 		try {
-			const result = await auth.VerifyRegistration(code);
+			const result = await auth.verify_registration(code);
 			return { verified: true, token: result.token, username: result.username };
 		} catch {
 			return fail(400, { message: 'Invalid or expired verification code' });
 		}
 	},
 
-	setPassword: async ({ request, cookies }) => {
+	set_password: async ({ request, cookies }) => {
 		const data = await request.formData();
 		const token = data.get('token') as string;
 		const password = data.get('password') as string;
@@ -47,12 +47,12 @@ export const actions: Actions = {
 
 		const auth = new AuthController();
 		try {
-			const oldToken = cookies.get('TOKEN');
-			if (oldToken) {
-				sessionCache.evict(oldToken);
+			const old_token = cookies.get('TOKEN');
+			if (old_token) {
+				SessionStore.evict(old_token);
 			}
 
-			const session = await auth.CompleteRegistration(token, password);
+			const session = await auth.complete_registration(token, password);
 			cookies.set('TOKEN', session.session_id, {
 				path: '/',
 				httpOnly: true,

@@ -1,7 +1,7 @@
 import type { Location } from '$lib/types/geo';
 
 export class GeoController {
-	private isPublicIp(ip: string): boolean {
+	private is_public_ip(ip: string): boolean {
 		return !(
 			ip === '127.0.0.1' ||
 			ip === '::1' ||
@@ -14,9 +14,9 @@ export class GeoController {
 		);
 	}
 
-	async Fetch(ip?: string): Promise<Location | null> {
-		const useIp = ip && this.isPublicIp(ip);
-		const url = useIp ? `https://get.geojs.io/v1/ip/geo/${ip}.json` : 'https://get.geojs.io/v1/ip/geo.json';
+	async fetch_location(ip?: string): Promise<Location | null> {
+		const use_ip = ip && this.is_public_ip(ip);
+		const url = use_ip ? `https://get.geojs.io/v1/ip/geo/${ip}.json` : 'https://get.geojs.io/v1/ip/geo.json';
 		const response = await fetch(url);
 
 		if (!response.ok) {

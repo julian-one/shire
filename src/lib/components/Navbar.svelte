@@ -17,7 +17,7 @@
 	}>();
 </script>
 
-{#snippet navLinks()}
+{#snippet nav_links()}
 	{#if session}
 		{#if user?.role == 'admin'}
 			<li><a href="/admin">Admin</a></li>
@@ -60,7 +60,7 @@
 	<div class="flex flex-none items-center gap-2">
 		<!-- Desktop menu -->
 		<ul class="menu menu-horizontal hidden px-1 md:flex">
-			{@render navLinks()}
+			{@render nav_links()}
 		</ul>
 
 		<!-- Mobile menu -->
@@ -90,7 +90,7 @@
 				tabindex="-1"
 				class="menu dropdown-content bg-base-200 rounded-box border-base-content/10 z-10 mt-3 w-52 border p-2"
 			>
-				{@render navLinks()}
+				{@render nav_links()}
 			</ul>
 		</div>
 	</div>

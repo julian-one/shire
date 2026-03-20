@@ -3,10 +3,8 @@ import type { Actions, PageServerLoad } from './$types';
 import { AuthController } from '$lib/controllers/auth';
 import { AxiosError } from 'axios';
 
-type ActionFailureData = { email: string; field: string; message: string };
-
 export const load: PageServerLoad = async ({ locals }) => {
-	if (await locals.getSession()) {
+	if (await locals.get_session()) {
 		redirect(303, '/profile');
 	}
 };
@@ -18,31 +16,17 @@ export const actions: Actions = {
 		const email = data.get('email') as string;
 
 		if (!username || !email) {
-			return fail<ActionFailureData>(400, {
-				email,
-				field: '',
-				message: 'Missing username or email'
-			});
+			return fail(400, { message: 'Missing username or email' });
 		}
 
 		const auth = new AuthController();
 		try {
-			await auth.Register(username, email);
+			await auth.register(username, email);
 		} catch (err) {
 			if (err instanceof AxiosError && err.response?.data?.error) {
-				const backendError: string = err.response.data.error;
-				const field = backendError.toLowerCase().includes('username') ? 'username' : 'email';
-				return fail<ActionFailureData>(err.response.status, {
-					email,
-					field,
-					message: backendError
-				});
+				return fail(err.response.status, { message: err.response.data.error });
 			}
-			return fail<ActionFailureData>(400, {
-				email,
-				field: '',
-				message: 'Registration failed. Please try again.'
-			});
+			return fail(400, { message: 'Registration failed. Please try again.' });
 		}
 
 		redirect(303, `/verify?email=${encodeURIComponent(email)}`);

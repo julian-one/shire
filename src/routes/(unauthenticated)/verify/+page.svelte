@@ -2,7 +2,8 @@
 	import { applyAction, enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
 	import { AlertStore } from '$lib/stores/alert.svelte';
-	import { password_regex } from '$lib/helpers/password';
+
+	const password_regex = '(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,}';
 	import type { ActionResult } from '@sveltejs/kit';
 
 	let { data, form } = $props();
@@ -36,7 +37,7 @@
 
 				<form
 					method="POST"
-					action="?/setPassword"
+					action="?/set_password"
 					class="w-full"
 					use:enhance={() => {
 						loading = true;

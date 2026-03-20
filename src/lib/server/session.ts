@@ -47,7 +47,7 @@ class SessionCache {
 		this.cache.delete(token);
 	}
 
-	evictByUser(user_id: string): void {
+	evict_by_user(user_id: string): void {
 		for (const [token, entry] of this.cache) {
 			if (entry.session.user_id === user_id) {
 				this.cache.delete(token);
@@ -56,4 +56,4 @@ class SessionCache {
 	}
 }
 
-export default new SessionCache();
+export const SessionStore = new SessionCache();

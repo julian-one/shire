@@ -3,7 +3,7 @@ import type { Actions, PageServerLoad } from './$types';
 import { AuthController } from '$lib/controllers/auth';
 
 export const load: PageServerLoad = async ({ locals }) => {
-	if (await locals.getSession()) {
+	if (await locals.get_session()) {
 		redirect(303, '/profile');
 	}
 };
@@ -23,7 +23,7 @@ export const actions: Actions = {
 
 		const auth = new AuthController();
 		try {
-			const session = await auth.Login(identifier, password);
+			const session = await auth.login(identifier, password);
 			cookies.set('TOKEN', session.session_id, {
 				path: '/',
 				httpOnly: true,

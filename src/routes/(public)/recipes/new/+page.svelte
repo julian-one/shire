@@ -5,11 +5,11 @@
 	import { AlertStore } from '$lib/stores/alert.svelte';
 	import { RecipeStore } from '$lib/stores/recipe.svelte';
 	import { Unit, type FormIngredient, type Cuisine, type Category } from '$lib/types/recipe';
-	import { float_to_fraction, fraction_to_float } from '$lib/helpers/fraction';
-	import { minutes_to_nanoseconds, nanoseconds_to_minutes } from '$lib/helpers/recipe-form';
-	import RecipeBasicsFields from '$lib/components/recipe/RecipeBasicsFields.svelte';
-	import RecipeIngredientRows from '$lib/components/recipe/RecipeIngredientRows.svelte';
-	import RecipeInstructionRows from '$lib/components/recipe/RecipeInstructionRows.svelte';
+	import { float_to_fraction, fraction_to_float } from '../fraction';
+	import { minutes_to_nanoseconds, nanoseconds_to_minutes } from '../recipe-form';
+	import RecipeBasicsFields from '../RecipeBasicsFields.svelte';
+	import RecipeIngredientRows from '../RecipeIngredientRows.svelte';
+	import RecipeInstructionRows from '../RecipeInstructionRows.svelte';
 
 	let step = $state(1);
 	let scanning = $state(false);

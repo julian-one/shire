@@ -37,11 +37,11 @@
 						{post.title.length > 30 ? `${post.title.substring(0, 30).trim()}...` : post.title.trim()}
 					</h2>
 					<p class="mt-auto pt-4 text-xs opacity-50">
-						<!-- eslint-disable svelte/no-useless-mustaches -->
-						Published{#if !user || post.user_id !== user.user_id}{' '}by {post.username}{/if} on {moment(
-							post.created_at
-						).format('MMM D, YYYY')}{#if post.updated_at && post.updated_at !== post.created_at}
-							{' · '}Last updated {moment(post.updated_at).format('MMM D, YYYY')}
+						Published{#if !user || post.user_id !== user.user_id}
+							by {post.username}{/if} on {moment(post.created_at).format(
+							'MMM D, YYYY'
+						)}{#if post.updated_at && post.updated_at !== post.created_at}
+							· Last updated {moment(post.updated_at).format('MMM D, YYYY')}
 						{/if}
 					</p>
 				</div>

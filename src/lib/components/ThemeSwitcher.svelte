@@ -1,5 +1,41 @@
 <script lang="ts">
-	import { themes } from '$lib/helpers/theme';
+	const themes = [
+		'abyss',
+		'acid',
+		'aqua',
+		'autumn',
+		'black',
+		'bumblebee',
+		'business',
+		'caramellatte',
+		'cmyk',
+		'coffee',
+		'corporate',
+		'cupcake',
+		'cyberpunk',
+		'dark',
+		'dim',
+		'dracula',
+		'emerald',
+		'fantasy',
+		'forest',
+		'garden',
+		'halloween',
+		'lemonade',
+		'light',
+		'lofi',
+		'luxury',
+		'night',
+		'nord',
+		'pastel',
+		'retro',
+		'silk',
+		'sunset',
+		'synthwave',
+		'valentine',
+		'winter',
+		'wireframe'
+	];
 
 	let { theme = $bindable() } = $props();
 

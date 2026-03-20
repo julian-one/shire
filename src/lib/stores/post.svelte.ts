@@ -9,7 +9,7 @@ class SinglePost {
 	async create(user_id: string, title: string, content: string, is_public: boolean): Promise<string | null> {
 		this.loading = true;
 		try {
-			const post_id = await this.post_controller.Create({ user_id, title, content, public: is_public });
+			const post_id = await this.post_controller.create({ user_id, title, content, public: is_public });
 			AlertStore.add('Post created successfully', 'success');
 			return post_id;
 		} catch {
@@ -23,7 +23,7 @@ class SinglePost {
 	async update(id: string, title: string, content: string, is_public: boolean): Promise<boolean> {
 		this.loading = true;
 		try {
-			await this.post_controller.Update(id, { title, content, public: is_public });
+			await this.post_controller.update(id, { title, content, public: is_public });
 			AlertStore.add('Post updated successfully', 'success');
 			return true;
 		} catch {
@@ -37,7 +37,7 @@ class SinglePost {
 	async delete(id: string): Promise<boolean> {
 		this.loading = true;
 		try {
-			await this.post_controller.Delete(id);
+			await this.post_controller.delete_post(id);
 			AlertStore.add('Post deleted successfully', 'success');
 			return true;
 		} catch {

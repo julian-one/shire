@@ -2,14 +2,14 @@ import { error, fail } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import { UserController } from '$lib/controllers/user';
 import { AuthController } from '$lib/controllers/auth';
-import sessionCache from '$lib/server/session-cache';
+import { SessionStore } from '$lib/server/session';
 import { Role } from '$lib/types/user';
 import type { ListOptions } from '$lib/types/user';
 
 const VALID_ROLES = Object.values(Role) as string[];
 
 async function requireAdmin(locals: App.Locals) {
-	const user = await locals.getUser();
+	const user = await locals.get_user();
 	if (user?.role !== 'admin') error(403, 'Forbidden');
 }
 
@@ -28,7 +28,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 	};
 
 	try {
-		const users = await user_controller.List(options);
+		const users = await user_controller.list(options);
 		return {
 			users,
 			search,
@@ -56,7 +56,7 @@ export const actions: Actions = {
 
 		const auth = new AuthController();
 		try {
-			const sessions = await auth.ListSessions(user_id);
+			const sessions = await auth.list_sessions(user_id);
 			return { sessions, user_id };
 		} catch {
 			return fail(500, { message: 'Failed to load sessions' });
@@ -72,8 +72,8 @@ export const actions: Actions = {
 
 		const auth = new AuthController();
 		try {
-			await auth.DeleteSession(session_id);
-			sessionCache.evict(session_id);
+			await auth.delete_session(session_id);
+			SessionStore.evict(session_id);
 			return { revoked_session_id: session_id };
 		} catch {
 			return fail(500, { message: 'Failed to revoke session' });
@@ -89,10 +89,10 @@ export const actions: Actions = {
 
 		const auth = new AuthController();
 		try {
-			const sessions = await auth.ListSessions(user_id);
-			await auth.DeleteAllSessions(user_id);
+			const sessions = await auth.list_sessions(user_id);
+			await auth.delete_all_sessions(user_id);
 			for (const session of sessions) {
-				sessionCache.evict(session.session_id);
+				SessionStore.evict(session.session_id);
 			}
 			return { revoked_user_id: user_id };
 		} catch {
@@ -111,8 +111,8 @@ export const actions: Actions = {
 
 		const user_controller = new UserController();
 		try {
-			const user = await user_controller.UpdateRole(user_id, role as Role);
-			sessionCache.evictByUser(user_id);
+			const user = await user_controller.update_role(user_id, role as Role);
+			SessionStore.evict_by_user(user_id);
 			return { user };
 		} catch {
 			return fail(500, { message: 'Failed to update role' });

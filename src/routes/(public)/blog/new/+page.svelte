@@ -3,7 +3,7 @@
 	import { page } from '$app/state';
 	import { AlertStore } from '$lib/stores/alert.svelte';
 	import { PostStore } from '$lib/stores/post.svelte';
-	import MarkdownEditor from '$lib/components/MarkdownEditor.svelte';
+	import MarkdownEditor from '../MarkdownEditor.svelte';
 
 	let title = $state('');
 	let content = $state('');

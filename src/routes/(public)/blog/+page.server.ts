@@ -11,11 +11,11 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 	const options: ListOptions = {
 		search,
 		order_by,
-		...((await locals.getSession()) ? {} : { public: true })
+		...((await locals.get_session()) ? {} : { public: true })
 	};
 
 	try {
-		const posts = await post_controller.List(options);
+		const posts = await post_controller.list(options);
 		return {
 			posts,
 			search,

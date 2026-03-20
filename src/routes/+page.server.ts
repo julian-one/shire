@@ -6,18 +6,18 @@ export const load: PageServerLoad = async (event) => {
 	const geo_controller = new GeoController();
 	const meteo_controller = new MeteoController();
 
-	const clientIp = event.getClientAddress();
-	const locationPromise = geo_controller.Fetch(clientIp).catch(() => null);
+	const client_ip = event.getClientAddress();
+	const location_promise = geo_controller.fetch_location(client_ip).catch(() => null);
 
-	const weatherPromise = locationPromise.then(async (location) => {
+	const weather_promise = location_promise.then(async (location) => {
 		if (location) {
-			return await meteo_controller.Fetch(location.latitude, location.longitude).catch(() => null);
+			return await meteo_controller.fetch_weather(location.latitude, location.longitude).catch(() => null);
 		}
 		return null;
 	});
 
 	return {
-		location: locationPromise,
-		weather: weatherPromise
+		location: location_promise,
+		weather: weather_promise
 	};
 };

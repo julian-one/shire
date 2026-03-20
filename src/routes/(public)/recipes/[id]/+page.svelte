@@ -3,9 +3,9 @@
 	import { RecipeStore } from '$lib/stores/recipe.svelte';
 	import { goto } from '$app/navigation';
 	import type { Recipe } from '$lib/types/recipe';
-	import RecipePhoto from '$lib/components/recipe/RecipePhoto.svelte';
-	import { float_to_fraction } from '$lib/helpers/fraction';
-	import { nanoseconds_to_minutes } from '$lib/helpers/recipe-form';
+	import RecipePhoto from '../RecipePhoto.svelte';
+	import { float_to_fraction } from '../fraction';
+	import { nanoseconds_to_minutes } from '../recipe-form';
 
 	let { data } = $props();
 	let recipe = $derived(data.recipe as Recipe);

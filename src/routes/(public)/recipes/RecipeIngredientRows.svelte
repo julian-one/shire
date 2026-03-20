@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Unit, type FormIngredient } from '$lib/types/recipe';
 	import Select from '$lib/components/Select.svelte';
-	import { unit_options } from '$lib/helpers/recipe-form';
+	import { unit_options } from './recipe-form';
 
 	let {
 		ingredients = $bindable()

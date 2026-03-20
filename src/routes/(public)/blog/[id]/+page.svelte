@@ -2,7 +2,7 @@
 	import moment from 'moment';
 	import { goto } from '$app/navigation';
 	import { PostStore } from '$lib/stores/post.svelte';
-	import MarkdownPreview from '$lib/components/MarkdownPreview.svelte';
+	import MarkdownPreview from '../MarkdownPreview.svelte';
 
 	let { data } = $props();
 
@@ -47,15 +47,15 @@
 		</h1>
 
 		<div class="mt-6">
-			<!-- eslint-disable svelte/no-useless-mustaches -->
 			<p class="text-base-content/60 text-sm">
-				Published{#if !data.user || data.user.user_id !== data.post.user_id}{' '}by {data.post.username}{/if} on {moment(
-					data.post.created_at
-				).format('MMMM D, YYYY')}{#if data.post.updated_at && data.post.updated_at !== data.post.created_at}
-					{' · '}Last updated {moment(data.post.updated_at).format('MMMM D, YYYY')}
+				Published{#if !data.user || data.user.user_id !== data.post.user_id}
+					by {data.post.username}{/if} on {moment(data.post.created_at).format(
+					'MMMM D, YYYY'
+				)}{#if data.post.updated_at && data.post.updated_at !== data.post.created_at}
+					· Last updated {moment(data.post.updated_at).format('MMMM D, YYYY')}
 				{/if}
 				{#if data.session}
-					{' · '}
+					·
 					{#if data.post.public}
 						<span class="badge badge-success badge-sm">Public</span>
 					{:else}
@@ -63,8 +63,6 @@
 					{/if}
 				{/if}
 			</p>
-			<!-- eslint-enable svelte/no-useless-mustaches -->
-
 			{#if data.user?.user_id === data.post.user_id}
 				<div class="mt-6 flex flex-row gap-2">
 					<a
