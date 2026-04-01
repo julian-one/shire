@@ -96,3 +96,27 @@ export type ListOptions = {
 	cuisine?: string;
 	category?: string;
 };
+
+export enum Intensity {
+	RachaelRay = 1,
+	AltonBrown = 2,
+	JuliaChild = 3
+}
+
+export type RecipeLog = {
+	log_id: string;
+	user_id: string;
+	recipe_id: string;
+	notes?: string;
+	rating?: number;
+	duration?: number;
+	intensity?: Intensity;
+	created_at: string;
+};
+
+export type CreateRecipeLogRequest = {
+	notes?: string;
+	rating?: number;
+	duration?: number;
+	intensity?: Intensity;
+};

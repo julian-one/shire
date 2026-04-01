@@ -18,9 +18,14 @@ export const load: PageServerLoad = async ({ url }) => {
 	};
 
 	try {
-		const recipes = await controller.list(options);
+		const [recipes, bookmarked_ids] = await Promise.all([
+			controller.list(options),
+			controller.list_bookmarked_ids().catch(() => [] as string[])
+		]);
+
 		return {
 			recipes,
+			bookmarked_ids,
 			search,
 			order_by,
 			cuisine,
@@ -29,6 +34,7 @@ export const load: PageServerLoad = async ({ url }) => {
 	} catch {
 		return {
 			recipes: [],
+			bookmarked_ids: [] as string[],
 			search,
 			order_by,
 			cuisine,
