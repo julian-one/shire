@@ -1,11 +1,11 @@
 import { Cuisine, Category, Unit } from '$lib/types/recipe';
 
-export const cuisine_options = [
+export const cuisine_form_options = [
 	{ value: '', label: 'None' },
 	...Object.values(Cuisine).map((c) => ({ value: c, label: c }))
 ];
 
-export const category_options = [
+export const category_form_options = [
 	{ value: '', label: 'None' },
 	...Object.values(Category).map((c) => ({ value: c, label: c }))
 ];

@@ -2,24 +2,24 @@
 	import type { Session } from '$lib/types/session';
 
 	type Props = {
-		total_posts: number;
+		total_recipes: number;
 		session?: Session;
 	};
 
-	let { total_posts, session }: Props = $props();
+	let { total_recipes, session }: Props = $props();
 </script>
 
 <header class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
 	<div>
-		<h1 class="text-2xl font-black tracking-tight md:text-3xl lg:text-4xl">Blog</h1>
+		<h1 class="text-2xl font-black tracking-tight md:text-3xl lg:text-4xl">Recipes</h1>
 		<p class="text-base-content/60 text-sm md:text-base">
-			{total_posts}
-			{total_posts === 1 ? 'post' : 'posts'}
+			{total_recipes}
+			{total_recipes === 1 ? 'recipe' : 'recipes'}
 		</p>
 	</div>
 	{#if session}
 		<a
-			href="/blog/new"
+			href="/recipes/new"
 			class="btn btn-primary"
 		>
 			<svg
@@ -36,7 +36,7 @@
 					d="M12 4.5v15m7.5-7.5h-15"
 				/>
 			</svg>
-			New Post
+			New Recipe
 		</a>
 	{/if}
 </header>

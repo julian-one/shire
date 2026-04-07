@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { SvelteURLSearchParams } from 'svelte/reactivity';
 	import { goto } from '$app/navigation';
 	import { deserialize } from '$app/forms';
 	import { page } from '$app/state';
@@ -7,6 +6,7 @@
 	import { type Role } from '$lib/types/user';
 	import type { Session } from '$lib/types/session';
 	import type { OrderBy } from '$lib/types/database';
+	import Pagination from '$lib/components/Pagination.svelte';
 
 	import UserHeader from './UserHeader.svelte';
 	import UserFilters from './UserFilters.svelte';
@@ -31,21 +31,31 @@
 	let search = $derived(data.search);
 	let selected_role = $derived(data.role);
 
-	// Update URL when filters change
-	let debounce_timer: NodeJS.Timeout;
-	function update_url() {
-		const params = new SvelteURLSearchParams(page.url.searchParams);
-		if (search) params.set('search', search);
-		else params.delete('search');
+	let timer: ReturnType<typeof setTimeout>;
 
-		if (selected_role) params.set('role', selected_role);
-		else params.delete('role');
+	function apply_now() {
+		const u = new URL(page.url);
 
-		// Keep current sort
-		const order_by = page.url.searchParams.get('order_by');
-		if (order_by) params.set('order_by', order_by);
+		if (search && search !== data.defaults.search) u.searchParams.set('search', search);
+		else u.searchParams.delete('search');
 
-		goto(`?${params.toString()}`, { replaceState: true, keepFocus: true, noScroll: true });
+		if (selected_role && selected_role !== data.defaults.role) u.searchParams.set('role', selected_role);
+		else u.searchParams.delete('role');
+
+		const current_order_by = sort_criteria.map((c) => `${c.column}:${c.order}`).join(',');
+		if (current_order_by && current_order_by !== data.defaults.order_by) {
+			u.searchParams.set('order_by', current_order_by);
+		} else {
+			u.searchParams.delete('order_by');
+		}
+
+		u.searchParams.delete('offset');
+		goto(u, { keepFocus: true, noScroll: true, replaceState: true });
+	}
+
+	function trigger_update() {
+		clearTimeout(timer);
+		timer = setTimeout(apply_now, 300);
 	}
 
 	async function load_user_session(user_id: string) {
@@ -155,61 +165,42 @@
 		}
 	}
 
-	function handle_search(event: Event) {
-		search = (event.target as HTMLInputElement).value;
-		clearTimeout(debounce_timer);
-		debounce_timer = setTimeout(update_url, 300);
-	}
-
-	function handle_clear_filters() {
-		search = '';
-		selected_role = '';
-		const params = new SvelteURLSearchParams(page.url.searchParams);
-		params.delete('search');
-		params.delete('role');
-		params.delete('order_by');
-		goto(`?${params.toString()}`, { replaceState: true, keepFocus: true, noScroll: true });
-	}
-
 	function toggle_sort(column: string, event: MouseEvent) {
-		const isShift = event.shiftKey;
-		const existingIndex = sort_criteria.findIndex((c) => c.column === column);
+		const is_shift = event.shiftKey;
+		const existing_index = sort_criteria.findIndex((c) => c.column === column);
 		let new_criteria: OrderBy[];
 
-		if (existingIndex !== -1) {
-			const current = sort_criteria[existingIndex];
+		if (existing_index !== -1) {
+			const current = sort_criteria[existing_index];
 			const new_direction = current.order === 'asc' ? 'desc' : 'asc';
 
-			if (isShift) {
+			if (is_shift) {
 				new_criteria = [...sort_criteria];
-				new_criteria[existingIndex] = { column, order: new_direction };
+				new_criteria[existing_index] = { column, order: new_direction };
 			} else {
 				new_criteria = [{ column, order: new_direction }];
 			}
 		} else {
-			if (isShift) {
+			if (is_shift) {
 				new_criteria = [...sort_criteria, { column, order: 'asc' }];
 			} else {
 				new_criteria = [{ column, order: 'asc' }];
 			}
 		}
 
-		const order_by_str = new_criteria.map((c) => `${c.column}:${c.order}`).join(',');
-		const params = new SvelteURLSearchParams(page.url.searchParams);
-		params.set('order_by', order_by_str);
-		goto(`?${params.toString()}`, { replaceState: true, noScroll: true });
+		sort_criteria = new_criteria; // Need to temporarily update sort_criteria for apply map parsing
+		apply_now();
 	}
 </script>
 
 <div class="space-y-6 pb-8 md:pb-12">
-	<UserHeader total_users={users.length} />
+	<UserHeader total_users={data.total} />
 
 	<UserFilters
 		bind:search
 		bind:selected_role
-		on_search={handle_search}
-		on_clear={handle_clear_filters}
-		on_role_change={() => update_url()}
+		on_search={trigger_update}
+		on_role_change={apply_now}
 	/>
 
 	{#if data.error}
@@ -241,5 +232,11 @@
 		on_update_role={handle_update_role}
 		on_revoke_session={handle_revoke_session}
 		on_revoke_all={handle_revoke_all_sessions}
+	/>
+
+	<Pagination
+		total={data.total}
+		limit={data.limit}
+		offset={data.offset}
 	/>
 </div>

@@ -7,6 +7,7 @@ import type {
 	CreateRecipeLogRequest,
 	RecipeLog
 } from '$lib/types/recipe';
+import type { PaginatedResponse } from '$lib/types/database';
 
 export class RecipeController {
 	async create(request: CreateRequest): Promise<string> {
@@ -14,9 +15,9 @@ export class RecipeController {
 		return response.data.recipe_id as string;
 	}
 
-	async list(options?: ListOptions): Promise<Recipe[]> {
+	async list(options?: ListOptions): Promise<PaginatedResponse<Recipe>> {
 		const response = await Citadel.get('/recipes', { params: options });
-		return (response.data as Recipe[]) ?? [];
+		return response.data as PaginatedResponse<Recipe>;
 	}
 
 	async by_id(id: string): Promise<Recipe> {

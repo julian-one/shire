@@ -9,18 +9,18 @@
 	let { data, form } = $props();
 	let loading = $state(false);
 	let verified = $state(false);
-	let autoSubmitted = $state(false);
+	let auto_submitted = $state(false);
 
-	let verifyFormEl: HTMLFormElement | undefined = $state();
+	let verify_form_el: HTMLFormElement | undefined = $state();
 
-	let verifiedToken = $state('');
-	let verifiedUsername = $state('');
+	let verified_token = $state('');
+	let verified_username = $state('');
 	let password = $state('');
 
 	$effect(() => {
-		if (data.code && verifyFormEl && !autoSubmitted) {
-			autoSubmitted = true;
-			verifyFormEl.requestSubmit();
+		if (data.code && verify_form_el && !auto_submitted) {
+			auto_submitted = true;
+			verify_form_el.requestSubmit();
 		}
 	});
 </script>
@@ -30,8 +30,8 @@
 		<div class="card-body items-center text-center">
 			{#if verified}
 				<h2 class="card-title mb-4 text-3xl font-bold">Set Your Password</h2>
-				<p class="text-base-content/70 mb-6">
-					Welcome, <span class="font-semibold">{verifiedUsername}</span>! Create a password to finish setting up your
+				<p class="text-base-content/60 mb-6">
+					Welcome, <span class="font-semibold">{verified_username}</span>! Create a password to finish setting up your
 					account.
 				</p>
 
@@ -58,7 +58,7 @@
 						<input
 							type="hidden"
 							name="token"
-							value={verifiedToken}
+							value={verified_token}
 						/>
 
 						<label
@@ -96,7 +96,7 @@
 			{:else if data.code}
 				{#if form?.message}
 					<h2 class="card-title mb-4 text-3xl font-bold">Verification Failed</h2>
-					<p class="text-base-content/70 mb-6">{form.message}</p>
+					<p class="text-base-content/60 mb-6">{form.message}</p>
 					<a
 						href="/register"
 						class="btn btn-primary w-full">Back to registration</a
@@ -104,22 +104,22 @@
 				{:else}
 					<h2 class="card-title mb-4 text-3xl font-bold">Verifying Email</h2>
 					<span class="loading loading-spinner loading-lg"></span>
-					<p class="text-base-content/70 mt-4">Please wait while we verify your email...</p>
+					<p class="text-base-content/60 mt-4">Please wait while we verify your email...</p>
 				{/if}
 
 				<form
 					method="POST"
 					action="?/verify"
 					class="hidden"
-					bind:this={verifyFormEl}
+					bind:this={verify_form_el}
 					use:enhance={() => {
 						loading = true;
 						return async ({ result }: { result: ActionResult }) => {
 							if (result.type === 'success' && result.data) {
 								const d = result.data as { verified: boolean; token: string; username: string };
 								verified = d.verified;
-								verifiedToken = d.token;
-								verifiedUsername = d.username;
+								verified_token = d.token;
+								verified_username = d.username;
 							} else if (result.type === 'failure') {
 								AlertStore.add(result.data?.message, 'error');
 							}
@@ -136,10 +136,10 @@
 				</form>
 			{:else}
 				<h2 class="card-title mb-2 text-3xl font-bold">Verify your email</h2>
-				<p class="text-base-content/70 mb-2"> We sent a verification link to: </p>
+				<p class="text-base-content/60 mb-2"> We sent a verification link to: </p>
 				<p class="mb-6 font-semibold">{data.email}</p>
 
-				<p class="text-base-content/50 mb-6 text-sm">
+				<p class="text-base-content/60 mb-6 text-sm">
 					Check your inbox and click the link to verify your account. The link expires in 24 hours.
 				</p>
 
@@ -148,7 +148,7 @@
 						href="/register"
 						class="link text-base-content/60 text-sm">Back to registration</a
 					>
-					<span class="text-base-content/40 text-xs">Already verified your email?</span>
+					<span class="text-base-content/60 text-xs">Already verified your email?</span>
 					<a
 						href="/login"
 						class="link link-primary text-sm font-semibold">Login here</a

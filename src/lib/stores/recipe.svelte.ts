@@ -35,7 +35,7 @@ class SingleRecipe {
 		}
 	}
 
-	async delete(id: string): Promise<boolean> {
+	async delete_recipe(id: string): Promise<boolean> {
 		this.loading = true;
 		try {
 			await this.recipe_controller.delete_recipe(id);

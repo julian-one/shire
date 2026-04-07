@@ -1,7 +1,7 @@
 <script lang="ts">
 	import moment from 'moment';
 
-	function toShortTimezone(timezone: string): string {
+	function to_short_timezone(timezone: string): string {
 		return (
 			new Intl.DateTimeFormat('en-US', {
 				timeZone: timezone,
@@ -16,14 +16,14 @@
 
 	let user = $derived(data.user);
 
-	let currentTime = $state(moment().format('h:mm:ss A'));
-	let currentDate = $state(moment().format('MMM D, YYYY'));
+	let current_time = $state(moment().format('h:mm:ss A'));
+	let current_date = $state(moment().format('MMM D, YYYY'));
 
 	// Update time every second
 	$effect(() => {
 		const interval = setInterval(() => {
-			currentTime = moment().format('h:mm:ss A');
-			currentDate = moment().format('MMM D, YYYY');
+			current_time = moment().format('h:mm:ss A');
+			current_date = moment().format('MMM D, YYYY');
 		}, 1000);
 
 		return () => clearInterval(interval);
@@ -33,7 +33,7 @@
 <div class="pb-8 md:pb-12">
 	<!-- Header -->
 	<div class="mb-8">
-		<h1 class="text-2xl duration-3000 md:text-3xl lg:text-4xl">
+		<h1 class="text-2xl font-black tracking-tight md:text-3xl lg:text-4xl">
 			<span class="text-rotate leading-relaxed">
 				<span>
 					<span>Welcome{user ? ` ${user.username}` : ''}!</span>
@@ -68,8 +68,8 @@
 	<div class="stats stats-vertical border-base-content/10 lg:stats-horizontal w-full border">
 		<div class="stat">
 			<div class="stat-title">Local Time</div>
-			<div class="stat-value tabular-nums">{currentTime}</div>
-			<div class="stat-desc">{currentDate}</div>
+			<div class="stat-value tabular-nums">{current_time}</div>
+			<div class="stat-desc">{current_date}</div>
 		</div>
 
 		{#await data.location}
@@ -81,7 +81,7 @@
 		{:then location}
 			<div class="stat">
 				<div class="stat-title">Timezone</div>
-				<div class="stat-value text-2xl">{location?.timezone ? toShortTimezone(location.timezone) : '--'}</div>
+				<div class="stat-value text-2xl">{location?.timezone ? to_short_timezone(location.timezone) : '--'}</div>
 				<div class="stat-desc">{location?.timezone || 'Unknown'}</div>
 			</div>
 		{/await}
@@ -97,7 +97,7 @@
 					<div class="stat-value tabular-nums">{weather.temperature}°F</div>
 					<div class="stat-desc">{weather.condition}</div>
 				{:else}
-					<div class="stat-value opacity-30">--</div>
+					<div class="stat-value text-base-content/60">--</div>
 					<div class="stat-desc">Unable to load</div>
 				{/if}
 			{/await}
@@ -118,7 +118,7 @@
 						>{location.country} · {location.latitude.toFixed(4)}°, {location.longitude.toFixed(4)}°</div
 					>
 				{:else}
-					<div class="stat-value opacity-30">--</div>
+					<div class="stat-value text-base-content/60">--</div>
 				{/if}
 			</div>
 		{/await}

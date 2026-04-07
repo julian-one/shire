@@ -75,10 +75,10 @@
 							{/if}
 						</button>
 
-						<div class="divider text-xs opacity-50">OR</div>
+						<div class="divider text-base-content/60 text-xs">OR</div>
 
 						<div class="text-center">
-							<span class="text-sm opacity-70">Don't have an account?</span>
+							<span class="text-base-content/60 text-sm">Don't have an account?</span>
 							<a
 								href="/register"
 								class="link link-primary ml-1 text-sm font-semibold">Register now</a

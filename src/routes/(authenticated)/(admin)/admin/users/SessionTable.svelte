@@ -48,11 +48,11 @@
 	{#if sessions === undefined}
 		<div class="flex flex-col items-center justify-center gap-2 py-8">
 			<span class="loading loading-spinner loading-md text-primary"></span>
-			<span class="text-xs opacity-50">Loading sessions...</span>
+			<span class="text-base-content/60 text-xs">Loading sessions...</span>
 		</div>
 	{:else if sessions === null || sessions.length === 0}
 		<div class="bg-base-100/50 border-base-content/10 rounded-lg border border-dashed py-8 text-center">
-			<p class="text-sm opacity-50">No active sessions found for this user.</p>
+			<p class="text-base-content/60 text-sm">No active sessions found for this user.</p>
 		</div>
 	{:else}
 		<div class="border-base-content/10 bg-base-100 overflow-hidden rounded-lg border">
@@ -73,7 +73,7 @@
 								<div class="font-medium">
 									{moment(session.created_at).format('MMM D, YYYY')}
 								</div>
-								<div class="text-xs opacity-40">
+								<div class="text-base-content/60 text-xs">
 									{moment(session.created_at).format('HH:mm:ss')}
 								</div>
 							</td>
@@ -81,7 +81,7 @@
 								<div class="font-medium">
 									{moment(session.expires_at).format('MMM D, YYYY')}
 								</div>
-								<div class="text-xs opacity-40">
+								<div class="text-base-content/60 text-xs">
 									{moment(session.expires_at).fromNow()}
 								</div>
 							</td>

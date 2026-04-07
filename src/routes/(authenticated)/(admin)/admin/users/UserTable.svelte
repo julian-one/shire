@@ -36,9 +36,9 @@
 </script>
 
 <div class="rounded-box border-base-content/10 bg-base-100 overflow-x-auto border">
-	<table class="table-md table">
+	<table class="table">
 		<thead>
-			<tr class="bg-base-200/50">
+			<tr>
 				<th class="w-10"></th>
 				<th
 					class="cursor-pointer select-none"

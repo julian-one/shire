@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { Unit, type FormIngredient } from '$lib/types/recipe';
-	import Select from '$lib/components/Select.svelte';
-	import { unit_options } from './recipe-form';
+	import { unit_options } from './form';
 
 	let {
 		ingredients = $bindable()
@@ -19,7 +18,7 @@
 </script>
 
 <div class="space-y-3">
-	<div class="hidden grid-cols-12 gap-2 text-xs font-bold uppercase opacity-40 md:grid">
+	<div class="text-base-content/60 hidden grid-cols-12 gap-2 text-xs font-bold uppercase md:grid">
 		<div class="col-span-2">Amount</div>
 		<div class="col-span-3">Unit</div>
 		<div class="col-span-6">Item</div>
@@ -39,10 +38,14 @@
 				<div class="validator-hint hidden">Enter a number or fraction</div>
 			</div>
 			<div class="col-span-3">
-				<Select
-					options={unit_options}
+				<select
+					class="select w-full"
 					bind:value={ingredient.unit}
-				/>
+				>
+					{#each unit_options as option (option.value)}
+						<option value={option.value}>{option.label}</option>
+					{/each}
+				</select>
 			</div>
 			<div class="col-span-6">
 				<input

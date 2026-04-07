@@ -48,7 +48,7 @@
 	<div class="card bg-base-100 border-base-content/10 border">
 		<div class="card-body p-0">
 			<!-- Profile Header -->
-			<div class="bg-primary/5 flex flex-col items-center gap-4 rounded-t-2xl p-8 sm:flex-row sm:gap-8">
+			<div class="flex flex-col items-center gap-4 p-8 sm:flex-row sm:gap-8">
 				<div class="avatar placeholder">
 					<div
 						class="bg-primary text-primary-content ring-primary ring-offset-base-100 flex w-24 items-center justify-center rounded-full ring ring-offset-2"
@@ -75,25 +75,20 @@
 				<div class="grid gap-10">
 					<!-- Account Details Section -->
 					<div class="space-y-6">
-						<div class="flex items-center gap-2">
-							<span class="bg-primary h-1.5 w-1.5 rounded-full"></span>
-							<h3 class="text-base-content/40 text-xs font-bold tracking-widest uppercase"> Account Details </h3>
-						</div>
+						<h3 class="text-base-content/60 text-xs font-bold tracking-wide uppercase">Account Details</h3>
 
 						<div class="grid gap-6">
 							<div class="flex items-start justify-between gap-4">
 								{#if editing}
 									<div class="form-control flex-1">
 										<label
-											class="label pt-0"
-											for="username-input"
+											class="label text-base-content/60 pt-0 text-sm font-bold tracking-wide uppercase"
+											for="username-input">Username</label
 										>
-											<span class="label-text text-base-content/40 text-xs font-bold uppercase">Username</span>
-										</label>
 										<input
 											id="username-input"
 											type="text"
-											class="input input-bordered validator w-full"
+											class="input validator w-full"
 											required
 											placeholder="Username"
 											pattern="[A-Za-z][A-Za-z0-9\-]*"
@@ -128,7 +123,7 @@
 									</div>
 								{:else}
 									<div class="space-y-1">
-										<div class="text-base-content/40 text-xs font-bold uppercase">Username</div>
+										<div class="text-base-content/60 text-sm font-bold tracking-wide uppercase">Username</div>
 										<div class="text-lg font-semibold">{current.username}</div>
 									</div>
 									<button
@@ -145,10 +140,7 @@
 
 					<!-- Security Section -->
 					<div class="space-y-6">
-						<div class="flex items-center gap-2">
-							<span class="bg-warning h-1.5 w-1.5 rounded-full"></span>
-							<h3 class="text-base-content/40 text-xs font-bold tracking-widest uppercase"> Security </h3>
-						</div>
+						<h3 class="text-base-content/60 text-xs font-bold tracking-wide uppercase">Security</h3>
 
 						<div class="grid gap-6">
 							<div class="flex items-start justify-between gap-4">
@@ -157,15 +149,13 @@
 										<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 											<div class="form-control">
 												<label
-													class="label pt-0"
-													for="new-password-input"
+													class="label text-base-content/60 pt-0 text-sm font-bold tracking-wide uppercase"
+													for="new-password-input">New Password</label
 												>
-													<span class="label-text text-base-content/40 text-xs font-bold uppercase">New Password</span>
-												</label>
 												<input
 													id="new-password-input"
 													type="password"
-													class="input input-bordered validator w-full"
+													class="input validator w-full"
 													required
 													placeholder="New password"
 													minlength="8"
@@ -175,17 +165,13 @@
 											</div>
 											<div class="form-control">
 												<label
-													class="label pt-0"
-													for="confirm-password-input"
+													class="label text-base-content/60 pt-0 text-sm font-bold tracking-wide uppercase"
+													for="confirm-password-input">Confirm Password</label
 												>
-													<span class="label-text text-base-content/40 text-xs font-bold uppercase"
-														>Confirm Password</span
-													>
-												</label>
 												<input
 													id="confirm-password-input"
 													type="password"
-													class="input input-bordered validator w-full"
+													class="input validator w-full"
 													required
 													placeholder="Confirm password"
 													minlength="8"
@@ -228,7 +214,7 @@
 									</div>
 								{:else}
 									<div class="space-y-1">
-										<div class="text-base-content/40 text-xs font-bold uppercase">Password</div>
+										<div class="text-base-content/60 text-sm font-bold tracking-wide uppercase">Password</div>
 										<div class="text-lg font-semibold">••••••••</div>
 									</div>
 									<button
@@ -243,24 +229,20 @@
 						</div>
 					</div>
 
-					<!-- System Info Section -->
 					<div class="space-y-6">
-						<div class="flex items-center gap-2">
-							<span class="bg-secondary h-1.5 w-1.5 rounded-full"></span>
-							<h3 class="text-base-content/40 text-xs font-bold tracking-widest uppercase"> System Information </h3>
-						</div>
+						<h3 class="text-base-content/60 text-xs font-bold tracking-wide uppercase">System Information</h3>
 
-						<div class="stats stats-vertical sm:stats-horizontal border-base-content/10 w-full overflow-hidden border">
-							<div class="stat px-6 py-4">
-								<div class="stat-title text-xs font-bold uppercase opacity-60">Member Since</div>
-								<div class="stat-value text-xl">{moment(current.created_at).format('MMM D, YYYY')}</div>
-								<div class="stat-desc font-medium">{moment(current.created_at).fromNow()}</div>
+						<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+							<div class="space-y-1">
+								<div class="text-base-content/60 text-sm font-bold tracking-wide uppercase">Member Since</div>
+								<div class="text-lg font-semibold">{moment(current.created_at).format('MMM D, YYYY')}</div>
+								<div class="text-base-content/60 text-xs">{moment(current.created_at).fromNow()}</div>
 							</div>
 
-							<div class="stat border-base-content/10 border-t px-6 py-4 sm:border-t-0 sm:border-l">
-								<div class="stat-title text-xs font-bold uppercase opacity-60">Last Updated</div>
-								<div class="stat-value text-xl">{moment(current.updated_at).format('MMM D, YYYY')}</div>
-								<div class="stat-desc font-medium">{moment(current.updated_at).fromNow()}</div>
+							<div class="space-y-1">
+								<div class="text-base-content/60 text-sm font-bold tracking-wide uppercase">Last Updated</div>
+								<div class="text-lg font-semibold">{moment(current.updated_at).format('MMM D, YYYY')}</div>
+								<div class="text-base-content/60 text-xs">{moment(current.updated_at).fromNow()}</div>
 							</div>
 						</div>
 					</div>

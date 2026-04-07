@@ -66,7 +66,7 @@
 		<svg
 			width="12.3"
 			height="12.3"
-			class="hidden h-2 w-2 fill-current opacity-60 sm:inline-block"
+			class="text-base-content/60 hidden h-2 w-2 fill-current sm:inline-block"
 			xmlns="http://www.w3.org/2000/svg"
 			viewBox="0 0 2048 2048"
 		>

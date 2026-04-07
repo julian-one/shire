@@ -6,7 +6,7 @@
 	import { RecipeStore } from '$lib/stores/recipe.svelte';
 	import { Unit, type FormIngredient, type Cuisine, type Category } from '$lib/types/recipe';
 	import { float_to_fraction, fraction_to_float } from '../fraction';
-	import { minutes_to_nanoseconds, nanoseconds_to_minutes } from '../recipe-form';
+	import { minutes_to_nanoseconds, nanoseconds_to_minutes } from '../form';
 	import RecipeBasicsFields from '../RecipeBasicsFields.svelte';
 	import RecipeIngredientRows from '../RecipeIngredientRows.svelte';
 	import RecipeInstructionRows from '../RecipeInstructionRows.svelte';
@@ -227,7 +227,7 @@
 			<fieldset class="space-y-6">
 				<legend class="sr-only">Ingredients</legend>
 
-				<span class="text-sm font-bold tracking-wide uppercase opacity-60">Ingredients</span>
+				<span class="text-base-content/60 text-sm font-bold tracking-wide uppercase">Ingredients</span>
 				<RecipeIngredientRows bind:ingredients />
 
 				<div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
@@ -249,7 +249,7 @@
 			<fieldset class="space-y-6">
 				<legend class="sr-only">Instructions</legend>
 
-				<span class="text-sm font-bold tracking-wide uppercase opacity-60">Instructions</span>
+				<span class="text-base-content/60 text-sm font-bold tracking-wide uppercase">Instructions</span>
 				<RecipeInstructionRows bind:instructions />
 
 				<div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">

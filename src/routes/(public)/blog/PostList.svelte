@@ -1,58 +1,23 @@
 <script lang="ts">
 	import moment from 'moment';
+	import SortHeader from '$lib/components/SortHeader.svelte';
 	import type { ListablePost } from '$lib/types/post';
 	import type { Session } from '$lib/types/session';
-	import type { User } from '$lib/types/user';
 
 	type Props = {
 		posts: ListablePost[];
 		session?: Session;
-		user?: User;
+		has_active_filters: boolean;
+		order_by: string;
+		on_sort: (value: string) => void;
 	};
 
-	let { posts, session, user }: Props = $props();
-
-	let my_posts = $derived(user ? posts.filter((p) => p.user_id === user.user_id) : []);
-	let public_posts = $derived(user ? posts.filter((p) => p.user_id !== user.user_id) : posts);
+	let { posts, session, has_active_filters, order_by, on_sort }: Props = $props();
 </script>
-
-{#snippet postGrid(items: ListablePost[])}
-	<div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-		{#each items as post (post.post_id)}
-			<a
-				href="/blog/{post.post_id}"
-				class="card bg-base-100 border-base-content/10 border"
-			>
-				<div class="card-body flex flex-col">
-					{#if session}
-						<div class="flex items-center justify-end text-xs opacity-50">
-							{#if post.public}
-								<span class="badge badge-success badge-xs">Public</span>
-							{:else}
-								<span class="badge badge-ghost badge-xs">Private</span>
-							{/if}
-						</div>
-					{/if}
-					<h2 class="card-title text-lg md:text-xl">
-						{post.title.length > 30 ? `${post.title.substring(0, 30).trim()}...` : post.title.trim()}
-					</h2>
-					<p class="mt-auto pt-4 text-xs opacity-50">
-						Published{#if !user || post.user_id !== user.user_id}
-							by {post.username}{/if} on {moment(post.created_at).format(
-							'MMM D, YYYY'
-						)}{#if post.updated_at && post.updated_at !== post.created_at}
-							· Last updated {moment(post.updated_at).format('MMM D, YYYY')}
-						{/if}
-					</p>
-				</div>
-			</a>
-		{/each}
-	</div>
-{/snippet}
 
 {#if posts.length === 0}
 	<div
-		class="border-base-content/20 mt-12 flex flex-col items-center justify-center rounded-xl border border-dashed py-20 text-center"
+		class="border-base-content/10 mt-12 flex flex-col items-center justify-center rounded-xl border border-dashed py-20 text-center"
 	>
 		<div class="bg-base-200 rounded-full p-4">
 			<svg
@@ -61,7 +26,7 @@
 				viewBox="0 0 24 24"
 				stroke-width="1.5"
 				stroke="currentColor"
-				class="h-8 w-8 opacity-40"
+				class="text-base-content/60 h-8 w-8"
 			>
 				<path
 					stroke-linecap="round"
@@ -71,8 +36,10 @@
 			</svg>
 		</div>
 		<h3 class="mt-4 text-lg font-bold">No posts found</h3>
-		<p class="mt-1 text-sm opacity-60">
-			{#if session}
+		<p class="text-base-content/60 mt-1 text-sm">
+			{#if has_active_filters}
+				Try adjusting your filters.
+			{:else if session}
 				Start sharing your thoughts with the community.
 			{:else}
 				Want to share your thoughts? <a
@@ -82,28 +49,56 @@
 			{/if}
 		</p>
 	</div>
-{:else if user}
-	<div class="space-y-8">
-		{#if my_posts.length > 0}
-			<section>
-				<div class="mb-4 flex items-center gap-2">
-					<h2 class="text-lg font-bold md:text-xl">My Posts</h2>
-					<span class="badge badge-neutral badge-sm">{my_posts.length}</span>
-				</div>
-				{@render postGrid(my_posts)}
-			</section>
-		{/if}
-
-		{#if public_posts.length > 0}
-			<section>
-				<div class="mb-4 flex items-center gap-2">
-					<h2 class="text-lg font-bold md:text-xl">Public Posts</h2>
-					<span class="badge badge-neutral badge-sm">{public_posts.length}</span>
-				</div>
-				{@render postGrid(public_posts)}
-			</section>
-		{/if}
-	</div>
 {:else}
-	{@render postGrid(posts)}
+	<div class="rounded-box border-base-content/10 bg-base-100 overflow-x-auto border">
+		<table class="table">
+			<thead>
+				<tr>
+					<SortHeader
+						label="Title"
+						field="title"
+						{order_by}
+						{on_sort}
+					/>
+					<th class="hidden sm:table-cell">Author</th>
+					{#if session}
+						<th class="hidden sm:table-cell">Status</th>
+					{/if}
+					<SortHeader
+						label="Date"
+						field="created_at"
+						{order_by}
+						{on_sort}
+					/>
+				</tr>
+			</thead>
+			<tbody>
+				{#each posts as post (post.post_id)}
+					<tr>
+						<td>
+							<a
+								href="/blog/{post.post_id}"
+								class="link"
+							>
+								{post.title.length > 60 ? `${post.title.substring(0, 60).trim()}...` : post.title.trim()}
+							</a>
+						</td>
+						<td class="text-base-content/60 hidden sm:table-cell">{post.username}</td>
+						{#if session}
+							<td class="hidden sm:table-cell">
+								{#if post.public}
+									<span class="badge badge-success badge-sm">Public</span>
+								{:else}
+									<span class="badge badge-ghost badge-sm">Private</span>
+								{/if}
+							</td>
+						{/if}
+						<td class="text-base-content/60 text-sm">
+							{moment(post.created_at).format('MMM D, YYYY')}
+						</td>
+					</tr>
+				{/each}
+			</tbody>
+		</table>
+	</div>
 {/if}
