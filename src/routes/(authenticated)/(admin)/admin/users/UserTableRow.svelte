@@ -62,7 +62,7 @@
 				</div>
 				<div class="min-w-0">
 					<div class="truncate text-sm font-bold">{user.username}</div>
-					<div class="truncate text-xs opacity-50">
+					<div class="text-base-content/60 truncate text-xs">
 						{user.email}
 					</div>
 				</div>
@@ -81,7 +81,7 @@
 		</td>
 		<td>
 			<div class="text-sm">{moment(user.created_at).format('ll')}</div>
-			<div class="text-xs opacity-40">{moment(user.created_at).fromNow()}</div>
+			<div class="text-base-content/60 text-xs">{moment(user.created_at).fromNow()}</div>
 		</td>
 	</tr>
 	{#if is_expanded}

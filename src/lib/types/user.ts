@@ -21,4 +21,6 @@ export type ListOptions = {
 	search?: string;
 	role?: string;
 	order_by?: string;
+	limit?: number;
+	offset?: number;
 };

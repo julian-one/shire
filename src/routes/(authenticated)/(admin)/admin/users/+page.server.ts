@@ -4,43 +4,50 @@ import { UserController } from '$lib/controllers/user';
 import { AuthController } from '$lib/controllers/auth';
 import { SessionStore } from '$lib/server/session';
 import { Role } from '$lib/types/user';
-import type { ListOptions } from '$lib/types/user';
 
 const VALID_ROLES = Object.values(Role) as string[];
 
-async function requireAdmin(locals: App.Locals) {
+async function require_admin(locals: App.Locals) {
 	const user = await locals.get_user();
 	if (user?.role !== 'admin') error(403, 'Forbidden');
 }
 
 export const load: PageServerLoad = async ({ url, locals }) => {
-	await requireAdmin(locals);
+	await require_admin(locals);
 	const user_controller = new UserController();
 
-	const search = url.searchParams.get('search') || '';
-	const role = url.searchParams.get('role') || '';
-	const order_by = url.searchParams.get('order_by') || 'created_at:desc';
-
-	const options: ListOptions = {
-		search,
-		role,
-		order_by
+	const defaults = {
+		search: '',
+		role: '',
+		order_by: 'created_at:desc'
 	};
 
+	const options = {
+		search: url.searchParams.get('search') || defaults.search,
+		role: url.searchParams.get('role') || defaults.role,
+		order_by: url.searchParams.get('order_by') || defaults.order_by
+	};
+
+	const offset = parseInt(url.searchParams.get('offset') || '0', 10) || 0;
+
 	try {
-		const users = await user_controller.list(options);
+		const result = await user_controller.list({ ...options, offset });
 		return {
-			users,
-			search,
-			role,
-			order_by
+			users: result.items,
+			total: result.total,
+			limit: result.limit,
+			offset: result.offset,
+			...options,
+			defaults
 		};
 	} catch {
 		return {
 			users: [],
-			search,
-			role,
-			order_by,
+			total: 0,
+			limit: 20,
+			offset: 0,
+			...options,
+			defaults,
 			error: 'Failed to load users'
 		};
 	}
@@ -48,7 +55,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 
 export const actions: Actions = {
 	list_sessions: async ({ request, locals }) => {
-		await requireAdmin(locals);
+		await require_admin(locals);
 
 		const form = await request.formData();
 		const user_id = form.get('user_id') as string;
@@ -56,15 +63,15 @@ export const actions: Actions = {
 
 		const auth = new AuthController();
 		try {
-			const sessions = await auth.list_sessions(user_id);
-			return { sessions, user_id };
+			const result = await auth.list_sessions(user_id);
+			return { sessions: result.items, user_id };
 		} catch {
 			return fail(500, { message: 'Failed to load sessions' });
 		}
 	},
 
 	revoke_session: async ({ request, locals }) => {
-		await requireAdmin(locals);
+		await require_admin(locals);
 
 		const form = await request.formData();
 		const session_id = form.get('session_id') as string;
@@ -81,7 +88,7 @@ export const actions: Actions = {
 	},
 
 	revoke_all_sessions: async ({ request, locals }) => {
-		await requireAdmin(locals);
+		await require_admin(locals);
 
 		const form = await request.formData();
 		const user_id = form.get('user_id') as string;
@@ -89,9 +96,9 @@ export const actions: Actions = {
 
 		const auth = new AuthController();
 		try {
-			const sessions = await auth.list_sessions(user_id);
+			const result = await auth.list_sessions(user_id);
 			await auth.delete_all_sessions(user_id);
-			for (const session of sessions) {
+			for (const session of result.items) {
 				SessionStore.evict(session.session_id);
 			}
 			return { revoked_user_id: user_id };
@@ -101,7 +108,7 @@ export const actions: Actions = {
 	},
 
 	update_role: async ({ request, locals }) => {
-		await requireAdmin(locals);
+		await require_admin(locals);
 
 		const form = await request.formData();
 		const user_id = form.get('user_id') as string;

@@ -1,10 +1,11 @@
 import { Citadel } from '$lib/controllers/citadel';
 import type { User, ListOptions, Role } from '$lib/types/user';
+import type { PaginatedResponse } from '$lib/types/database';
 
 export class UserController {
-	async list(options?: ListOptions): Promise<User[]> {
+	async list(options?: ListOptions): Promise<PaginatedResponse<User>> {
 		const response = await Citadel.get('/users', { params: options });
-		return (response.data as User[]) ?? [];
+		return response.data as PaginatedResponse<User>;
 	}
 
 	async by_id(user_id: string): Promise<User> {

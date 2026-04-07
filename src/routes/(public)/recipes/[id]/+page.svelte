@@ -7,7 +7,7 @@
 	import { Intensity } from '$lib/types/recipe';
 	import RecipePhoto from '../RecipePhoto.svelte';
 	import { float_to_fraction } from '../fraction';
-	import { nanoseconds_to_minutes } from '../recipe-form';
+	import { nanoseconds_to_minutes } from '../form';
 
 	let { data } = $props();
 	let recipe = $derived(data.recipe as Recipe);
@@ -78,7 +78,7 @@
 
 	async function delete_recipe() {
 		if (confirm('Are you sure you want to delete this recipe?')) {
-			const success = await RecipeStore.delete(recipe.recipe_id);
+			const success = await RecipeStore.delete_recipe(recipe.recipe_id);
 			if (success) {
 				goto('/recipes');
 			}
@@ -107,10 +107,8 @@
 	}
 
 	function render_stars(rating: number): string {
-		const full = Math.floor(rating);
-		const half = rating % 1 >= 0.5 ? 1 : 0;
-		const empty = 5 - full - half;
-		return '★'.repeat(full) + (half ? '½' : '') + '☆'.repeat(empty);
+		const empty = 5 - rating;
+		return '★'.repeat(rating) + '☆'.repeat(empty);
 	}
 </script>
 
@@ -134,7 +132,7 @@
 
 	<div class="mt-6">
 		{#if recipe.description}
-			<p class="text-lg leading-relaxed opacity-70">
+			<p class="text-base-content/60 text-lg leading-relaxed">
 				{recipe.description}
 			</p>
 		{/if}
@@ -240,46 +238,58 @@
 
 	<!-- Cook Log Form -->
 	{#if show_log_form}
-		<div class="border-base-content/10 bg-base-200 mt-6 rounded-lg border p-4 md:p-6">
-			<h3 class="text-lg font-bold">Log Your Cook</h3>
-
-			<div class="mt-4 space-y-4">
-				<div class="form-control">
-					<label
-						class="label"
-						for="log-notes"
-					>
-						<span class="label-text font-medium">Notes</span>
-					</label>
-					<textarea
-						id="log-notes"
-						class="textarea textarea-bordered w-full"
-						rows="4"
-						placeholder="e.g. Added 5 extra minutes at altitude, doubled the garlic..."
-						bind:value={log_notes}
-					></textarea>
+		<div class="border-base-content/10 bg-base-200 mt-6 rounded-lg border p-3 md:p-4">
+			<div class="flex items-center justify-between">
+				<div>
+					<h3 class="text-sm font-bold">Log Your Cook</h3>
+					<p class="text-base-content/60 text-xs">All fields optional</p>
 				</div>
+				<div class="flex items-center gap-2">
+					<button
+						class="btn btn-ghost btn-xs"
+						onclick={reset_log_form}>Cancel</button
+					>
+					<button
+						class="btn btn-primary btn-xs"
+						disabled={RecipeStore.loading}
+						onclick={submit_log}
+					>
+						{#if RecipeStore.loading}
+							<span class="loading loading-spinner loading-xs"></span>
+						{:else}
+							Save
+						{/if}
+					</button>
+				</div>
+			</div>
 
-				<div class="flex flex-col gap-4 sm:flex-row">
-					<div class="form-control flex-1">
+			<div class="mt-3 space-y-3">
+				<textarea
+					id="log-notes"
+					class="textarea textarea-sm w-full"
+					rows="2"
+					placeholder="Notes — e.g. doubled the garlic, added 5 extra mins at altitude..."
+					bind:value={log_notes}
+				></textarea>
+
+				<div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+					<div class="form-control">
 						<label
-							class="label"
-							for="log-rating"
+							class="label text-base-content/60 py-0.5 text-sm font-bold tracking-wide uppercase"
+							for="log-rating">Rating</label
 						>
-							<span class="label-text font-medium">Rating</span>
-						</label>
-						<div class="rating rating-half rating-lg">
+						<div class="rating rating-sm">
 							<input
 								type="radio"
 								class="rating-hidden"
 								checked={log_rating === 0}
 								onclick={() => (log_rating = 0)}
 							/>
-							{#each [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5] as value, i (value)}
+							{#each [1, 2, 3, 4, 5] as value (value)}
 								<input
 									type="radio"
 									name="log-rating"
-									class="mask mask-star-2 bg-warning {i % 2 === 0 ? 'mask-half-1' : 'mask-half-2'}"
+									class="mask mask-star-2 bg-warning"
 									checked={log_rating === value}
 									onclick={() => (log_rating = value)}
 								/>
@@ -287,60 +297,37 @@
 						</div>
 					</div>
 
-					<div class="form-control flex-1">
+					<div class="form-control">
 						<label
-							class="label"
-							for="log-duration"
+							class="label text-base-content/60 py-0.5 text-sm font-bold tracking-wide uppercase"
+							for="log-duration">How long did it really take?</label
 						>
-							<span class="label-text font-medium">Duration (minutes)</span>
-						</label>
 						<input
 							id="log-duration"
 							type="number"
 							min="1"
-							class="input input-bordered w-full"
-							placeholder="e.g. 45"
+							class="input input-sm w-full"
+							placeholder="Minutes"
 							bind:value={log_duration}
 						/>
 					</div>
-				</div>
 
-				<div class="form-control">
-					<label
-						class="label"
-						for="log-intensity"
-					>
-						<span class="label-text font-medium">Intensity</span>
-					</label>
-					<select
-						id="log-intensity"
-						class="select select-bordered w-full"
-						bind:value={log_intensity}
-					>
-						<option value={0}>Select intensity...</option>
-						{#each intensity_options as opt (opt.value)}
-							<option value={opt.value}>{opt.label} — {opt.description}</option>
-						{/each}
-					</select>
-				</div>
-
-				<div class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-					<button
-						class="btn btn-ghost btn-sm"
-						onclick={reset_log_form}>Cancel</button
-					>
-					<button
-						class="btn btn-primary btn-sm"
-						disabled={RecipeStore.loading}
-						onclick={submit_log}
-					>
-						{#if RecipeStore.loading}
-							<span class="loading loading-spinner"></span>
-							Saving...
-						{:else}
-							Save Log
-						{/if}
-					</button>
+					<div class="form-control">
+						<label
+							class="label text-base-content/60 py-0.5 text-sm font-bold tracking-wide uppercase"
+							for="log-intensity">How difficult was it?</label
+						>
+						<select
+							id="log-intensity"
+							class="select select-sm w-full"
+							bind:value={log_intensity}
+						>
+							<option value={0}>Pick a level...</option>
+							{#each intensity_options as opt (opt.value)}
+								<option value={opt.value}>{opt.label}</option>
+							{/each}
+						</select>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -356,7 +343,7 @@
 							{float_to_fraction(ingredient.amount)}
 							{ingredient.unit}
 						</span>
-						<span class="text-base-content/70">{ingredient.item}</span>
+						<span class="text-base-content/60">{ingredient.item}</span>
 					</li>
 				{/each}
 			</ul>
@@ -367,7 +354,7 @@
 			<ol class="mt-4 space-y-6">
 				{#each recipe.instructions as step, i (i)}
 					<li class="flex gap-4">
-						<span class="text-base-content/40 shrink-0 pt-0.5 text-sm font-semibold tabular-nums">
+						<span class="text-base-content/60 shrink-0 pt-0.5 text-sm font-semibold tabular-nums">
 							{i + 1}.
 						</span>
 						<p class="text-sm leading-relaxed md:text-base">{step}</p>
@@ -381,13 +368,19 @@
 	{#if recipe_logs.length > 0}
 		<div class="mt-10">
 			<h2 class="text-lg font-bold tracking-tight md:text-xl">Your Cook Log</h2>
-			<div class="mt-4 space-y-4">
+			<div class="mt-4 space-y-3">
 				{#each recipe_logs as log (log.log_id)}
 					<div class="border-base-content/10 rounded-lg border p-4">
-						<div class="flex items-start justify-between">
-							<span class="text-base-content/50 text-xs">{format_date(log.created_at)}</span>
+						<div class="flex items-center justify-between">
+							<div class="flex items-center gap-3">
+								<span class="text-base-content/60 text-xs">{format_date(log.created_at)}</span>
+								{#if log.rating}
+									<span class="text-warning text-sm font-medium">{render_stars(log.rating)}</span>
+								{/if}
+							</div>
 							<button
 								class="btn btn-ghost btn-xs text-error"
+								aria-label="Delete cook log"
 								onclick={() => delete_log(log.log_id)}
 							>
 								<svg
@@ -407,17 +400,16 @@
 							</button>
 						</div>
 
-						<div class="text-base-content/60 mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm">
-							{#if log.rating}
-								<span class="text-warning font-medium">{render_stars(log.rating)} {log.rating}</span>
-							{/if}
-							{#if log.duration}
-								<span>{nanoseconds_to_minutes(log.duration)} mins</span>
-							{/if}
-							{#if log.intensity}
-								<span class="badge badge-sm badge-outline">{intensity_label(log.intensity)}</span>
-							{/if}
-						</div>
+						{#if log.duration || log.intensity}
+							<div class="text-base-content/60 mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm">
+								{#if log.duration}
+									<span>Took {nanoseconds_to_minutes(log.duration)} mins</span>
+								{/if}
+								{#if log.intensity}
+									<span class="badge badge-sm badge-outline">{intensity_label(log.intensity)}</span>
+								{/if}
+							</div>
+						{/if}
 
 						{#if log.notes}
 							<p class="mt-2 text-sm leading-relaxed whitespace-pre-wrap">{log.notes}</p>

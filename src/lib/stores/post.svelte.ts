@@ -34,7 +34,7 @@ class SinglePost {
 		}
 	}
 
-	async delete(id: string): Promise<boolean> {
+	async delete_post(id: string): Promise<boolean> {
 		this.loading = true;
 		try {
 			await this.post_controller.delete_post(id);

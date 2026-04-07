@@ -2,14 +2,14 @@
 	import moment from 'moment';
 	import { goto } from '$app/navigation';
 	import { PostStore } from '$lib/stores/post.svelte';
-	import MarkdownPreview from '../MarkdownPreview.svelte';
+	import PostPreview from '../PostPreview.svelte';
 
 	let { data } = $props();
 
 	async function handle_delete() {
 		if (!data.post) return;
 		if (confirm('Are you sure you want to delete this post?')) {
-			const success = await PostStore.delete(data.post.post_id);
+			const success = await PostStore.delete_post(data.post.post_id);
 			if (success) {
 				goto('/blog');
 			}
@@ -78,7 +78,7 @@
 		</div>
 
 		<div class="mt-10">
-			<MarkdownPreview content={data.post.content} />
+			<PostPreview content={data.post.content} />
 		</div>
 	</div>
 {/if}

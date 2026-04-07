@@ -45,7 +45,7 @@
 						minlength="3"
 						maxlength="30"
 					/>
-					<p class="validator-hint hidden"> 3-30 characters. Only letters, numbers or dash. </p>
+					<div class="validator-hint hidden"> 3-30 characters. Only letters, numbers or dash. </div>
 
 					<label
 						for="email"
@@ -76,10 +76,10 @@
 							{/if}
 						</button>
 
-						<div class="divider text-xs opacity-50">OR</div>
+						<div class="divider text-base-content/60 text-xs">OR</div>
 
 						<div class="text-center">
-							<span class="text-sm opacity-70">Already have an account?</span>
+							<span class="text-base-content/60 text-sm">Already have an account?</span>
 							<a
 								href="/login"
 								class="link link-primary ml-1 text-sm font-semibold">Login here</a

@@ -2,7 +2,7 @@
 	import { goto, invalidateAll } from '$app/navigation';
 	import { AlertStore } from '$lib/stores/alert.svelte';
 	import { PostStore } from '$lib/stores/post.svelte';
-	import MarkdownEditor from '../../MarkdownEditor.svelte';
+	import PostEditor from '../../PostEditor.svelte';
 
 	let { data } = $props();
 
@@ -62,7 +62,7 @@
 				<div>
 					<label
 						for="title"
-						class="text-sm font-bold tracking-wide uppercase opacity-60">Title</label
+						class="text-base-content/60 text-sm font-bold tracking-wide uppercase">Title</label
 					>
 					<input
 						type="text"
@@ -77,9 +77,9 @@
 				</div>
 
 				<div>
-					<span class="text-sm font-bold tracking-wide uppercase opacity-60">Content</span>
+					<span class="text-base-content/60 text-sm font-bold tracking-wide uppercase">Content</span>
 					<div class="mt-2">
-						<MarkdownEditor
+						<PostEditor
 							{content}
 							disabled={PostStore.loading}
 							onchange={(md) => (content = md)}
@@ -90,10 +90,10 @@
 				<div class="flex items-center justify-between">
 					<label
 						for="visibility"
-						class="text-sm font-bold tracking-wide uppercase opacity-60">Visibility</label
+						class="text-base-content/60 text-sm font-bold tracking-wide uppercase">Visibility</label
 					>
 					<label class="label cursor-pointer gap-3">
-						<span class="text-sm opacity-60">{is_public ? 'Public' : 'Private'}</span>
+						<span class="text-base-content/60 text-sm">{is_public ? 'Public' : 'Private'}</span>
 						<input
 							type="checkbox"
 							class="toggle toggle-primary"

@@ -1,5 +1,6 @@
 import { Citadel } from '$lib/controllers/citadel';
 import type { ListOptions, CreateRequest, UpdateRequest, ListablePost } from '$lib/types/post';
+import type { PaginatedResponse } from '$lib/types/database';
 
 export class PostController {
 	async create(request: CreateRequest): Promise<string> {
@@ -7,9 +8,9 @@ export class PostController {
 		return response.data.post_id as string;
 	}
 
-	async list(options?: ListOptions): Promise<ListablePost[]> {
+	async list(options?: ListOptions): Promise<PaginatedResponse<ListablePost>> {
 		const response = await Citadel.get('/posts', { params: options });
-		return (response.data as ListablePost[]) ?? [];
+		return response.data as PaginatedResponse<ListablePost>;
 	}
 
 	async by_id(id: string): Promise<ListablePost> {

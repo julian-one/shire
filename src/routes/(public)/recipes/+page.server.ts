@@ -1,44 +1,41 @@
 import { RecipeController } from '$lib/controllers/recipe';
-import type { ListOptions } from '$lib/types/recipe';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ url }) => {
 	const controller = new RecipeController();
 
-	const search = url.searchParams.get('search') || '';
-	const order_by = url.searchParams.get('order_by') || 'created_at:desc';
-	const cuisine = url.searchParams.get('cuisine') || '';
-	const category = url.searchParams.get('category') || '';
-
-	const options: ListOptions = {
-		search,
-		order_by,
-		cuisine,
-		category
+	const options = {
+		search: url.searchParams.get('search') || '',
+		cuisine: url.searchParams.get('cuisine') || '',
+		category: url.searchParams.get('category') || '',
+		bookmarks: url.searchParams.get('bookmarks') || '',
+		order_by: url.searchParams.get('order_by') || ''
 	};
 
+	const offset = parseInt(url.searchParams.get('offset') || '0', 10) || 0;
+
 	try {
-		const [recipes, bookmarked_ids] = await Promise.all([
-			controller.list(options),
+		const [result, bookmarked_ids] = await Promise.all([
+			controller.list({ ...options, offset }),
 			controller.list_bookmarked_ids().catch(() => [] as string[])
 		]);
 
 		return {
-			recipes,
+			recipes: result.items,
+			total: result.total,
+			limit: result.limit,
+			offset: result.offset,
 			bookmarked_ids,
-			search,
-			order_by,
-			cuisine,
-			category
+			...options
 		};
 	} catch {
 		return {
 			recipes: [],
+			total: 0,
+			limit: 20,
+			offset: 0,
 			bookmarked_ids: [] as string[],
-			search,
-			order_by,
-			cuisine,
-			category,
+			...options,
 			error: 'Failed to load recipes'
 		};
 	}

@@ -1,5 +1,6 @@
 import { Citadel } from '$lib/controllers/citadel';
 import type { Session } from '$lib/types/session';
+import type { PaginatedResponse } from '$lib/types/database';
 
 export class AuthController {
 	async register(username: string, email: string): Promise<{ email: string; message: string }> {
@@ -37,9 +38,9 @@ export class AuthController {
 		return response.data as Session;
 	}
 
-	async list_sessions(user_id: string): Promise<Session[]> {
+	async list_sessions(user_id: string): Promise<PaginatedResponse<Session>> {
 		const response = await Citadel.get(`/users/${user_id}/sessions`);
-		return response.data ?? [];
+		return response.data as PaginatedResponse<Session>;
 	}
 
 	async delete_session(id: string): Promise<void> {

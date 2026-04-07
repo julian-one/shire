@@ -31,4 +31,7 @@ export type ListOptions = {
 	search?: string;
 	order_by?: string;
 	public?: boolean;
+	my_posts?: boolean | string;
+	limit?: number;
+	offset?: number;
 };

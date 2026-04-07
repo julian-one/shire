@@ -95,6 +95,9 @@ export type ListOptions = {
 	order_by?: string;
 	cuisine?: string;
 	category?: string;
+	bookmarks?: string;
+	limit?: number;
+	offset?: number;
 };
 
 export enum Intensity {

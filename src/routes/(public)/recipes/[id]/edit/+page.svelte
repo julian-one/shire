@@ -4,7 +4,7 @@
 	import { RecipeStore } from '$lib/stores/recipe.svelte';
 	import { Unit, type FormIngredient, type Recipe, type Cuisine, type Category } from '$lib/types/recipe';
 	import { fraction_to_float, float_to_fraction } from '../../fraction';
-	import { minutes_to_nanoseconds, nanoseconds_to_minutes } from '../../recipe-form';
+	import { minutes_to_nanoseconds, nanoseconds_to_minutes } from '../../form';
 	import RecipeBasicsFields from '../../RecipeBasicsFields.svelte';
 	import RecipeIngredientRows from '../../RecipeIngredientRows.svelte';
 	import RecipeInstructionRows from '../../RecipeInstructionRows.svelte';

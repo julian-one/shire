@@ -91,7 +91,7 @@
 	}
 </script>
 
-<div class="rounded-box border-base-content/20 border">
+<div class="rounded-box border-base-content/10 border">
 	<div
 		role="tablist"
 		class="tabs tabs-lift"
@@ -115,7 +115,7 @@
 	</div>
 
 	{#if active_tab === 'write'}
-		<div class="border-base-content/20 flex flex-wrap items-center gap-0.5 border-b px-2 py-1.5">
+		<div class="border-base-content/10 flex flex-wrap items-center gap-0.5 border-b px-2 py-1.5">
 			<div class="tooltip tooltip-bottom">
 				<div class="tooltip-content text-xs">Heading 1</div>
 				<button
@@ -497,7 +497,7 @@
 					{@html preview_html}
 				</div>
 			{:else}
-				<p class="text-base-content/40 italic">Nothing to preview</p>
+				<p class="text-base-content/60 italic">Nothing to preview</p>
 			{/if}
 		</div>
 	{/if}

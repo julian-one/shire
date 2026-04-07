@@ -1,56 +1,65 @@
 <script lang="ts">
-	import { SvelteURLSearchParams } from 'svelte/reactivity';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
-
+	import Pagination from '$lib/components/Pagination.svelte';
 	import PostHeader from './PostHeader.svelte';
 	import PostList from './PostList.svelte';
+	import BlogFilters from './BlogFilters.svelte';
 
 	let { data } = $props();
 
 	let search = $derived(data.search);
+	let my_posts = $derived(data.my_posts);
 	let order_by = $derived(data.order_by);
+	let session = $derived(page.data.session);
 
-	let debounce_timer: NodeJS.Timeout;
+	let timer: ReturnType<typeof setTimeout>;
 
-	function update_url() {
-		const params = new SvelteURLSearchParams(page.url.searchParams);
-		if (search) params.set('search', search);
-		else params.delete('search');
+	function apply_now() {
+		const u = new URL(page.url);
+		if (search) u.searchParams.set('search', search);
+		else u.searchParams.delete('search');
 
-		if (order_by && order_by !== 'created_at:desc') params.set('order_by', order_by);
-		else params.delete('order_by');
+		if (my_posts) u.searchParams.set('my_posts', my_posts);
+		else u.searchParams.delete('my_posts');
 
-		goto(`?${params.toString()}`, { replaceState: true, keepFocus: true, noScroll: true });
+		if (order_by) u.searchParams.set('order_by', order_by);
+		else u.searchParams.delete('order_by');
+
+		u.searchParams.delete('offset');
+		goto(u, { keepFocus: true, noScroll: true, replaceState: true });
 	}
 
-	function handle_search(event: Event) {
-		search = (event.target as HTMLInputElement).value;
-		clearTimeout(debounce_timer);
-		debounce_timer = setTimeout(update_url, 300);
+	function trigger_update() {
+		clearTimeout(timer);
+		timer = setTimeout(apply_now, 300);
 	}
 
-	function handle_sort(new_order_by: string) {
-		order_by = new_order_by;
-		update_url();
+	function handle_sort(value: string) {
+		order_by = value;
+		apply_now();
 	}
 
-	function handle_clear_filters() {
+	function handle_clear_all() {
 		search = '';
-		order_by = 'created_at:desc';
-		update_url();
+		my_posts = '';
+		apply_now();
 	}
 </script>
 
 <div class="space-y-4 pb-8 md:pb-12">
 	<PostHeader
-		total_posts={data.posts.length}
-		session={data.session}
+		total_posts={data.total}
+		{session}
+	/>
+
+	<BlogFilters
 		bind:search
-		{order_by}
-		on_search={handle_search}
-		on_sort={handle_sort}
-		on_clear={handle_clear_filters}
+		bind:my_posts
+		has_session={!!session}
+		on_search={trigger_update}
+		on_filter_change={apply_now}
+		on_clear_all={handle_clear_all}
 	/>
 
 	{#if data.error}
@@ -74,7 +83,15 @@
 
 	<PostList
 		posts={data.posts}
-		session={data.session}
-		user={data.user}
+		{session}
+		has_active_filters={!!(search || my_posts)}
+		{order_by}
+		on_sort={handle_sort}
+	/>
+
+	<Pagination
+		total={data.total}
+		limit={data.limit}
+		offset={data.offset}
 	/>
 </div>
