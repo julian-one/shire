@@ -1,6 +1,6 @@
 import { RecipeController } from '$lib/controllers/recipe';
 import { AlertStore } from '$lib/stores/alert.svelte';
-import type { CreateRequest, UpdateRequest, Recipe, CreateRecipeLogRequest, RecipeLog } from '$lib/types/recipe';
+import type { CreateRequest, UpdateRequest, Recipe, CreateRecipeReviewRequest, RecipeReview } from '$lib/types/recipe';
 
 class SingleRecipe {
 	private recipe_controller = new RecipeController();
@@ -83,35 +83,37 @@ class SingleRecipe {
 		}
 	}
 
-	async create_recipe_log(recipe_id: string, request: CreateRecipeLogRequest): Promise<string | null> {
+	async create_recipe_review(recipe_id: string, request: CreateRecipeReviewRequest): Promise<string | null> {
 		this.loading = true;
 		try {
-			const log_id = await this.recipe_controller.create_recipe_log(recipe_id, request);
-			AlertStore.add('Cook log saved', 'success');
-			return log_id;
-		} catch {
-			AlertStore.add('Failed to save cook log', 'error');
+			const review_id = await this.recipe_controller.create_recipe_review(recipe_id, request);
+			AlertStore.add('Review saved', 'success');
+			return review_id;
+		} catch (error: unknown) {
+			const err = error as { response?: { data?: { error?: string } } };
+			const msg = err?.response?.data?.error || 'Failed to save review';
+			AlertStore.add(msg, 'error');
 			return null;
 		} finally {
 			this.loading = false;
 		}
 	}
 
-	async list_recipe_logs(recipe_id: string): Promise<RecipeLog[]> {
+	async list_recipe_reviews(recipe_id: string): Promise<RecipeReview[]> {
 		try {
-			return await this.recipe_controller.list_recipe_logs(recipe_id);
+			return await this.recipe_controller.list_recipe_reviews(recipe_id);
 		} catch {
 			return [];
 		}
 	}
 
-	async delete_recipe_log(log_id: string): Promise<boolean> {
+	async delete_recipe_review(review_id: string): Promise<boolean> {
 		try {
-			await this.recipe_controller.delete_recipe_log(log_id);
-			AlertStore.add('Cook log deleted', 'success');
+			await this.recipe_controller.delete_recipe_review(review_id);
+			AlertStore.add('Review deleted', 'success');
 			return true;
 		} catch {
-			AlertStore.add('Failed to delete cook log', 'error');
+			AlertStore.add('Failed to delete review', 'error');
 			return false;
 		}
 	}

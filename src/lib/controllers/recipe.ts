@@ -4,8 +4,9 @@ import type {
 	CreateRequest,
 	UpdateRequest,
 	Recipe,
-	CreateRecipeLogRequest,
-	RecipeLog
+	Bookmark,
+	CreateRecipeReviewRequest,
+	RecipeReview
 } from '$lib/types/recipe';
 import type { PaginatedResponse } from '$lib/types/database';
 
@@ -52,27 +53,22 @@ export class RecipeController {
 		await Citadel.delete(`/recipes/${recipe_id}/bookmark`);
 	}
 
-	async is_bookmarked(recipe_id: string): Promise<boolean> {
-		const response = await Citadel.get(`/recipes/${recipe_id}/bookmark`);
-		return response.data.bookmarked as boolean;
-	}
-
-	async list_bookmarked_ids(): Promise<string[]> {
+	async list_bookmarks(): Promise<Bookmark[]> {
 		const response = await Citadel.get('/recipes/bookmarks');
-		return (response.data as string[]) ?? [];
+		return (response.data as Bookmark[]) ?? [];
 	}
 
-	async create_recipe_log(recipe_id: string, request: CreateRecipeLogRequest): Promise<string> {
-		const response = await Citadel.post(`/recipes/${recipe_id}/logs`, request);
-		return response.data.log_id as string;
+	async create_recipe_review(recipe_id: string, request: CreateRecipeReviewRequest): Promise<string> {
+		const response = await Citadel.post(`/recipes/${recipe_id}/reviews`, request);
+		return response.data.review_id as string;
 	}
 
-	async list_recipe_logs(recipe_id: string): Promise<RecipeLog[]> {
-		const response = await Citadel.get(`/recipes/${recipe_id}/logs`);
-		return (response.data as RecipeLog[]) ?? [];
+	async list_recipe_reviews(recipe_id: string): Promise<RecipeReview[]> {
+		const response = await Citadel.get(`/recipes/${recipe_id}/reviews`);
+		return (response.data as RecipeReview[]) ?? [];
 	}
 
-	async delete_recipe_log(log_id: string): Promise<void> {
-		await Citadel.delete(`/recipe-logs/${log_id}`);
+	async delete_recipe_review(review_id: string): Promise<void> {
+		await Citadel.delete(`/recipe-reviews/${review_id}`);
 	}
 }

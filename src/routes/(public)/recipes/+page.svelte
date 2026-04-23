@@ -2,14 +2,14 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import Pagination from '$lib/components/Pagination.svelte';
-	import type { Recipe } from '$lib/types/recipe';
+	import type { Recipe, Bookmark } from '$lib/types/recipe';
 	import RecipeHeader from './RecipeHeader.svelte';
 	import RecipeList from './RecipeList.svelte';
 	import RecipeFilters from './RecipeFilters.svelte';
 
 	let { data } = $props();
 	let recipes = $derived(data.recipes as Recipe[]);
-	let bookmarked_ids = $derived(new Set(data.bookmarked_ids as string[]));
+	let bookmarked_ids = $derived(new Set(((data.user_bookmarks as Bookmark[]) || []).map((b) => b.recipe_id)));
 	let session = $derived(page.data.session);
 
 	let search = $derived(data.search);

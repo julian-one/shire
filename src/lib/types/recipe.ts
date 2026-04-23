@@ -100,26 +100,28 @@ export type ListOptions = {
 	offset?: number;
 };
 
-export enum Intensity {
-	RachaelRay = 1,
-	AltonBrown = 2,
-	JuliaChild = 3
-}
-
-export type RecipeLog = {
-	log_id: string;
+export type Bookmark = {
+	bookmark_id: string;
 	user_id: string;
+	recipe_id: string;
+	created_at: string;
+};
+
+export type RecipeReview = {
+	review_id: string;
+	user_id: string;
+	username: string;
 	recipe_id: string;
 	notes?: string;
 	rating?: number;
 	duration?: number;
-	intensity?: Intensity;
+	difficulty?: number;
 	created_at: string;
 };
 
-export type CreateRecipeLogRequest = {
+export type CreateRecipeReviewRequest = {
 	notes?: string;
 	rating?: number;
 	duration?: number;
-	intensity?: Intensity;
+	difficulty?: number;
 };

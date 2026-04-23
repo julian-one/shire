@@ -15,17 +15,13 @@ export const load: PageServerLoad = async ({ url }) => {
 	const offset = parseInt(url.searchParams.get('offset') || '0', 10) || 0;
 
 	try {
-		const [result, bookmarked_ids] = await Promise.all([
-			controller.list({ ...options, offset }),
-			controller.list_bookmarked_ids().catch(() => [] as string[])
-		]);
+		const result = await controller.list({ ...options, offset });
 
 		return {
 			recipes: result.items,
 			total: result.total,
 			limit: result.limit,
 			offset: result.offset,
-			bookmarked_ids,
 			...options
 		};
 	} catch {
@@ -34,7 +30,6 @@ export const load: PageServerLoad = async ({ url }) => {
 			total: 0,
 			limit: 20,
 			offset: 0,
-			bookmarked_ids: [] as string[],
 			...options,
 			error: 'Failed to load recipes'
 		};
