@@ -2,7 +2,6 @@
 	import moment from 'moment';
 	import { goto } from '$app/navigation';
 	import { PostStore } from '$lib/stores/post.svelte';
-	import PostPreview from '../PostPreview.svelte';
 
 	let { data } = $props();
 
@@ -78,7 +77,10 @@
 		</div>
 
 		<div class="mt-10">
-			<PostPreview content={data.post.content} />
+			<div class="prose prose-lg max-w-none leading-relaxed">
+				<!-- eslint-disable-next-line svelte/no-at-html-tags -- sanitized by DOMPurify on server -->
+				{@html data.content_html}
+			</div>
 		</div>
 	</div>
 {/if}

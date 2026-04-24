@@ -1,23 +1,16 @@
 import { Marked } from 'marked';
-import { markedHighlight } from 'marked-highlight';
-import hljs from 'highlight.js';
 import DOMPurify from 'isomorphic-dompurify';
 
-const marked = new Marked(
-	{
-		gfm: true,
-		breaks: true
-	},
-	markedHighlight({
-		langPrefix: 'hljs language-',
-		highlight(code, lang) {
-			if (lang && hljs.getLanguage(lang)) {
-				return hljs.highlight(code, { language: lang }).value;
-			}
-			return hljs.highlightAuto(code).value;
+const marked = new Marked({
+	tokenizer: {
+		// Disable indented code blocks (4-space indent) to prevent
+		// user content from being unexpectedly rendered as code.
+		// Fenced code blocks (```) still work via the `fences` tokenizer.
+		code() {
+			return undefined;
 		}
-	})
-);
+	}
+});
 
 export function render_markdown(md: string): string {
 	if (!md) return '';

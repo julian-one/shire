@@ -2,7 +2,6 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import Pagination from '$lib/components/Pagination.svelte';
-	import PostHeader from './PostHeader.svelte';
 	import PostList from './PostList.svelte';
 	import BlogFilters from './BlogFilters.svelte';
 
@@ -48,10 +47,37 @@
 </script>
 
 <div class="space-y-4 pb-8 md:pb-12">
-	<PostHeader
-		total_posts={data.total}
-		{session}
-	/>
+	<header class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+		<div>
+			<h1 class="text-2xl font-black tracking-tight md:text-3xl lg:text-4xl">Blog</h1>
+			<p class="text-base-content/60 text-sm md:text-base">
+				{data.total}
+				{data.total === 1 ? 'post' : 'posts'}
+			</p>
+		</div>
+		{#if session}
+			<a
+				href="/blog/new"
+				class="btn btn-primary"
+			>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke-width="2"
+					stroke="currentColor"
+					class="h-5 w-5"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						d="M12 4.5v15m7.5-7.5h-15"
+					/>
+				</svg>
+				New Post
+			</a>
+		{/if}
+	</header>
 
 	<BlogFilters
 		bind:search
