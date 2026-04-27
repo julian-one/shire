@@ -1,4 +1,4 @@
-import { Cuisine, Category, Unit } from '$lib/types/recipe';
+import { Cuisine, Category, SourceType, Unit } from '$lib/types/recipe';
 
 export const cuisine_form_options = [
 	{ value: '', label: 'None' },
@@ -11,6 +11,13 @@ export const category_form_options = [
 ];
 
 export const unit_options = Object.values(Unit).map((u) => ({ value: u, label: u }));
+
+export const source_type_form_options = [
+	{ value: '', label: 'None' },
+	{ value: SourceType.URL, label: 'URL' },
+	{ value: SourceType.Book, label: 'Book' },
+	{ value: SourceType.Personal, label: 'Personal' }
+];
 
 const MINUTE_NS = 60 * 1000 * 1000 * 1000;
 

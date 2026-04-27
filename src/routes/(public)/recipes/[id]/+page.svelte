@@ -3,9 +3,9 @@
 	import { invalidateAll } from '$app/navigation';
 	import { RecipeStore } from '$lib/stores/recipe.svelte';
 	import { goto } from '$app/navigation';
-	import type { Recipe, Bookmark, RecipeReview } from '$lib/types/recipe';
+	import { SourceType, type Recipe, type Bookmark, type RecipeReview } from '$lib/types/recipe';
 	import RecipePhoto from '../RecipePhoto.svelte';
-	import { float_to_fraction } from '../fraction';
+	import { format_ingredient } from '../ingredient_format';
 	import { nanoseconds_to_minutes } from '../form';
 	import RecipeReviews from '../RecipeReviews.svelte';
 
@@ -15,6 +15,7 @@
 	let is_owner = $derived(page.data.user?.user_id === recipe.user_id);
 	let session = $derived(page.data.session);
 	let bookmarked = $derived(((data.user_bookmarks as Bookmark[]) ?? []).some((b) => b.recipe_id === recipe.recipe_id));
+	let has_multiple_components = $derived((recipe.components ?? []).length > 1);
 
 	async function toggle_bookmark() {
 		const success = bookmarked
@@ -59,31 +60,51 @@
 				{recipe.description}
 			</p>
 		{/if}
-		{#if recipe.source_url || session}
+		{#if recipe.source || session}
 			<div class="mt-4 flex flex-wrap items-center gap-x-6 gap-y-3">
-				{#if recipe.source_url}
-					<a
-						href={recipe.source_url}
-						target="_blank"
-						rel="noopener noreferrer"
-						class="text-primary inline-flex items-center gap-1.5 text-sm font-medium"
-					>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke-width="2"
-							stroke="currentColor"
-							class="h-4 w-4"
+				{#if recipe.source}
+					{#if recipe.source_type === SourceType.URL}
+						<a
+							href={recipe.source}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="text-primary inline-flex items-center gap-1.5 text-sm font-medium"
 						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244"
-							/>
-						</svg>
-						Source
-					</a>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke-width="2"
+								stroke="currentColor"
+								class="h-4 w-4"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244"
+								/>
+							</svg>
+							Source
+						</a>
+					{:else}
+						<span class="text-base-content/60 inline-flex items-center gap-1.5 text-sm">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke-width="2"
+								stroke="currentColor"
+								class="h-4 w-4"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"
+								/>
+							</svg>
+							{recipe.source}
+						</span>
+					{/if}
 				{/if}
 
 				{#if session}
@@ -133,11 +154,16 @@
 			</div>
 		{/if}
 
-		{#if recipe.cook_time || recipe.serves || recipe.cuisine || recipe.category}
+		{#if recipe.prep_time || recipe.cook_time || recipe.serves || recipe.cuisine || recipe.category}
 			<div class="text-base-content/60 mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
+				{#if recipe.prep_time}
+					<span
+						><span class="text-base-content font-semibold">{nanoseconds_to_minutes(recipe.prep_time)} mins</span> prep time</span
+					>
+				{/if}
 				{#if recipe.cook_time}
 					<span
-						><span class="text-base-content font-semibold">{nanoseconds_to_minutes(recipe.cook_time)} mins</span> cook time</span
+						><span class="text-base-content font-semibold">{nanoseconds_to_minutes(recipe.cook_time)} mins</span> total time</span
 					>
 				{/if}
 				{#if recipe.serves}
@@ -169,31 +195,45 @@
 	<div class="mt-10 grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-start">
 		<div class="lg:col-span-4">
 			<h2 class="text-lg font-bold tracking-tight md:text-xl">Ingredients</h2>
-			<ul class="mt-4 space-y-3">
-				{#each recipe.ingredients as ingredient, i (i)}
-					<li class="border-base-content/5 flex items-baseline gap-2 border-b pb-3 text-sm last:border-0 md:text-base">
-						<span class="font-semibold tabular-nums">
-							{float_to_fraction(ingredient.amount)}
-							{ingredient.unit}
-						</span>
-						<span class="text-base-content/60">{ingredient.item}</span>
-					</li>
-				{/each}
-			</ul>
+			{#each recipe.components ?? [] as comp, ci (ci)}
+				{#if has_multiple_components && comp.name}
+					<h3 class="text-base-content/60 mt-6 text-sm font-bold tracking-wide uppercase">{comp.name}</h3>
+				{/if}
+				<ul class="mt-4 space-y-3">
+					{#each comp.ingredients as ingredient, i (i)}
+						{@const formatted = format_ingredient(ingredient.amount, ingredient.unit, ingredient.item)}
+						<li
+							class="border-base-content/5 flex items-baseline gap-2 border-b pb-3 text-sm last:border-0 md:text-base"
+						>
+							{#if formatted.amount_unit}
+								<span class="font-semibold tabular-nums">
+									{formatted.amount_unit}
+								</span>
+							{/if}
+							<span class="text-base-content/60">{formatted.item}</span>
+						</li>
+					{/each}
+				</ul>
+			{/each}
 		</div>
 
 		<div class="lg:col-span-8">
 			<h2 class="text-lg font-bold tracking-tight md:text-xl">Instructions</h2>
-			<ol class="mt-4 space-y-6">
-				{#each recipe.instructions as step, i (i)}
-					<li class="flex gap-4">
-						<span class="text-base-content/60 shrink-0 pt-0.5 text-sm font-semibold tabular-nums">
-							{i + 1}.
-						</span>
-						<p class="text-sm leading-relaxed md:text-base">{step}</p>
-					</li>
-				{/each}
-			</ol>
+			{#each recipe.components ?? [] as comp, ci (ci)}
+				{#if has_multiple_components && comp.name}
+					<h3 class="text-base-content/60 mt-6 text-sm font-bold tracking-wide uppercase">{comp.name}</h3>
+				{/if}
+				<ol class="mt-4 space-y-6">
+					{#each comp.instructions as step, i (i)}
+						<li class="flex gap-4">
+							<span class="text-base-content/60 shrink-0 pt-0.5 text-sm font-semibold tabular-nums">
+								{i + 1}.
+							</span>
+							<p class="text-sm leading-relaxed md:text-base">{step}</p>
+						</li>
+					{/each}
+				</ol>
+			{/each}
 		</div>
 	</div>
 

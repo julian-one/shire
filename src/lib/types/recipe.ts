@@ -16,6 +16,12 @@ export enum Category {
 	Side = 'Side'
 }
 
+export enum SourceType {
+	URL = 'url',
+	Book = 'book',
+	Personal = 'personal'
+}
+
 export enum Unit {
 	Tsp = 'tsp',
 	Tbsp = 'tbsp',
@@ -37,7 +43,7 @@ export enum Unit {
 
 export type Ingredient = {
 	ingredient_id?: string;
-	recipe_id?: string;
+	component_id?: string;
 	amount: number;
 	unit: Unit;
 	item: string;
@@ -45,15 +51,30 @@ export type Ingredient = {
 
 export type FormIngredient = { amount: string; unit: Unit; item: string };
 
+export type RecipeComponent = {
+	component_id?: string;
+	name?: string;
+	position?: number;
+	ingredients: Ingredient[];
+	instructions: string[];
+};
+
+export type FormComponent = {
+	name: string;
+	ingredients: FormIngredient[];
+	instructions: string[];
+};
+
 export type Recipe = {
 	recipe_id: string;
 	user_id: string;
 	title: string;
 	description?: string;
 	photo_url?: string;
-	source_url?: string;
-	ingredients: Ingredient[];
-	instructions: string[];
+	source_type?: SourceType;
+	source?: string;
+	components: RecipeComponent[];
+	prep_time?: number;
 	cook_time?: number;
 	serves?: number;
 	cuisine?: Cuisine;
@@ -68,9 +89,10 @@ export type CreateRequest = {
 	title: string;
 	description?: string;
 	photo_url?: string;
-	source_url?: string;
-	ingredients: Ingredient[];
-	instructions: string[];
+	source_type?: SourceType;
+	source?: string;
+	components: RecipeComponent[];
+	prep_time?: number;
 	cook_time?: number;
 	serves?: number;
 	cuisine?: Cuisine;
@@ -81,9 +103,10 @@ export type UpdateRequest = {
 	title?: string;
 	description?: string;
 	photo_url?: string;
-	source_url?: string;
-	ingredients?: Ingredient[];
-	instructions?: string[];
+	source_type?: SourceType | '';
+	source?: string;
+	components?: RecipeComponent[];
+	prep_time?: number;
 	cook_time?: number;
 	serves?: number;
 	cuisine?: Cuisine | '';

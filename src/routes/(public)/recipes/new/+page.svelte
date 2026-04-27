@@ -4,7 +4,7 @@
 	import { page } from '$app/state';
 	import { AlertStore } from '$lib/stores/alert.svelte';
 	import { RecipeStore } from '$lib/stores/recipe.svelte';
-	import { Unit, type FormIngredient, type Cuisine, type Category } from '$lib/types/recipe';
+	import { Unit, SourceType, type FormComponent, type Cuisine, type Category } from '$lib/types/recipe';
 	import { float_to_fraction, fraction_to_float } from '../fraction';
 	import { minutes_to_nanoseconds, nanoseconds_to_minutes } from '../form';
 	import RecipeBasicsFields from '../RecipeBasicsFields.svelte';
@@ -18,13 +18,27 @@
 	let title = $state('');
 	let description = $state('');
 	let photo_url = $state('');
-	let source_url = $state('');
-	let ingredients = $state<FormIngredient[]>([{ amount: '', unit: Unit.G, item: '' }]);
-	let instructions = $state<string[]>(['']);
-	let cook_time = $state('45');
-	let serves = $state('4');
+	let source_type = $state<SourceType | ''>('');
+	let source = $state('');
+	let components = $state<FormComponent[]>([
+		{ name: '', ingredients: [{ amount: '', unit: Unit.G, item: '' }], instructions: [''] }
+	]);
+	let prep_time = $state('');
+	let cook_time = $state('');
+	let serves = $state('');
 	let cuisine = $state<Cuisine | ''>('');
 	let category = $state<Category | ''>('');
+
+	function add_component() {
+		components = [
+			...components,
+			{ name: '', ingredients: [{ amount: '', unit: Unit.G, item: '' }], instructions: [''] }
+		];
+	}
+
+	function remove_component(index: number) {
+		components = components.filter((_, i) => i !== index);
+	}
 
 	function back() {
 		if (step > 1) step--;
@@ -32,12 +46,18 @@
 
 	async function strip_and_submit() {
 		if (step === 2) {
-			ingredients = ingredients.filter((i) => i.amount.trim() || i.item.trim());
-			if (ingredients.length === 0) ingredients = [{ amount: '', unit: Unit.G, item: '' }];
+			components = components.map((comp) => {
+				let filtered = comp.ingredients.filter((i) => i.amount.trim() || i.item.trim());
+				if (filtered.length === 0) filtered = [{ amount: '', unit: Unit.G, item: '' }];
+				return { ...comp, ingredients: filtered };
+			});
 		}
 		if (step === 3) {
-			instructions = instructions.filter((i) => i.trim());
-			if (instructions.length === 0) instructions = [''];
+			components = components.map((comp) => {
+				let filtered = comp.instructions.filter((i) => i.trim());
+				if (filtered.length === 0) filtered = [''];
+				return { ...comp, instructions: filtered };
+			});
 		}
 		await tick();
 		form_el.requestSubmit();
@@ -62,13 +82,18 @@
 			title: title.trim(),
 			description: description.trim() || undefined,
 			photo_url: photo_url.trim() || undefined,
-			source_url: source_url.trim() || undefined,
-			ingredients: ingredients.map((i) => ({
-				amount: fraction_to_float(i.amount),
-				unit: i.unit,
-				item: i.item.trim()
+			source_type: source_type || undefined,
+			source: source.trim() || undefined,
+			components: components.map((comp) => ({
+				name: comp.name.trim() || undefined,
+				ingredients: comp.ingredients.map((i) => ({
+					amount: fraction_to_float(i.amount),
+					unit: i.unit,
+					item: i.item.trim()
+				})),
+				instructions: comp.instructions.map((i) => i.trim())
 			})),
-			instructions: instructions.map((i) => i.trim()),
+			prep_time: minutes_to_nanoseconds(prep_time),
 			cook_time: minutes_to_nanoseconds(cook_time),
 			serves: serves ? parseInt(serves) : undefined,
 			cuisine: cuisine || undefined,
@@ -91,15 +116,22 @@
 			if (result) {
 				if (result.title) title = result.title;
 				if (result.description) description = result.description;
-				if (result.ingredients && result.ingredients.length > 0) {
-					ingredients = result.ingredients.map((i) => ({
-						amount: float_to_fraction(i.amount),
-						unit: i.unit,
-						item: i.item
+				if (result.components && result.components.length > 0) {
+					components = result.components.map((c) => ({
+						name: c.name ?? '',
+						ingredients:
+							c.ingredients && c.ingredients.length > 0
+								? c.ingredients.map((i) => ({
+										amount: float_to_fraction(i.amount),
+										unit: i.unit,
+										item: i.item
+									}))
+								: [{ amount: '', unit: Unit.G, item: '' }],
+						instructions: c.instructions && c.instructions.length > 0 ? [...c.instructions] : ['']
 					}));
 				}
-				if (result.instructions && result.instructions.length > 0) {
-					instructions = result.instructions;
+				if (result.prep_time) {
+					prep_time = nanoseconds_to_minutes(result.prep_time);
 				}
 				if (result.cook_time) {
 					cook_time = nanoseconds_to_minutes(result.cook_time);
@@ -110,7 +142,8 @@
 				if (result.cuisine) cuisine = result.cuisine as Cuisine;
 				if (result.category) category = result.category as Category;
 				if (result.photo_url) photo_url = result.photo_url;
-				if (result.source_url) source_url = result.source_url;
+				if (result.source_type) source_type = result.source_type as SourceType;
+				if (result.source) source = result.source;
 
 				AlertStore.add('Recipe details populated from scan', 'info');
 			}
@@ -203,7 +236,9 @@
 					bind:title
 					bind:description
 					bind:photo_url
-					bind:source_url
+					bind:source_type
+					bind:source
+					bind:prep_time
 					bind:cook_time
 					bind:serves
 					bind:cuisine
@@ -227,8 +262,42 @@
 			<fieldset class="space-y-6">
 				<legend class="sr-only">Ingredients</legend>
 
-				<span class="text-base-content/60 text-sm font-bold tracking-wide uppercase">Ingredients</span>
-				<RecipeIngredientRows bind:ingredients />
+				{#each components as comp, ci (ci)}
+					<div class="space-y-4">
+						{#if components.length > 1}
+							<div class="flex items-center gap-2">
+								<input
+									type="text"
+									class="input input-sm w-full max-w-xs"
+									placeholder="Component name (e.g. Sauce)"
+									bind:value={comp.name}
+								/>
+								<button
+									type="button"
+									class="btn btn-ghost btn-sm text-error"
+									onclick={() => remove_component(ci)}
+								>
+									Remove
+								</button>
+							</div>
+						{/if}
+						<span class="text-base-content/60 text-sm font-bold tracking-wide uppercase">
+							{comp.name || (components.length > 1 ? `Component ${ci + 1}` : 'Ingredients')}
+						</span>
+						<RecipeIngredientRows bind:ingredients={comp.ingredients} />
+					</div>
+					{#if ci < components.length - 1}
+						<div class="divider"></div>
+					{/if}
+				{/each}
+
+				<button
+					type="button"
+					class="btn btn-soft btn-sm"
+					onclick={add_component}
+				>
+					+ Add component
+				</button>
 
 				<div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
 					<button
@@ -249,8 +318,17 @@
 			<fieldset class="space-y-6">
 				<legend class="sr-only">Instructions</legend>
 
-				<span class="text-base-content/60 text-sm font-bold tracking-wide uppercase">Instructions</span>
-				<RecipeInstructionRows bind:instructions />
+				{#each components as comp, ci (ci)}
+					<div class="space-y-4">
+						<span class="text-base-content/60 text-sm font-bold tracking-wide uppercase">
+							{comp.name || (components.length > 1 ? `Component ${ci + 1}` : 'Instructions')}
+						</span>
+						<RecipeInstructionRows bind:instructions={comp.instructions} />
+					</div>
+					{#if ci < components.length - 1}
+						<div class="divider"></div>
+					{/if}
+				{/each}
 
 				<div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
 					<button
