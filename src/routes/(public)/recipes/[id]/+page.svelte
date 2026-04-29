@@ -30,6 +30,7 @@
 		if (confirm('Are you sure you want to delete this recipe?')) {
 			const success = await RecipeStore.delete_recipe(recipe.recipe_id);
 			if (success) {
+				await invalidateAll();
 				goto('/recipes');
 			}
 		}
@@ -56,7 +57,7 @@
 
 	<div class="mt-6">
 		{#if recipe.description}
-			<p class="text-base-content/60 text-lg leading-relaxed">
+			<p class="text-base-content/60 text-base leading-relaxed whitespace-pre-wrap">
 				{recipe.description}
 			</p>
 		{/if}

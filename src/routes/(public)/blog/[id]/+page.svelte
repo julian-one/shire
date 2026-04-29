@@ -1,6 +1,6 @@
 <script lang="ts">
 	import moment from 'moment';
-	import { goto } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
 	import { PostStore } from '$lib/stores/post.svelte';
 
 	let { data } = $props();
@@ -10,6 +10,7 @@
 		if (confirm('Are you sure you want to delete this post?')) {
 			const success = await PostStore.delete_post(data.post.post_id);
 			if (success) {
+				await invalidateAll();
 				goto('/blog');
 			}
 		}

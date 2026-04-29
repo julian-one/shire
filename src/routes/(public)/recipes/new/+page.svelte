@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
 	import { tick } from 'svelte';
 	import { page } from '$app/state';
 	import { AlertStore } from '$lib/stores/alert.svelte';
@@ -101,6 +101,7 @@
 		});
 
 		if (recipe_id) {
+			await invalidateAll();
 			goto('/recipes');
 		}
 	}

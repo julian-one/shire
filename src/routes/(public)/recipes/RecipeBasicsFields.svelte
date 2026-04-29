@@ -63,7 +63,7 @@
 		Description
 	</label>
 	<textarea
-		class="textarea mt-2 w-full"
+		class="textarea mt-2 w-full text-sm"
 		placeholder="A short description (optional)"
 		id="description"
 		bind:value={description}
@@ -160,7 +160,7 @@
 			for="cook_time"
 			class="text-base-content/60 text-sm font-bold tracking-wide uppercase"
 		>
-			Total Time (mins)
+			Cook Time (mins)
 		</label>
 		<input
 			type="number"

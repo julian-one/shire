@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
 	import { tick, untrack } from 'svelte';
 	import { RecipeStore } from '$lib/stores/recipe.svelte';
 	import {
@@ -100,6 +100,7 @@
 		});
 
 		if (success) {
+			await invalidateAll();
 			goto(`/recipes/${original_recipe.recipe_id}`);
 		}
 	}

@@ -60,6 +60,48 @@
 	}
 
 	async function handle_keydown(e: KeyboardEvent) {
+		if (e.key === 'Enter' && !e.shiftKey && textarea_ref) {
+			const start = textarea_ref.selectionStart;
+			const end = textarea_ref.selectionEnd;
+
+			if (start === end) {
+				const before = markdown.substring(0, start);
+				const last_newline = before.lastIndexOf('\n');
+				const current_line = before.substring(last_newline + 1);
+
+				const match = current_line.match(/^(\s*)([-*] \[[ xX]\] |[-*] |(\d+)\. )/);
+				if (match) {
+					e.preventDefault();
+
+					if (current_line.trim() === match[0].trim()) {
+						const stripped_before = before.substring(0, last_newline + 1);
+						markdown = stripped_before + '\n' + markdown.substring(end);
+						onchange?.(markdown);
+						await tick();
+						textarea_ref.selectionStart = stripped_before.length + 1;
+						textarea_ref.selectionEnd = stripped_before.length + 1;
+						return;
+					}
+
+					let prefix = match[1];
+					if (match[3]) {
+						prefix += parseInt(match[3], 10) + 1 + '. ';
+					} else {
+						prefix += match[2].replace(/\[[xX]\]/, '[ ]');
+					}
+
+					const after = markdown.substring(end);
+					markdown = before + '\n' + prefix + after;
+					onchange?.(markdown);
+
+					await tick();
+					const new_cursor_pos = start + 1 + prefix.length;
+					textarea_ref.selectionStart = new_cursor_pos;
+					textarea_ref.selectionEnd = new_cursor_pos;
+					return;
+				}
+			}
+		}
 		if (e.key === 'Tab' && textarea_ref) {
 			e.preventDefault();
 			const start = textarea_ref.selectionStart;
