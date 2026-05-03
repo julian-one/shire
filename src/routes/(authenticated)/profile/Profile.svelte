@@ -11,6 +11,8 @@
 	let username = $state('');
 	let new_password = $state('');
 	let confirm_password = $state('');
+	let show_new_password = $state(false);
+	let show_confirm_password = $state(false);
 
 	let passwords_match = $derived(!new_password || !confirm_password || new_password === confirm_password);
 
@@ -156,28 +158,126 @@
 							<div class="space-y-1">
 								<div class="text-base-content/60 text-sm font-bold tracking-wide uppercase"> Password </div>
 								{#if editing}
-									<input
-										id="new-password-input"
-										type="password"
-										class="input validator w-full"
-										placeholder="New password"
-										minlength="8"
-										bind:value={new_password}
-									/>
+									<div class="relative w-full">
+										<input
+											id="new-password-input"
+											type={show_new_password ? 'text' : 'password'}
+											class="input validator w-full pr-10"
+											placeholder="New password"
+											minlength="8"
+											bind:value={new_password}
+										/>
+										<button
+											type="button"
+											class="text-base-content/50 absolute top-1/2 right-3 -translate-y-1/2"
+											onclick={() => (show_new_password = !show_new_password)}
+											aria-label={show_new_password ? 'Hide password' : 'Show password'}
+										>
+											{#if show_new_password}
+												<svg
+													xmlns="http://www.w3.org/2000/svg"
+													width="16"
+													height="16"
+													viewBox="0 0 24 24"
+													fill="none"
+													stroke="currentColor"
+													stroke-width="2"
+													stroke-linecap="round"
+													stroke-linejoin="round"
+													><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24" /><path
+														d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"
+													/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61" /><line
+														x1="2"
+														x2="22"
+														y1="2"
+														y2="22"
+													/></svg
+												>
+											{:else}
+												<svg
+													xmlns="http://www.w3.org/2000/svg"
+													width="16"
+													height="16"
+													viewBox="0 0 24 24"
+													fill="none"
+													stroke="currentColor"
+													stroke-width="2"
+													stroke-linecap="round"
+													stroke-linejoin="round"
+													><path
+														d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"
+													/><circle
+														cx="12"
+														cy="12"
+														r="3"
+													/></svg
+												>
+											{/if}
+										</button>
+									</div>
 									<p class="validator-hint">Must be at least 8 characters</p>
 									{#if new_password}
 										<div class="mt-3 space-y-1">
 											<div class="text-base-content/60 text-sm font-bold tracking-wide uppercase">
 												Confirm Password
 											</div>
-											<input
-												id="confirm-password-input"
-												type="password"
-												class="input validator w-full"
-												placeholder="Confirm password"
-												minlength="8"
-												bind:value={confirm_password}
-											/>
+											<div class="relative w-full">
+												<input
+													id="confirm-password-input"
+													type={show_confirm_password ? 'text' : 'password'}
+													class="input validator w-full pr-10"
+													placeholder="Confirm password"
+													minlength="8"
+													bind:value={confirm_password}
+												/>
+												<button
+													type="button"
+													class="text-base-content/50 absolute top-1/2 right-3 -translate-y-1/2"
+													onclick={() => (show_confirm_password = !show_confirm_password)}
+													aria-label={show_confirm_password ? 'Hide password' : 'Show password'}
+												>
+													{#if show_confirm_password}
+														<svg
+															xmlns="http://www.w3.org/2000/svg"
+															width="16"
+															height="16"
+															viewBox="0 0 24 24"
+															fill="none"
+															stroke="currentColor"
+															stroke-width="2"
+															stroke-linecap="round"
+															stroke-linejoin="round"
+															><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24" /><path
+																d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"
+															/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61" /><line
+																x1="2"
+																x2="22"
+																y1="2"
+																y2="22"
+															/></svg
+														>
+													{:else}
+														<svg
+															xmlns="http://www.w3.org/2000/svg"
+															width="16"
+															height="16"
+															viewBox="0 0 24 24"
+															fill="none"
+															stroke="currentColor"
+															stroke-width="2"
+															stroke-linecap="round"
+															stroke-linejoin="round"
+															><path
+																d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"
+															/><circle
+																cx="12"
+																cy="12"
+																r="3"
+															/></svg
+														>
+													{/if}
+												</button>
+											</div>
 											<p class="validator-hint">Must be at least 8 characters</p>
 											{#if confirm_password && new_password !== confirm_password}
 												<p class="text-error mt-1 text-xs">Passwords do not match</p>

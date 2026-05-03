@@ -30,8 +30,8 @@ export type UpdateRequest = {
 export type ListOptions = {
 	search?: string;
 	order_by?: string;
-	public?: boolean;
-	my_posts?: boolean | string;
+	public?: string | boolean;
+	authors?: string;
 	limit?: number;
 	offset?: number;
 };

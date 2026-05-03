@@ -42,6 +42,7 @@
 		"axios": "^1.14.0",
 		"daisyui": "^5.0.35",
 		"isomorphic-dompurify": "^3.3.0",
+		"lightweight-charts": "^5.2.0",
 		"marked": "^17.0.4",
 		"moment": "^2.30.1",
 		"uuid": "^11.1.0"

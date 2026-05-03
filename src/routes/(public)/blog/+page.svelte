@@ -8,7 +8,8 @@
 	let { data } = $props();
 
 	let search = $derived(data.search);
-	let my_posts = $derived(data.my_posts);
+	let authors = $derived(data.authors);
+	let public_status = $derived(data.public);
 	let order_by = $derived(data.order_by);
 	let session = $derived(page.data.session);
 
@@ -19,8 +20,11 @@
 		if (search) u.searchParams.set('search', search);
 		else u.searchParams.delete('search');
 
-		if (my_posts) u.searchParams.set('my_posts', my_posts);
-		else u.searchParams.delete('my_posts');
+		if (authors) u.searchParams.set('authors', authors);
+		else u.searchParams.delete('authors');
+
+		if (public_status) u.searchParams.set('public', public_status);
+		else u.searchParams.delete('public');
 
 		if (order_by) u.searchParams.set('order_by', order_by);
 		else u.searchParams.delete('order_by');
@@ -41,7 +45,8 @@
 
 	function handle_clear_all() {
 		search = '';
-		my_posts = '';
+		authors = '';
+		public_status = '';
 		apply_now();
 	}
 </script>
@@ -81,7 +86,9 @@
 
 	<BlogFilters
 		bind:search
-		bind:my_posts
+		bind:authors
+		bind:public_status
+		initial_users={data.initial_users}
 		has_session={!!session}
 		on_search={trigger_update}
 		on_filter_change={apply_now}
@@ -110,7 +117,7 @@
 	<PostList
 		posts={data.posts}
 		{session}
-		has_active_filters={!!(search || my_posts)}
+		has_active_filters={!!(search || authors || public_status)}
 		{order_by}
 		on_sort={handle_sort}
 	/>

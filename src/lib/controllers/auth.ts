@@ -33,6 +33,16 @@ export class AuthController {
 		await Citadel.post('/logout');
 	}
 
+	async forgot_password(email: string): Promise<{ message: string }> {
+		const response = await Citadel.post('/forgot-password', { email });
+		return response.data;
+	}
+
+	async reset_password(token: string, password: string): Promise<{ message: string }> {
+		const response = await Citadel.post('/reset-password', { token, password });
+		return response.data;
+	}
+
 	async get_session(id: string): Promise<Session> {
 		const response = await Citadel.get(`/sessions/${id}`);
 		return response.data as Session;
