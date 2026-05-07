@@ -79,3 +79,79 @@ export interface Portfolio {
 export interface BacktestResponse {
 	portfolio: Portfolio;
 }
+
+export interface TradingSession {
+	session_id: string;
+	strategy: string;
+	status: string;
+	started_at: string;
+	ended_at: string | null;
+}
+
+export interface TradingOrder {
+	order_id: string;
+	session_id: string;
+	client_order_id: string | null;
+	symbol: string;
+	side: string;
+	type: string;
+	qty: number;
+	filled_qty: number;
+	avg_price: number | null;
+	status: string;
+	created_at: string;
+	updated_at: string;
+}
+
+export interface TradingSessionDetails {
+	session: TradingSession;
+	orders: TradingOrder[];
+}
+
+export interface BacktestRecord {
+	backtest_id: string;
+	strategy: string;
+	symbols: string;
+	start_date: string;
+	end_date: string;
+	starting_capital: number;
+	parameters: string;
+	metrics: string;
+	created_at: string;
+}
+
+export interface Position {
+	asset_id: string;
+	symbol: string;
+	exchange: string;
+	asset_class: string;
+	avg_entry_price: string;
+	qty: string;
+	side: string;
+	market_value: string;
+	cost_basis: string;
+	unrealized_pl: string;
+	unrealized_plpc: string;
+	unrealized_intraday_pl: string;
+	unrealized_intraday_plpc: string;
+	current_price: string;
+	lastday_price: string;
+	change_today: string;
+}
+
+export interface PortfolioHistory {
+	timestamp: number[];
+	equity: number[];
+	profit_loss: number[];
+	profit_loss_pct: number[];
+	base_value: number;
+	timeframe: string;
+}
+
+export interface PlaceOrderRequest {
+	symbol: string;
+	quantity: number;
+	side: 'buy' | 'sell';
+	type: 'market' | 'limit';
+	limit?: number;
+}

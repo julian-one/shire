@@ -18,20 +18,19 @@
 
 	$effect(() => {
 		if (symbol && page.data.session?.session_id) {
-			// Clean up previous connection and state
-			if (event_source) {
-				event_source.close();
-				event_source = null;
-			}
-			live_trades = [];
+			// Instead of reading the reactive event_source and triggering a cycle, we just
+			// let the effect create it, and we return a cleanup function.
+
+			live_trades = []; // this is okay as long as it's not read in this effect
 
 			const base_url = env.PUBLIC_CITADEL_API_URL || 'http://localhost:8080';
 			const token = page.data.session.session_id;
 			const stream_url = `${base_url}/trading/stocks/stream?symbol=${symbol}&token=${token}`;
 
-			event_source = new EventSource(stream_url, { withCredentials: true });
+			const es = new EventSource(stream_url, { withCredentials: true });
+			event_source = es;
 
-			event_source.onmessage = (event) => {
+			es.onmessage = (event) => {
 				try {
 					const trade = JSON.parse(event.data);
 					live_trades.unshift(trade);
@@ -43,8 +42,13 @@
 				}
 			};
 
-			event_source.onerror = () => {
+			es.onerror = () => {
 				// ignore
+			};
+
+			return () => {
+				es.close();
+				event_source = null;
 			};
 		}
 	});

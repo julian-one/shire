@@ -13,6 +13,8 @@
 			<li class="menu-title mt-4">Trading Simulator</li>
 			<li><a href="/admin/trading/market-data">Market Data</a></li>
 			<li><a href="/admin/trading/backtest">Run Backtest</a></li>
+			<li><a href="/admin/trading/live">Live Paper Trading</a></li>
+			<li><a href="/admin/trading/analysis">Strategy Analysis</a></li>
 		</ul>
 	</nav>
 </div>

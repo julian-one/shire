@@ -1,5 +1,17 @@
 import { Citadel } from '$lib/controllers/citadel';
-import type { TradingAccount, StockBar, Asset, BacktestResponse } from '$lib/types/trading';
+import type {
+	TradingAccount,
+	StockBar,
+	Asset,
+	BacktestResponse,
+	TradingSession,
+	TradingSessionDetails,
+	BacktestRecord,
+	Position,
+	PortfolioHistory,
+	PlaceOrderRequest,
+	TradingOrder
+} from '$lib/types/trading';
 
 export class TradingController {
 	async get_account(): Promise<TradingAccount> {
@@ -25,19 +37,72 @@ export class TradingController {
 	}
 
 	async run_backtest(
-		symbol: string,
+		symbols: string[],
 		start_date: string,
 		end_date: string,
 		strategy: string,
-		starting_capital: number
+		starting_capital: number,
+		parameters: Record<string, unknown> = {}
 	): Promise<BacktestResponse> {
 		const response = await Citadel.post('/trading/backtest', {
-			symbol,
+			symbols,
 			start_date,
 			end_date,
 			strategy,
-			starting_capital
+			starting_capital,
+			parameters
 		});
 		return response.data as BacktestResponse;
+	}
+
+	async list_live_sessions(): Promise<TradingSession[]> {
+		const response = await Citadel.get('/trading/sessions');
+		// The API returns an array or null if empty
+		return (response.data || []) as TradingSession[];
+	}
+
+	async get_live_session_details(session_id: string): Promise<TradingSessionDetails> {
+		const response = await Citadel.get(`/trading/sessions/${session_id}`);
+		return response.data as TradingSessionDetails;
+	}
+
+	async start_live_session(
+		symbols: string[],
+		strategy: string,
+		starting_capital: number,
+		parameters: Record<string, unknown> = {}
+	): Promise<{ message: string; session_id: string }> {
+		const response = await Citadel.post('/trading/live/start', {
+			symbols,
+			strategy,
+			starting_capital,
+			parameters
+		});
+		return response.data as { message: string; session_id: string };
+	}
+
+	async stop_live_session(session_id: string): Promise<{ message: string }> {
+		const response = await Citadel.post(`/trading/live/stop?session_id=${session_id}`);
+		return response.data as { message: string };
+	}
+
+	async list_backtests(): Promise<BacktestRecord[]> {
+		const response = await Citadel.get('/trading/backtests');
+		return (response.data || []) as BacktestRecord[];
+	}
+
+	async get_positions(): Promise<Position[]> {
+		const response = await Citadel.get('/trading/positions');
+		return (response.data || []) as Position[];
+	}
+
+	async get_portfolio_history(period: string = '1M', timeframe: string = '1D'): Promise<PortfolioHistory> {
+		const response = await Citadel.get(`/trading/portfolio/history?period=${period}&timeframe=${timeframe}`);
+		return response.data as PortfolioHistory;
+	}
+
+	async place_order(req: PlaceOrderRequest): Promise<TradingOrder> {
+		const response = await Citadel.post('/trading/orders', req);
+		return response.data as TradingOrder;
 	}
 }
