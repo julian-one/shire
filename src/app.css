@@ -14,9 +14,17 @@
 }
 
 @theme {
+	--font-sans: 'Comic Code', monospace;
 	--font-mono: 'Comic Code', monospace;
 }
 
 body {
 	font-family: 'Comic Code', monospace;
+}
+
+/* Glassmorphic & Modern UI Utilities */
+.glass-panel {
+	background: color-mix(in srgb, var(--color-base-100) 70%, transparent);
+	backdrop-filter: blur(12px);
+	border: 1px solid color-mix(in srgb, var(--color-base-content) 8%, transparent);
 }

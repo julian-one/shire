@@ -9,12 +9,7 @@
 		<ul class="menu bg-base-100 rounded-box border-base-content/10 w-full border p-2">
 			<li class="menu-title">Admin</li>
 			<li><a href="/admin/users">Users</a></li>
-
-			<li class="menu-title mt-4">Trading Simulator</li>
-			<li><a href="/admin/trading/market-data">Market Data</a></li>
-			<li><a href="/admin/trading/backtest">Run Backtest</a></li>
-			<li><a href="/admin/trading/live">Live Paper Trading</a></li>
-			<li><a href="/admin/trading/analysis">Strategy Analysis</a></li>
+			<li><a href="/admin/infrastructure">Infrastructure</a></li>
 		</ul>
 	</nav>
 </div>
