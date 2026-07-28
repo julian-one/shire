@@ -2,8 +2,8 @@ import { env } from '$env/dynamic/public';
 import { browser } from '$app/environment';
 import axios from 'axios';
 
-export const Citadel = axios.create({
-	baseURL: env.PUBLIC_CITADEL_API_URL ?? 'http://localhost:8080',
+export const Moria = axios.create({
+	baseURL: env.PUBLIC_MORIA_API_URL ?? 'http://localhost:8081',
 	headers: {
 		'Content-Type': 'application/json',
 		'Cache-Control': 'no-cache',
@@ -19,7 +19,7 @@ export const Citadel = axios.create({
 // belongs to the frontend's domain and won't be sent cross-origin to the backend.
 // Server-side auth is handled separately in context.server.ts via AsyncLocalStorage.
 if (browser) {
-	Citadel.interceptors.request.use(async (config) => {
+	Moria.interceptors.request.use(async (config) => {
 		const { page } = await import('$app/state');
 		const token = page.data.session?.session_id;
 		if (token) {

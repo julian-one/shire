@@ -11,18 +11,4 @@ export class ClusterController {
 		const { data } = await Citadel.get<any>(`/health/logs?namespace=${namespace}&pod=${pod}&limit=${limit}`);
 		return data;
 	}
-
-	async fetch_prometheus_metrics(query: string, rangeSeconds = 3600, step = '1m'): Promise<any> {
-		const end = Math.floor(Date.now() / 1000);
-		const start = end - rangeSeconds;
-		const { data } = await Citadel.get<any>(`/health/metrics?query=${encodeURIComponent(query)}&start=${start}&end=${end}&step=${step}`);
-		return data;
-	}
-
-	async fetch_loki_metrics(query: string, rangeSeconds = 3600, step = '1m'): Promise<any> {
-		const end = Math.floor(Date.now() / 1000);
-		const start = end - rangeSeconds;
-		const { data } = await Citadel.get<any>(`/health/loki?query=${encodeURIComponent(query)}&start=${start}&end=${end}&step=${step}`);
-		return data;
-	}
 }

@@ -1,5 +1,5 @@
 import { type Handle, redirect } from '@sveltejs/kit';
-import { CitadelContext } from '$lib/controllers/citadel.server';
+import { ApiContext } from '$lib/controllers/context.server';
 import { AuthController } from '$lib/controllers/auth';
 import { UserController } from '$lib/controllers/user';
 import type { Session } from '$lib/types/session';
@@ -12,7 +12,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 	event.locals.theme = theme;
 
-	return CitadelContext.run(token, async () => {
+	return ApiContext.run(token, async () => {
 		// Memoize the promise so concurrent calls to get_session/get_user
 		// within the same request share a single backend lookup.
 		let auth_promise: Promise<{ session: Session; user: User } | undefined> | undefined;
