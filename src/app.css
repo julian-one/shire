@@ -1,9 +1,6 @@
 @import 'tailwindcss';
-@plugin "@tailwindcss/typography";
 
-@plugin "daisyui" {
-	themes: all;
-}
+@plugin "daisyui";
 
 @font-face {
 	font-family: 'Comic Code';
@@ -20,11 +17,4 @@
 
 body {
 	font-family: 'Comic Code', monospace;
-}
-
-/* Glassmorphic & Modern UI Utilities */
-.glass-panel {
-	background: color-mix(in srgb, var(--color-base-100) 70%, transparent);
-	backdrop-filter: blur(12px);
-	border: 1px solid color-mix(in srgb, var(--color-base-content) 8%, transparent);
 }

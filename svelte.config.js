@@ -9,15 +9,7 @@ const config = {
 			env: {
 				port: 3000
 			}
-		}),
-
-		alias: {
-			$root: 'src',
-			$lib: 'src/lib',
-			$components: 'src/components',
-			$layouts: 'src/layouts',
-			$routes: 'src/routes'
-		}
+		})
 	}
 };
 
