@@ -1,0 +1,14 @@
+.git
+.gitignore
+.dockerignore
+.husky
+Dockerfile
+README.md
+
+node_modules
+build
+.svelte-kit
+
+.env
+.env.*
+*.log
