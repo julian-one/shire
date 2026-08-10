@@ -47,18 +47,5 @@
 			</div>
 			<button class="btn btn-primary">Log in</button>
 		</form>
-		<div class="flex flex-col gap-1 text-sm md:text-base">
-			<a
-				href="/forgot-password"
-				class="link">Forgot your password?</a
-			>
-			<span>
-				Need an account?
-				<a
-					href="/register"
-					class="link">Register</a
-				>
-			</span>
-		</div>
 	</div>
 </div>
