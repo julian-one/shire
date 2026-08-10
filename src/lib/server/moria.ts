@@ -4,7 +4,7 @@ import { env } from '$env/dynamic/private';
 import type { RequestEvent } from '@sveltejs/kit';
 
 import type { Session } from '$lib/types/session';
-import type { User } from '$lib/types/user';
+import type { Role, User } from '$lib/types/user';
 
 export class MoriaError extends Error {
 	status: number;
@@ -50,27 +50,6 @@ export function health(event: RequestEvent) {
 	return moria_fetch<{ status: string; time: string }>(event, '/health');
 }
 
-export function register(event: RequestEvent, username: string, email: string) {
-	return moria_fetch<{ email: string; message: string }>(event, '/register', {
-		method: 'POST',
-		body: JSON.stringify({ username, email })
-	});
-}
-
-export function verify_registration(event: RequestEvent, code: string) {
-	return moria_fetch<{ valid: boolean; token: string; username: string }>(event, '/register/verify', {
-		method: 'POST',
-		body: JSON.stringify({ token: code })
-	});
-}
-
-export function complete_registration(event: RequestEvent, code: string, password: string) {
-	return moria_fetch<Session>(event, '/register/complete', {
-		method: 'POST',
-		body: JSON.stringify({ token: code, password })
-	});
-}
-
 export function login(event: RequestEvent, identifier: string, password: string) {
 	return moria_fetch<Session>(event, '/login', {
 		method: 'POST',
@@ -84,24 +63,51 @@ export function logout(event: RequestEvent) {
 	return moria_fetch<void>(event, '/logout', { method: 'POST' });
 }
 
-export function forgot_password(event: RequestEvent, email: string) {
-	return moria_fetch<{ message: string }>(event, '/forgot-password', {
-		method: 'POST',
-		body: JSON.stringify({ email })
-	});
-}
-
-export function reset_password(event: RequestEvent, token: string, password: string) {
-	return moria_fetch<{ message: string }>(event, '/reset-password', {
-		method: 'POST',
-		body: JSON.stringify({ token, password })
-	});
-}
-
 export function get_session(event: RequestEvent, session_id: string) {
 	return moria_fetch<Session>(event, `/sessions/${encodeURIComponent(session_id)}`);
 }
 
 export function get_user(event: RequestEvent, user_id: string) {
 	return moria_fetch<User>(event, `/users/${encodeURIComponent(user_id)}`);
+}
+
+export function list_users(event: RequestEvent) {
+	return moria_fetch<{ items: User[]; total: number }>(event, '/users');
+}
+
+export function create_user(event: RequestEvent, username: string, email: string, password: string, role: Role) {
+	return moria_fetch<User>(event, '/users', {
+		method: 'POST',
+		body: JSON.stringify({ username, email, password, role })
+	});
+}
+
+export function update_username(event: RequestEvent, user_id: string, username: string) {
+	return moria_fetch<User>(event, `/users/${encodeURIComponent(user_id)}`, {
+		method: 'PATCH',
+		body: JSON.stringify({ username })
+	});
+}
+
+export function update_role(event: RequestEvent, user_id: string, role: Role) {
+	return moria_fetch<void>(event, `/users/${encodeURIComponent(user_id)}/role`, {
+		method: 'PATCH',
+		body: JSON.stringify({ role })
+	});
+}
+
+export function list_sessions(event: RequestEvent, user_id: string) {
+	return moria_fetch<{ items: Session[]; total: number }>(event, `/users/${encodeURIComponent(user_id)}/sessions`);
+}
+
+export function delete_session(event: RequestEvent, session_id: string) {
+	return moria_fetch<void>(event, `/sessions/${encodeURIComponent(session_id)}`, {
+		method: 'DELETE'
+	});
+}
+
+export function delete_user_sessions(event: RequestEvent, user_id: string) {
+	return moria_fetch<void>(event, `/users/${encodeURIComponent(user_id)}/sessions`, {
+		method: 'DELETE'
+	});
 }

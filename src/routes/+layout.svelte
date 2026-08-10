@@ -16,6 +16,16 @@
 		</div>
 		<div class="flex items-center gap-2">
 			{#if data.user}
+				{#if data.user.role === 'admin'}
+					<a
+						href="/admin/users"
+						class="btn btn-ghost btn-sm">Users</a
+					>
+					<a
+						href="/admin/routes"
+						class="btn btn-ghost btn-sm">Routes</a
+					>
+				{/if}
 				<span class="hidden px-2 text-sm sm:inline md:text-base">{data.user.username}</span>
 				<form
 					method="POST"
