@@ -11,7 +11,7 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"format": "prettier --write .",
 		"lint": "prettier --check . && eslint .",
-		"prepare": "husky"
+		"prepare": "svelte-kit sync && husky"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.2.5",

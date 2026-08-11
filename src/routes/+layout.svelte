@@ -22,8 +22,8 @@
 						class="btn btn-ghost btn-sm">Users</a
 					>
 					<a
-						href="/admin/routes"
-						class="btn btn-ghost btn-sm">Routes</a
+						href="/admin/logs"
+						class="btn btn-ghost btn-sm">Logs</a
 					>
 				{/if}
 				<span class="hidden px-2 text-sm sm:inline md:text-base">{data.user.username}</span>
