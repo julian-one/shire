@@ -1,1 +1,13 @@
 @import 'tailwindcss';
+
+@font-face {
+	font-family: 'Atkinson Hyperlegible Mono';
+	src: url('../lib/fonts/AtkinsonHyperlegibleMono-VariableFont_wght.woff2') format('woff2');
+	font-weight: 200 800;
+	font-display: swap;
+}
+
+@theme {
+	--font-sans: 'Atkinson Hyperlegible Mono', ui-monospace, monospace;
+	--font-mono: 'Atkinson Hyperlegible Mono', ui-monospace, monospace;
+}
