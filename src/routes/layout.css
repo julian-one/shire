@@ -1,5 +1,17 @@
 @import 'tailwindcss';
 
+@custom-variant dark {
+	&:where([data-theme='dark'], [data-theme='dark'] *) {
+		@slot;
+	}
+
+	@media (prefers-color-scheme: dark) {
+		&:where(:not([data-theme='light'], [data-theme='light'] *)) {
+			@slot;
+		}
+	}
+}
+
 @font-face {
 	font-family: 'Atkinson Hyperlegible Mono';
 	src: url('../lib/fonts/AtkinsonHyperlegibleMono-VariableFont_wght.woff2') format('woff2');

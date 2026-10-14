@@ -1,5 +1,3 @@
-<div class="grid min-h-screen place-items-center bg-neutral-100">
-	<div class="max-w-md p-4 text-center">
-		<h1 class="text-5xl font-bold">Hello</h1>
-	</div>
-</div>
+<main class="grid flex-1 place-items-center px-4">
+	<h1 class="text-6xl font-bold uppercase sm:text-8xl">Julian</h1>
+</main>
