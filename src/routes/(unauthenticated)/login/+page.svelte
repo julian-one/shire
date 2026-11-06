@@ -46,7 +46,7 @@
 </script>
 
 <svelte:head>
-	<title>Log in · Shire</title>
+	<title>Log in · julian-one</title>
 </svelte:head>
 
 <main class="flex min-h-screen items-center justify-center bg-base-200 p-4">

@@ -30,7 +30,7 @@
 
 <header class="navbar bg-base-100 shadow-sm">
 	<div class="flex-1">
-		<a class="btn btn-ghost text-xl" href={resolve('/(authenticated)')}>Shire</a>
+		<a class="btn btn-ghost text-xl" href={resolve('/(authenticated)')}>julian-one</a>
 	</div>
 	<div class="flex-none gap-2">
 		{#if user}
