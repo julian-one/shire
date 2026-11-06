@@ -2,6 +2,7 @@
 	import './layout.css';
 	import favicon from '#lib/assets/favicon.svg';
 	import type { LayoutProps } from './$types';
+	import Toasts from '#lib/components/Toasts.svelte';
 
 	let { children }: LayoutProps = $props();
 </script>
@@ -11,3 +12,5 @@
 </svelte:head>
 
 {@render children()}
+
+<Toasts />
