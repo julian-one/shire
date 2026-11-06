@@ -28,7 +28,7 @@
 	}
 </script>
 
-<div class="navbar bg-base-100 shadow-sm">
+<header class="navbar bg-base-100 shadow-sm">
 	<div class="flex-1">
 		<a class="btn btn-ghost text-xl" href={resolve('/(authenticated)')}>Shire</a>
 	</div>
@@ -37,8 +37,8 @@
 			<span class="hidden md:inline">{user.username}</span>
 		{/if}
 		{#if message}
-			<span class="text-error">{message}</span>
+			<span class="text-error" role="alert">{message}</span>
 		{/if}
 		<button class="btn btn-ghost" type="button" disabled={!ready} onclick={logout}>Log out</button>
 	</div>
-</div>
+</header>
