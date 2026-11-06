@@ -37,6 +37,12 @@
 - Build mobile-first: phone is unprefixed, tablet is `md:`, desktop is `lg:`.
 - Use only Tailwind and daisyUI responsive classes. No custom media queries.
 
+## Accessibility
+
+- Meet WCAG AA contrast in both themes (4.5:1 text, 3:1 large text and UI elements).
+- Don't fade text with opacity; use a muted color token that passes AA.
+- Don't rely on color alone for state; add an icon, label, or underline.
+
 ## Consistency
 
 - Use a daisyUI component (`btn`, `card`, `menu`, etc.) before raw Tailwind utilities.

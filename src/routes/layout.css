@@ -1,2 +1,131 @@
 @import 'tailwindcss';
-@plugin 'daisyui';
+@plugin 'daisyui' {
+	themes: false;
+}
+
+@plugin 'daisyui/theme' {
+	name: 'everforest-light';
+	default: true;
+	prefersdark: false;
+	color-scheme: light;
+
+	--color-base-100: #f3ead3;
+	--color-base-200: #eae4ca;
+	--color-base-300: #ddd8be;
+	--color-base-content: #525e66;
+	--color-primary: #576401;
+	--color-primary-content: #f3ead3;
+	--color-secondary: #555f54;
+	--color-secondary-content: #f3ead3;
+	--color-accent: #e1e4bd;
+	--color-accent-content: #525e66;
+	--color-neutral: #5c6a72;
+	--color-neutral-content: #f3ead3;
+	--color-info: #25678b;
+	--color-info-content: #f3ead3;
+	--color-success: #206e51;
+	--color-success-content: #f3ead3;
+	--color-warning: #805a00;
+	--color-warning-content: #f3ead3;
+	--color-error: #ad3937;
+	--color-error-content: #f3ead3;
+
+	--radius-selector: 0.5rem;
+	--radius-field: 0.75rem;
+	--radius-box: 0.875rem;
+	--size-selector: 0.25rem;
+	--size-field: 0.275rem;
+	--border: 2px;
+	--depth: 0;
+	--noise: 0;
+}
+
+@plugin 'daisyui/theme' {
+	name: 'everforest-dark';
+	default: false;
+	prefersdark: true;
+	color-scheme: dark;
+
+	--color-base-100: #333c43;
+	--color-base-200: #3a464c;
+	--color-base-300: #434f55;
+	--color-base-content: #d3c6aa;
+	--color-primary: #afc68b;
+	--color-primary-content: #333c43;
+	--color-secondary: #b7c0ba;
+	--color-secondary-content: #333c43;
+	--color-accent: #5c3f4f;
+	--color-accent-content: #d3c6aa;
+	--color-neutral: #d3c6aa;
+	--color-neutral-content: #333c43;
+	--color-info: #81beb6;
+	--color-info-content: #333c43;
+	--color-success: #97caa3;
+	--color-success-content: #333c43;
+	--color-warning: #dbbc7f;
+	--color-warning-content: #333c43;
+	--color-error: #efaeaf;
+	--color-error-content: #333c43;
+
+	--radius-selector: 0.5rem;
+	--radius-field: 0.75rem;
+	--radius-box: 0.875rem;
+	--size-selector: 0.25rem;
+	--size-field: 0.275rem;
+	--border: 2px;
+	--depth: 0;
+	--noise: 0;
+}
+
+@font-face {
+	font-family: 'Atkinson Hyperlegible';
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url('/fonts/AtkinsonHyperlegible-Regular.woff2') format('woff2');
+}
+
+@font-face {
+	font-family: 'Atkinson Hyperlegible';
+	font-style: italic;
+	font-weight: 400;
+	font-display: swap;
+	src: url('/fonts/AtkinsonHyperlegible-Italic.woff2') format('woff2');
+}
+
+@font-face {
+	font-family: 'Atkinson Hyperlegible';
+	font-style: normal;
+	font-weight: 700;
+	font-display: swap;
+	src: url('/fonts/AtkinsonHyperlegible-Bold.woff2') format('woff2');
+}
+
+@font-face {
+	font-family: 'Atkinson Hyperlegible';
+	font-style: italic;
+	font-weight: 700;
+	font-display: swap;
+	src: url('/fonts/AtkinsonHyperlegible-BoldItalic.woff2') format('woff2');
+}
+
+@font-face {
+	font-family: 'Atkinson Hyperlegible Mono';
+	font-style: normal;
+	font-weight: 200 800;
+	font-display: swap;
+	src: url('/fonts/AtkinsonHyperlegibleMono-VariableFont_wght.woff2') format('woff2');
+}
+
+@font-face {
+	font-family: 'Atkinson Hyperlegible Mono';
+	font-style: italic;
+	font-weight: 200 800;
+	font-display: swap;
+	src: url('/fonts/AtkinsonHyperlegibleMono-Italic-VariableFont_wght.woff2') format('woff2');
+}
+
+@theme {
+	--font-sans: 'Atkinson Hyperlegible', ui-sans-serif, system-ui, sans-serif;
+	--font-mono: 'Atkinson Hyperlegible Mono', ui-monospace, monospace;
+}
