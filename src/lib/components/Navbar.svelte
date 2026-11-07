@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import AccountMenu from '#lib/components/AccountMenu.svelte';
+	import ThemeToggle from '#lib/components/ThemeToggle.svelte';
 	import type { User } from '#lib/types/user.js';
 
 	let { user }: { user?: User } = $props();
@@ -18,6 +19,10 @@
 	{#if user}
 		<nav class="navbar-end" aria-label="Account">
 			<AccountMenu {user} />
+		</nav>
+	{:else}
+		<nav class="navbar-end" aria-label="Site">
+			<ThemeToggle />
 		</nav>
 	{/if}
 </header>
