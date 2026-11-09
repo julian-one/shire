@@ -49,3 +49,9 @@
 - Use daisyUI color tokens (`primary`, `base-100`, etc.), never hard-coded colors.
 - No custom classes, `<style>` blocks, or arbitrary values (`w-[137px]`). Global CSS is only for theme config and fonts.
 - When the same classes repeat, extract a Svelte component instead of a custom class.
+
+## Iconography
+
+- Icons come from `phosphor-svelte` (`GearIcon`), never inline `<svg>`.
+- Size with Tailwind classes, color with `currentColor`, and keep the default weight.
+- Icons are decorative: add `aria-hidden="true"` and label the control.

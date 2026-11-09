@@ -4,6 +4,7 @@
 	import { flip } from 'svelte/animate';
 	import { prefersReducedMotion } from 'svelte/motion';
 	import { fly } from 'svelte/transition';
+	import { CaretDownIcon, CheckCircleIcon, WarningCircleIcon, XIcon } from 'phosphor-svelte';
 
 	const stackId = $props.id();
 	const duration = $derived(prefersReducedMotion.current ? 0 : 200);
@@ -129,22 +130,11 @@
 				role={isError ? 'alert' : undefined}
 				inert={collapsed && index > 0}
 			>
-				<svg
-					class="mt-0.5 size-5 shrink-0"
-					aria-hidden="true"
-					viewBox="0 0 256 256"
-					fill="currentColor"
-				>
-					{#if isError}
-						<path
-							d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm-8-80V80a8,8,0,0,1,16,0v56a8,8,0,0,1-16,0Zm20,36a12,12,0,1,1-12-12A12,12,0,0,1,140,172Z"
-						/>
-					{:else}
-						<path
-							d="M173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z"
-						/>
-					{/if}
-				</svg>
+				{#if isError}
+					<WarningCircleIcon class="mt-0.5 size-5 shrink-0" aria-hidden="true" />
+				{:else}
+					<CheckCircleIcon class="mt-0.5 size-5 shrink-0" aria-hidden="true" />
+				{/if}
 				<p class="flex-1">
 					<strong class="font-bold">{toast.title}</strong>
 					{#if toast.body}
@@ -162,19 +152,13 @@
 							ToastStore.toggle();
 						}}
 					>
-						<svg
+						<CaretDownIcon
 							class={[
 								'size-4 motion-safe:transition-transform',
 								{ 'rotate-180': ToastStore.expanded }
 							]}
 							aria-hidden="true"
-							viewBox="0 0 256 256"
-							fill="currentColor"
-						>
-							<path
-								d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"
-							/>
-						</svg>
+						/>
 					</button>
 				{/if}
 				<button
@@ -186,11 +170,7 @@
 						dismiss(toast.id);
 					}}
 				>
-					<svg class="size-4" aria-hidden="true" viewBox="0 0 256 256" fill="currentColor">
-						<path
-							d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"
-						/>
-					</svg>
+					<XIcon class="size-4" aria-hidden="true" />
 				</button>
 			</div>
 		{/each}
