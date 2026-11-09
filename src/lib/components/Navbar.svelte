@@ -5,13 +5,15 @@
 	import type { User } from '#lib/types/user.js';
 
 	let { user }: { user?: User } = $props();
+
+	const homeHref = $derived(user ? resolve('/(authenticated)/home') : resolve('/(public)'));
 </script>
 
 <header class="navbar gap-6 border-b-2 border-base-300 bg-base-100 px-4 py-3 md:px-8">
 	<div class="navbar-start">
 		<a
 			class="flex min-h-11 link items-center text-xl font-bold tracking-tight link-hover underline-offset-6"
-			href={resolve('/(authenticated)')}
+			href={homeHref}
 		>
 			julian-one
 		</a>

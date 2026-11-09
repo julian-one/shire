@@ -7,12 +7,7 @@
 	let dark = $state(false);
 
 	onMount(() => {
-		const current = document.documentElement.dataset.theme;
-		if (current) {
-			dark = current === darkTheme;
-			return;
-		}
-		dark = matchMedia('(prefers-color-scheme: dark)').matches;
+		dark = document.documentElement.dataset.theme === darkTheme;
 	});
 
 	function toggleTheme() {

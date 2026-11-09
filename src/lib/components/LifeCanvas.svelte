@@ -1,13 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { Life } from './life';
+	import { Life } from '#lib/life.js';
 
-	// Size of one cell in CSS pixels, the gap around each cell, and how often the grid steps.
 	const cell = 22;
 	const inset = 3;
 	const interval = 240;
 
-	// Chance a cell starts alive, and how many generations between gliders.
 	const density = 0.16;
 	const gliderEvery = 60;
 
@@ -29,7 +27,6 @@
 		let last = 0;
 		let frame = 0;
 
-		// Paint every live cell as a rounded square in the current text colour.
 		const draw = () => {
 			const size = cell * scale;
 			const gap = inset * scale;
@@ -47,7 +44,6 @@
 			}
 		};
 
-		// Match the grid to the element size and the canvas to the device pixel ratio.
 		const resize = () => {
 			const width = target.clientWidth;
 			const height = target.clientHeight;
@@ -66,7 +62,6 @@
 			draw();
 		};
 
-		// Runs every animation frame but only steps the grid once per interval.
 		const tick = (time: number) => {
 			frame = requestAnimationFrame(tick);
 			if (time - last < interval) {
@@ -97,6 +92,6 @@
 
 <canvas
 	bind:this={canvas}
-	class="pointer-events-none absolute inset-0 -z-10 size-full text-base-300 opacity-60"
+	class="pointer-events-none absolute inset-0 -z-10 size-full text-base-300 opacity-60 dark:opacity-45"
 	aria-hidden="true"
 ></canvas>

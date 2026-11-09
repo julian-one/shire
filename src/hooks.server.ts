@@ -26,7 +26,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 	const isGuestOnly = routeId.startsWith('/(unauthenticated)');
 	if (isGuestOnly && event.locals.user) {
-		redirect(303, '/');
+		redirect(303, '/home');
 	}
 
 	return resolve(event);

@@ -5,7 +5,7 @@
 	import { isAxiosError } from 'axios';
 	import AuthController from '#lib/controllers/auth.js';
 	import Navbar from '#lib/components/Navbar.svelte';
-	import LifeCanvas from './LifeCanvas.svelte';
+	import LifeCanvas from '#lib/components/LifeCanvas.svelte';
 
 	const auth = new AuthController();
 
@@ -28,7 +28,7 @@
 		rejected = false;
 		try {
 			await auth.login(email, password);
-			await goto(resolve('/(authenticated)'));
+			await goto(resolve('/(authenticated)/home'));
 		} catch (error) {
 			const status = isAxiosError(error) ? error.response?.status : undefined;
 			rejected = status === 400 || status === 401;
