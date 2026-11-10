@@ -1,6 +1,15 @@
 <script lang="ts">
 	import { asset } from '$app/paths';
-	import { CaretRightIcon, CheckIcon } from 'phosphor-svelte';
+	import {
+		CaretRightIcon,
+		CheckIcon,
+		CloudIcon,
+		DotsThreeIcon,
+		FunnelSimpleIcon,
+		SelectionAllIcon,
+		SelectionBackgroundIcon,
+		SelectionForegroundIcon
+	} from 'phosphor-svelte';
 
 	type Service = {
 		name: string;
@@ -13,6 +22,7 @@
 		years: string;
 		logo: string;
 		logoDark?: string;
+		lift?: string;
 		wide?: boolean;
 		services?: Service[];
 	};
@@ -20,6 +30,7 @@
 	type Group = {
 		id: string;
 		label: string;
+		icon: typeof CloudIcon;
 		items: Technology[];
 	};
 
@@ -27,32 +38,76 @@
 		{
 			id: 'frontend',
 			label: 'Frontend',
+			icon: SelectionForegroundIcon,
 			items: [
-				{ name: 'TypeScript', years: '5 yrs', logo: asset('logos/typescript.svg') },
+				{
+					name: 'TypeScript',
+					years: '5 yrs',
+					logo: asset('logos/typescript.svg'),
+					lift: 'dark:brightness-125'
+				},
 				{ name: 'JavaScript', years: '7 yrs', logo: asset('logos/javascript.svg') },
 				{ name: 'Svelte', years: '3 yrs', logo: asset('logos/svelte.svg') },
 				{ name: 'Tailwind CSS', years: '3 yrs', logo: asset('logos/tailwind.svg') },
 				{ name: 'daisyUI', years: '2 yrs', logo: asset('logos/daisyui.svg') },
-				{ name: 'jQuery', years: '3 yrs', logo: asset('logos/jquery.svg') },
-				{ name: 'Bootstrap', years: '3 yrs', logo: asset('logos/bootstrap.svg') },
-				{ name: 'CSS', years: '6 yrs', logo: asset('logos/css.svg') }
+				{
+					name: 'jQuery',
+					years: '3 yrs',
+					logo: asset('logos/jquery.svg'),
+					lift: 'dark:brightness-150'
+				},
+				{
+					name: 'Bootstrap',
+					years: '3 yrs',
+					logo: asset('logos/bootstrap.svg'),
+					lift: 'dark:brightness-150'
+				},
+				{
+					name: 'CSS',
+					years: '6 yrs',
+					logo: asset('logos/css.svg'),
+					lift: 'dark:brightness-175'
+				}
 			]
 		},
 		{
 			id: 'backend',
 			label: 'Backend',
+			icon: SelectionBackgroundIcon,
 			items: [
 				{ name: 'Go', years: '3 yrs', logo: asset('logos/go.svg'), wide: true },
-				{ name: 'Python', years: '4 yrs', logo: asset('logos/python.svg') },
-				{ name: 'Tcl', years: '3 yrs', logo: asset('logos/tcl.svg') },
-				{ name: 'PostgreSQL', years: '7 yrs', logo: asset('logos/postgresql.svg') },
-				{ name: 'Oracle', years: '3 yrs', logo: asset('logos/oracle.svg'), wide: true },
+				{
+					name: 'Python',
+					years: '4 yrs',
+					logo: asset('logos/python.svg'),
+					lift: 'dark:brightness-125'
+				},
+				{
+					name: 'Tcl',
+					years: '3 yrs',
+					logo: asset('logos/tcl.svg'),
+					lift: 'dark:brightness-150'
+				},
+				{
+					name: 'PostgreSQL',
+					years: '7 yrs',
+					logo: asset('logos/postgresql.svg'),
+					lift: 'dark:brightness-125'
+				},
+				{
+					name: 'Oracle',
+					years: '3 yrs',
+					logo: asset('logos/oracle.svg'),
+					lift: 'dark:brightness-125',
+					wide: true
+				},
 				{ name: 'Docker', years: '7 yrs', logo: asset('logos/docker.svg') }
 			]
 		},
 		{
 			id: 'cloud',
 			label: 'Cloud',
+			icon: CloudIcon,
 			items: [
 				{
 					name: 'AWS',
@@ -93,11 +148,27 @@
 		{
 			id: 'other',
 			label: 'Other',
+			icon: DotsThreeIcon,
 			items: [
 				{ name: 'C', years: '2 yrs', logo: asset('logos/c.svg') },
-				{ name: 'C++', years: '2 yrs', logo: asset('logos/cpp.svg') },
-				{ name: 'Java', years: '1 yr', logo: asset('logos/java.svg') },
-				{ name: 'Racket', years: '1 yr', logo: asset('logos/racket.svg') },
+				{
+					name: 'C++',
+					years: '2 yrs',
+					logo: asset('logos/cpp.svg'),
+					lift: 'dark:brightness-175'
+				},
+				{
+					name: 'Java',
+					years: '1 yr',
+					logo: asset('logos/java.svg'),
+					lift: 'dark:brightness-125'
+				},
+				{
+					name: 'Racket',
+					years: '1 yr',
+					logo: asset('logos/racket.svg'),
+					lift: 'dark:brightness-175'
+				},
 				{ name: 'TensorFlow', years: '2 yrs', logo: asset('logos/tensorflow.svg') },
 				{ name: 'Hadoop', years: '2 yrs', logo: asset('logos/hadoop.svg'), wide: true },
 				{
@@ -107,15 +178,29 @@
 					logoDark: asset('logos/spark-dark.svg'),
 					wide: true
 				},
-				{ name: 'OpenGL', years: '2 yrs', logo: asset('logos/opengl.svg'), wide: true }
+				{
+					name: 'OpenGL',
+					years: '2 yrs',
+					logo: asset('logos/opengl.svg'),
+					lift: 'dark:brightness-125',
+					wide: true
+				}
 			]
 		}
 	];
 
-	const filters = [{ id: 'all', label: 'All' }, ...groups];
+	const filters = [{ id: 'all', label: 'All', icon: SelectionAllIcon }, ...groups];
 
 	let filter = $state('all');
 	let expanded = $state<string>();
+	let menu: HTMLElement | undefined;
+
+	const activeFilter = $derived(
+		filters.find((option) => {
+			return option.id === filter;
+		})
+	);
+	const activeLabel = $derived(activeFilter ? activeFilter.label : 'All');
 
 	const visibleGroups = $derived(
 		groups.filter((group) => {
@@ -127,29 +212,57 @@
 	);
 </script>
 
-<div
-	role="group"
-	aria-label="Filter technologies"
-	class="tabs tabs-box w-fit max-w-full flex-nowrap overflow-x-auto"
->
-	{#each filters as option (option.id)}
-		<button
-			type="button"
-			class={[
-				'tab shrink-0 gap-1.5 font-bold whitespace-nowrap',
-				filter === option.id ? 'tab-active' : 'text-secondary!'
-			]}
-			aria-pressed={filter === option.id}
-			onclick={() => {
-				filter = option.id;
-			}}
-		>
-			{#if filter === option.id}
-				<CheckIcon class="size-4 shrink-0" aria-hidden="true" />
-			{/if}
-			{option.label}
-		</button>
-	{/each}
+<div class="-mb-14 flex justify-end">
+	<button
+		class="btn relative btn-square size-11 btn-ghost"
+		type="button"
+		popovertarget="technology-filter"
+		aria-label="Filter technologies, showing {activeLabel}"
+		style="anchor-name: --technology-filter"
+	>
+		<FunnelSimpleIcon
+			class={['size-5', filter === 'all' ? 'text-secondary' : 'text-base-content']}
+			aria-hidden="true"
+		/>
+		{#if filter !== 'all'}
+			<span class="absolute top-2 right-2 status bg-base-content" aria-hidden="true"></span>
+		{/if}
+	</button>
+	<div
+		bind:this={menu}
+		id="technology-filter"
+		class="dropdown dropdown-end mt-1.5 min-w-50 rounded-box border-2 border-base-300 bg-base-100 p-1.5"
+		popover
+		style="position-anchor: --technology-filter"
+	>
+		<ul class="menu w-full p-0" aria-label="Filter technologies">
+			{#each filters as option (option.id)}
+				<li>
+					<button
+						class={['min-h-11 gap-3', filter === option.id ? 'font-bold' : 'font-normal']}
+						type="button"
+						aria-pressed={filter === option.id}
+						onclick={() => {
+							filter = option.id;
+							menu?.hidePopover();
+						}}
+					>
+						<option.icon
+							class={[
+								'size-5 shrink-0',
+								filter === option.id ? 'text-base-content' : 'text-secondary'
+							]}
+							aria-hidden="true"
+						/>
+						<span class="grow">{option.label}</span>
+						{#if filter === option.id}
+							<CheckIcon class="size-5 shrink-0" aria-hidden="true" />
+						{/if}
+					</button>
+				</li>
+			{/each}
+		</ul>
+	</div>
 </div>
 
 {#each visibleGroups as group (group.id)}
@@ -163,7 +276,9 @@
 							type="button"
 							class={[
 								'card w-full cursor-pointer text-start card-border hover:border-secondary',
-								expanded === item.name ? 'border-primary bg-accent' : 'border-base-300'
+								expanded === item.name
+									? 'border-base-content bg-base-content/10'
+									: 'border-base-300'
 							]}
 							aria-expanded={expanded === item.name}
 							aria-controls="services-{item.name}"
@@ -175,25 +290,32 @@
 								}
 							}}
 						>
-							<span class="card-body min-h-16 flex-row items-center gap-3 p-3">
-								<span class="flex size-10 shrink-0 items-center justify-center">
+							<span class="card-body min-h-16 flex-row items-center gap-2.5 p-2.5 md:gap-3 md:p-3">
+								<span class="flex size-8 shrink-0 items-center justify-center md:size-10">
 									{#if item.logoDark}
 										<img
-											class={['object-contain dark:hidden', item.wide ? 'h-7 w-10' : 'size-8']}
+											class={[
+												'object-contain dark:hidden',
+												item.wide ? 'h-6 w-8 md:h-7 md:w-10' : 'size-8'
+											]}
 											src={item.logo}
 											alt=""
 										/>
 										<img
 											class={[
 												'hidden object-contain dark:block',
-												item.wide ? 'h-7 w-10' : 'size-8'
+												item.wide ? 'h-6 w-8 md:h-7 md:w-10' : 'size-8'
 											]}
 											src={item.logoDark}
 											alt=""
 										/>
 									{:else}
 										<img
-											class={['object-contain', item.wide ? 'h-7 w-10' : 'size-8']}
+											class={[
+												'object-contain',
+												item.lift,
+												item.wide ? 'h-6 w-8 md:h-7 md:w-10' : 'size-8'
+											]}
 											src={item.logo}
 											alt=""
 										/>
@@ -201,7 +323,7 @@
 								</span>
 								<span class="flex min-w-0 grow flex-col">
 									<span class="text-base font-bold wrap-anywhere">{item.name}</span>
-									<span class="text-sm font-bold text-primary tabular-nums">{item.years}</span>
+									<span class="text-sm font-bold text-secondary tabular-nums">{item.years}</span>
 								</span>
 								<CaretRightIcon
 									class={[
@@ -214,25 +336,32 @@
 						</button>
 					{:else}
 						<div class="card h-full border-base-300 card-border">
-							<div class="card-body min-h-16 flex-row items-center gap-3 p-3">
-								<span class="flex size-10 shrink-0 items-center justify-center">
+							<div class="card-body min-h-16 flex-row items-center gap-2.5 p-2.5 md:gap-3 md:p-3">
+								<span class="flex size-8 shrink-0 items-center justify-center md:size-10">
 									{#if item.logoDark}
 										<img
-											class={['object-contain dark:hidden', item.wide ? 'h-7 w-10' : 'size-8']}
+											class={[
+												'object-contain dark:hidden',
+												item.wide ? 'h-6 w-8 md:h-7 md:w-10' : 'size-8'
+											]}
 											src={item.logo}
 											alt=""
 										/>
 										<img
 											class={[
 												'hidden object-contain dark:block',
-												item.wide ? 'h-7 w-10' : 'size-8'
+												item.wide ? 'h-6 w-8 md:h-7 md:w-10' : 'size-8'
 											]}
 											src={item.logoDark}
 											alt=""
 										/>
 									{:else}
 										<img
-											class={['object-contain', item.wide ? 'h-7 w-10' : 'size-8']}
+											class={[
+												'object-contain',
+												item.lift,
+												item.wide ? 'h-6 w-8 md:h-7 md:w-10' : 'size-8'
+											]}
 											src={item.logo}
 											alt=""
 										/>
@@ -240,7 +369,7 @@
 								</span>
 								<span class="flex min-w-0 flex-col">
 									<span class="text-base font-bold wrap-anywhere">{item.name}</span>
-									<span class="text-sm font-bold text-primary tabular-nums">{item.years}</span>
+									<span class="text-sm font-bold text-secondary tabular-nums">{item.years}</span>
 								</span>
 							</div>
 						</div>
@@ -262,7 +391,7 @@
 										alt=""
 									/>
 									<span class="min-w-0 wrap-anywhere">{service.name}</span>
-									<span class="ms-auto shrink-0 text-sm font-bold text-primary tabular-nums">
+									<span class="ms-auto shrink-0 text-sm font-bold text-secondary tabular-nums">
 										{service.years}
 									</span>
 								</li>

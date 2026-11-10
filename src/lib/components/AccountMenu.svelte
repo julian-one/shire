@@ -29,7 +29,7 @@
 </script>
 
 <button
-	class="btn btn-circle size-11 text-lg font-bold btn-primary"
+	class="btn btn-circle size-11 border-primary bg-base-100 text-lg font-bold text-primary hover:ring-2 hover:ring-base-300 hover:ring-offset-2 hover:ring-offset-base-100"
 	type="button"
 	popovertarget="account-menu"
 	aria-label="Account menu for {user.username}"

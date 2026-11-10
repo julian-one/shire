@@ -90,7 +90,7 @@
 <section
 	bind:this={region}
 	class={[
-		'toast toast-end inset-s-4 toast-top z-50 w-auto md:inset-s-auto md:w-120',
+		'toast toast-end inset-s-4 toast-top z-50 w-auto md:inset-s-auto md:w-100',
 		{ 'pointer-events-none bottom-4': ToastStore.expanded }
 	]}
 	aria-label="Notifications"
@@ -117,7 +117,7 @@
 				animate:flip={{ duration }}
 				transition:fly={{ y: -16, duration }}
 				class={[
-					'relative alert origin-top items-start gap-3 rounded-field border-0 alert-soft p-4 text-base shadow-lg motion-safe:transition-transform',
+					'relative alert origin-top items-start gap-3 rounded-box border-0 alert-soft p-4 text-base motion-safe:transition-transform',
 					isError ? 'alert-error' : 'alert-success',
 					collapsed && index > 2 ? 'hidden' : 'flex',
 					{
