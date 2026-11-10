@@ -1,15 +1,12 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import type { PageProps } from './$types';
-	import Navbar from '#lib/components/Navbar.svelte';
+	import { SmileyIcon } from 'phosphor-svelte';
 	import Experience from './Experience.svelte';
 	import Technologies from './Technologies.svelte';
 	import Projects from './Projects.svelte';
 	import Contact from './Contact.svelte';
 
 	type TabId = 'experience' | 'technologies' | 'projects' | 'contact';
-
-	let { data }: PageProps = $props();
 
 	const tabs: { id: TabId; label: string }[] = [
 		{ id: 'experience', label: 'Experience' },
@@ -58,68 +55,72 @@
 	<title>About · julian-one</title>
 </svelte:head>
 
-<div class="relative flex min-h-screen flex-col">
-	<a class="btn absolute start-4 -top-16 z-20 btn-neutral focus-visible:top-4" href="#content">
-		Skip to content
-	</a>
-	<Navbar user={data.user} />
-	<main
-		id="content"
-		class="mx-auto flex w-full max-w-xl grow flex-col gap-10 px-4 pt-8 pb-16 md:max-w-3xl md:px-8 lg:max-w-6xl lg:pt-10 lg:pb-24"
-	>
-		<div class="flex max-w-4xl flex-col gap-3">
-			<p class="text-sm tracking-wider text-secondary uppercase">About</p>
-			<h1 class="text-5xl leading-none font-bold tracking-tighter wrap-anywhere md:text-6xl">
-				The long version.
-			</h1>
-			<p class="mt-1 max-w-2xl text-xl text-secondary md:text-2xl">
-				Not counting AP CS. Anyone else still have nightmares about BlueJ?
-				<br />
-				My love for software began during a summer internship in medical physics.
-			</p>
-		</div>
-		<div
-			role="tablist"
-			tabindex="-1"
-			aria-label="About sections"
-			class="tabs tabs-border max-w-4xl flex-nowrap overflow-x-auto border-b-2 border-base-300"
-			onkeydown={onTabKey}
-		>
-			{#each tabs as tab (tab.id)}
-				<button
-					type="button"
-					role="tab"
-					id="tab-{tab.id}"
-					class={[
-						'tab shrink-0 text-base font-bold whitespace-nowrap',
-						selected === tab.id ? 'tab-active' : 'text-secondary!'
-					]}
-					aria-selected={selected === tab.id}
-					aria-controls="panel-{tab.id}"
-					tabindex={selected === tab.id ? 0 : -1}
-					onclick={() => {
-						selected = tab.id;
-					}}
+<div class="flex flex-col gap-10">
+	<div class="flex max-w-220 flex-col gap-3">
+		<p class="text-sm tracking-wider text-secondary uppercase">About</p>
+		<h1 class="text-5xl leading-none font-bold tracking-tighter wrap-anywhere md:text-6xl">
+			A
+			<button
+				type="button"
+				class="tooltip tooltip-bottom cursor-help rounded-sm italic after:bg-secondary"
+			>
+				bit
+				<span
+					class="tooltip-content border-2 border-secondary bg-base-100 px-1.5 py-0.5 text-sm font-normal tracking-normal text-secondary not-italic"
+					aria-hidden="true"
 				>
-					{tab.label}
-				</button>
-			{/each}
-		</div>
-		<div
-			id="panel-{selected}"
-			role="tabpanel"
-			aria-labelledby="tab-{selected}"
-			class="flex max-w-4xl flex-col gap-6"
-		>
-			{#if selected === 'experience'}
-				<Experience />
-			{:else if selected === 'technologies'}
-				<Technologies />
-			{:else if selected === 'projects'}
-				<Projects />
-			{:else}
-				<Contact />
-			{/if}
-		</div>
-	</main>
+					<span class="flex items-center gap-1.5">
+						Pun intended
+						<SmileyIcon class="size-4.5 shrink-0" aria-hidden="true" />
+					</span>
+				</span>
+			</button>
+			about me.
+		</h1>
+	</div>
+	<div
+		role="tablist"
+		tabindex="-1"
+		aria-label="About sections"
+		class="tabs tabs-border -me-8 flex-nowrap overflow-x-auto border-b-2 border-base-300 pe-8 md:me-0 md:flex-wrap md:overflow-visible md:pe-0"
+		onkeydown={onTabKey}
+	>
+		{#each tabs as tab (tab.id)}
+			<button
+				type="button"
+				role="tab"
+				id="tab-{tab.id}"
+				class={[
+					'tab shrink-0 text-base font-bold whitespace-nowrap',
+					selected === tab.id
+						? 'tab-active before:border-base-content before:bg-base-content'
+						: 'text-secondary! underline-offset-6 hover:underline'
+				]}
+				aria-selected={selected === tab.id}
+				aria-controls="panel-{tab.id}"
+				tabindex={selected === tab.id ? 0 : -1}
+				onclick={() => {
+					selected = tab.id;
+				}}
+			>
+				{tab.label}
+			</button>
+		{/each}
+	</div>
+	<div
+		id="panel-{selected}"
+		role="tabpanel"
+		aria-labelledby="tab-{selected}"
+		class="flex flex-col gap-6"
+	>
+		{#if selected === 'experience'}
+			<Experience />
+		{:else if selected === 'technologies'}
+			<Technologies />
+		{:else if selected === 'projects'}
+			<Projects />
+		{:else}
+			<Contact />
+		{/if}
+	</div>
 </div>
