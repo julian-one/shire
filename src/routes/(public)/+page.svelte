@@ -42,7 +42,7 @@
 					<UserIcon class="size-5 shrink-0" aria-hidden="true" />
 					About me
 				</a>
-				<a class="btn btn-outline btn-lg" href={resolve('/(public)/about#contact')}>
+				<a class="btn btn-outline btn-lg" href={resolve('/(public)/about?tab=contact')}>
 					<HandWavingIcon class="size-5 shrink-0" aria-hidden="true" />
 					Say hello
 				</a>
