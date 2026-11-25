@@ -233,8 +233,10 @@
 							class="link"
 							href={entry.blurbLink.href}
 							target="_blank"
-							rel="external noopener">{entry.blurbLink.label}</a
-						>{entry.blurbLink.after}{/if}
+							rel="external noopener"
+						>
+							{entry.blurbLink.label}
+						</a>{entry.blurbLink.after}{/if}
 				</p>
 			</div>
 			{#if !entry.detour && index < lastIndex}

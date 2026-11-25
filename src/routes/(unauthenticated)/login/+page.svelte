@@ -3,7 +3,6 @@
 	import { resolve } from '$app/paths';
 	import { isAxiosError } from 'axios';
 	import AuthController from '#lib/controllers/auth.js';
-	import LifeCanvas from '#lib/components/LifeCanvas.svelte';
 	import {
 		AppleLogoIcon,
 		EnvelopeIcon,
@@ -59,14 +58,10 @@
 	<title>Sign in · julian-one</title>
 </svelte:head>
 
-<LifeCanvas />
 <div
 	class="flex grow flex-col gap-8 md:grid md:grid-cols-2 md:content-center md:items-center md:gap-0"
 >
-	<div
-		class="flex min-w-0 flex-col items-start gap-4 md:items-end md:pe-8 md:text-end lg:pe-16"
-		data-life-clear
-	>
+	<div class="flex min-w-0 flex-col items-start gap-4 md:items-end md:pe-8 md:text-end lg:pe-16">
 		<p class="text-sm tracking-wider text-secondary uppercase">Sign in</p>
 		<h1 class="text-5xl leading-none font-bold tracking-tighter wrap-anywhere lg:text-7xl">
 			Welcome back
@@ -74,7 +69,6 @@
 	</div>
 	<form
 		class="flex w-full flex-col gap-8 md:border-s-2 md:border-base-300 md:ps-8 lg:max-w-116 lg:ps-16"
-		data-life-clear
 		onsubmit={submit}
 	>
 		<fieldset class="fieldset gap-4 p-0">

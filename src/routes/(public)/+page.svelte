@@ -1,22 +1,27 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import LifeCanvas from '#lib/components/LifeCanvas.svelte';
+	import LifeControls from './LifeControls.svelte';
 	import portraitLight from '#lib/assets/portrait-light.jpg';
 	import portraitDark from '#lib/assets/portrait-dark.jpg';
 	import { HandWavingIcon, UserIcon } from 'phosphor-svelte';
+	import { life } from '#lib/stores/life.svelte.js';
 </script>
 
 <svelte:head>
 	<title>julian-one</title>
 </svelte:head>
 
-<LifeCanvas />
+<canvas
+	{@attach life.attach}
+	class="pointer-events-none fixed inset-x-0 top-0 -z-10 h-lvh w-full text-base-300"
+	aria-hidden="true"
+></canvas>
+<LifeControls />
 <div
 	class="my-auto flex flex-col items-center gap-6 md:flex-row md:items-end md:justify-center md:gap-12 lg:gap-24"
 >
 	<div
 		class="flex w-full min-w-0 flex-col items-center gap-4 text-center md:w-85 md:items-start md:text-start lg:w-102"
-		data-life-clear
 	>
 		<p class="text-sm tracking-wider text-secondary uppercase">Software engineer · Colorado</p>
 		<h1
@@ -48,7 +53,6 @@
 	</div>
 	<div
 		class="order-first h-64 w-52 shrink-0 overflow-hidden rounded-2xl bg-accent ring-2 ring-base-300 ring-offset-6 ring-offset-base-100 md:order-none md:h-75 md:w-60 md:rounded-4xl lg:h-100 lg:w-80"
-		data-life-seed
 	>
 		<img class="size-full object-cover dark:hidden" src={portraitLight} alt="Julian, smiling" />
 		<img

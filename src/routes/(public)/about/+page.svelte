@@ -82,7 +82,7 @@
 		role="tablist"
 		tabindex="-1"
 		aria-label="About sections"
-		class="tabs tabs-border -me-8 flex-nowrap overflow-x-auto border-b-2 border-base-300 pe-8 md:me-0 md:flex-wrap md:overflow-visible md:pe-0"
+		class="tabs-border -me-8 tabs flex-nowrap overflow-x-auto border-b-2 border-base-300 pe-8 md:me-0 md:flex-wrap md:overflow-visible md:pe-0"
 		onkeydown={onTabKey}
 	>
 		{#each tabs as tab (tab.id)}

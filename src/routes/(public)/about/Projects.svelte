@@ -25,7 +25,7 @@
 		icon: typeof CodeIcon;
 		tag?: string;
 		builtWith: { name: string; logo: string; lift?: string; wide?: boolean }[];
-		onGitHub?: boolean;
+		github?: string;
 	};
 
 	const sorts: Sort[] = [
@@ -69,7 +69,7 @@
 				{ name: 'Svelte', logo: asset('logos/svelte.svg') },
 				{ name: 'Go', logo: asset('logos/go.svg') }
 			],
-			onGitHub: true
+			github: 'https://github.com/julian-one/shire'
 		},
 		{
 			name: 'Data Structures',
@@ -83,7 +83,8 @@
 			year: 2026,
 			icon: GridFourIcon,
 			tag: 'Interactive',
-			builtWith: []
+			builtWith: [{ name: 'TypeScript', logo: asset('logos/typescript.svg') }],
+			github: 'https://github.com/julian-one/gol'
 		}
 	];
 
@@ -175,10 +176,10 @@
 									<li>
 										<img
 											class={[
-											'object-contain',
-											technology.lift,
-											technology.wide ? '-my-1.5 size-8' : 'size-4.5'
-										]}
+												'object-contain',
+												technology.lift,
+												technology.wide ? '-my-1.5 size-8' : 'size-4.5'
+											]}
 											src={technology.logo}
 											alt={technology.name}
 											title={technology.name}
@@ -190,11 +191,13 @@
 					</div>
 				</div>
 				<h2 class="card-title text-xl">{project.name}</h2>
-				{#if project.onGitHub}
+				{#if project.github}
 					<div class="card-actions">
 						<a
 							class="flex min-h-11 link items-center gap-2 font-bold link-hover underline-offset-6"
-							href="https://github.com/julian-one/shire"
+							href={project.github}
+							target="_blank"
+							rel="external noopener"
 						>
 							View on GitHub
 							<CaretRightIcon class="size-5 shrink-0" aria-hidden="true" />
