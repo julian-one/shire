@@ -1,4 +1,4 @@
-.PHONY: build dev preview test verify
+.PHONY: build dev preview test verify image
 
 MORIA_URL = http://localhost:8000
 
@@ -18,3 +18,6 @@ verify:
 	@npm run lint
 	@npm run check
 	@MORIA_URL='$(MORIA_URL)' npm run test
+
+image:
+	@docker build -t julianone/shire .

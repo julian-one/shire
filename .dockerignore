@@ -1,0 +1,6 @@
+.git
+.husky
+.svelte-kit
+build
+node_modules
+*.md
